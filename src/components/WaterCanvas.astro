@@ -1,0 +1,77 @@
+---
+/**
+ * Fondo de "corriente": líneas de agua que fluyen en un <canvas>.
+ * Se pausa fuera de pantalla y con prefers-reduced-motion queda estático.
+ */
+interface Props { lines?: number; opacity?: number; class?: string }
+const { lines = 9, opacity = 0.55, class: cls = '' } = Astro.props;
+---
+
+<canvas class:list={['water-canvas', cls]} data-water data-lines={lines} style={`opacity:${opacity}`} aria-hidden="true"></canvas>
+
+<style>
+  .water-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+</style>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  for (const canvas of document.querySelectorAll<HTMLCanvasElement>('[data-water]')) {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) continue;
+    const count = Number(canvas.dataset.lines) || 9;
+    let w = 0, h = 0, dpr = 1, raf = 0, visible = true, t = 0, last = 0;
+    let pointerX = 0.5;
+
+    const resize = () => {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = canvas.clientWidth; h = canvas.clientHeight;
+      canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    const draw = () => {
+      ctx.clearRect(0, 0, w, h);
+      const scroll = window.scrollY * 0.0015;
+      for (let i = 0; i < count; i++) {
+        const k = i / (count - 1);
+        const baseY = h * (0.35 + k * 0.6);
+        const amp = 10 + k * 26 + Math.sin(t * 0.4 + i) * 6;
+        const freq = 0.0022 + k * 0.0012;
+        const speed = 0.35 + k * 0.25;
+        ctx.beginPath();
+        for (let x = -10; x <= w + 10; x += 8) {
+          const y = baseY
+            + Math.sin(x * freq + t * speed + i * 0.8 + scroll) * amp
+            + Math.sin(x * freq * 2.3 - t * speed * 0.6 + i) * amp * 0.35
+            + (pointerX - 0.5) * 30 * Math.sin(x / w * Math.PI) * k;
+          x === -10 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        }
+        const teal = i % 3 === 0;
+        ctx.strokeStyle = teal ? `rgba(92,200,189,${0.18 + k * 0.35})` : `rgba(245,243,236,${0.06 + k * 0.12})`;
+        ctx.lineWidth = teal ? 1.4 : 1;
+        ctx.stroke();
+      }
+    };
+
+    const loop = (now: number) => {
+      const dt = Math.min((now - last) / 1000, 0.05);
+      last = now; t += dt;
+      draw();
+      if (visible) raf = requestAnimationFrame(loop);
+    };
+
+    resize();
+    draw();
+    window.addEventListener('resize', () => { resize(); draw(); });
+
+    if (!reduce) {
+      new IntersectionObserver(([e]) => {
+        visible = e.isIntersecting;
+        cancelAnimationFrame(raf);
+        if (visible) { last = performance.now(); raf = requestAnimationFrame(loop); }
+      }).observe(canvas);
+      window.addEventListener('pointermove', (e) => { pointerX += (e.clientX / window.innerWidth - pointerX) * 0.08; }, { passive: true });
+    }
+  }
+</script>

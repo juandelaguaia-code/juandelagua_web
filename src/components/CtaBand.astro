@@ -1,0 +1,33 @@
+---
+import { waLink } from '../data/site';
+import WhatsAppIcon from './WhatsAppIcon.astro';
+import WaterCanvas from './WaterCanvas.astro';
+interface Props { title?: string; text?: string; message?: string }
+const {
+  title = 'Conversemos sobre <em>tu empresa</em>.',
+  text = 'Cuéntame qué proceso está consumiendo más tiempo o qué canal no está generando clientes. Respondo personalmente y, si no es algo en lo que pueda aportar, te lo indico.',
+  message,
+} = Astro.props;
+---
+
+<section class="cta-band section on-dark">
+  <WaterCanvas lines={8} opacity={0.5} />
+  <div class="container wrap">
+    <h2 data-reveal set:html={title} />
+    <div class="side" data-reveal style="--d:100ms">
+      <p class="lead">{text}</p>
+      <div class="btn-row">
+        <a class="btn btn--agua" href="/#diagnostico">Diagnóstico gratuito</a>
+        <a class="btn btn--ghost" href={waLink(message)} target="_blank" rel="noopener"><WhatsAppIcon /> Escribir por WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-band { position: relative; overflow: hidden; background: radial-gradient(120% 120% at 85% 100%, #17466b 0%, var(--marino) 60%); padding-bottom: clamp(96px, 11vw, 150px); }
+  .wrap { position: relative; display: grid; gap: 28px; align-items: end; }
+  @media (min-width: 900px) { .wrap { grid-template-columns: 1.1fr 1fr; gap: 64px; } }
+  h2 { font-size: var(--fs-3xl); max-width: 12ch; }
+  .side { display: grid; gap: 24px; }
+</style>

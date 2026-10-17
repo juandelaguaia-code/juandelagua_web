@@ -1,0 +1,142 @@
+---
+import '@fontsource-variable/newsreader/wght.css';
+import '@fontsource-variable/newsreader/wght-italic.css';
+import '@fontsource-variable/plus-jakarta-sans/wght.css';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppFab from '../components/WhatsAppFab.astro';
+import { SITE } from '../data/site';
+import { cleanPath } from '../data/path';
+
+interface Crumb { name: string; path: string }
+interface Props {
+  title: string;
+  description: string;
+  /** Ruta de la imagen OG en /public (1200x630) */
+  image?: string;
+  noindex?: boolean;
+  breadcrumbs?: Crumb[];
+  /** JSON-LD adicional específico de la página */
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+  waMessage?: string;
+}
+
+const { title, description, image = '/og.jpg', noindex = false, breadcrumbs, schema, waMessage } = Astro.props;
+const canonical = new URL(cleanPath(Astro.url.pathname), SITE.url).href;
+const ogImage = new URL(image, SITE.url).href;
+const fullTitle = title.includes(SITE.name) ? title : `${title} | ${SITE.name}`;
+
+const personId = `${SITE.url}/#juan`;
+const businessId = `${SITE.url}/#negocio`;
+
+const baseSchema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    '@id': personId,
+    name: SITE.name,
+    alternateName: SITE.legalName,
+    url: SITE.url,
+    image: `${SITE.url}/og.jpg`,
+    jobTitle: 'Consultor en inteligencia artificial y marketing digital',
+    description: SITE.description,
+    knowsAbout: [
+      'Inteligencia artificial aplicada a pymes',
+      'Automatización de procesos',
+      'Agentes de inteligencia artificial',
+      'Agentes de IA para WhatsApp',
+      'Integración de CRM',
+      'Marketing digital',
+      'Publicidad en Meta Ads y Google Ads',
+      'Estrategia de contenido',
+      'SEO local',
+    ],
+    alumniOf: { '@type': 'CollegeOrUniversity', name: 'Duoc UC' },
+    address: { '@type': 'PostalAddress', addressLocality: SITE.city, addressRegion: SITE.region, addressCountry: 'CL' },
+    sameAs: Object.values(SITE.social),
+    worksFor: { '@id': businessId },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    '@id': businessId,
+    name: SITE.name,
+    url: SITE.url,
+    image: `${SITE.url}/og.jpg`,
+    description: SITE.description,
+    founder: { '@id': personId },
+    telephone: `+${SITE.whatsappNumber}`,
+    areaServed: { '@type': 'Country', name: 'Chile' },
+    address: { '@type': 'PostalAddress', addressLocality: SITE.city, addressRegion: SITE.region, addressCountry: 'CL' },
+    knowsLanguage: 'es-CL',
+    sameAs: Object.values(SITE.social),
+  },
+];
+
+const crumbSchema = breadcrumbs && {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [{ name: 'Inicio', path: '/' }, ...breadcrumbs].map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.name,
+    item: new URL(c.path, SITE.url).href,
+  })),
+};
+
+const extra = schema ? (Array.isArray(schema) ? schema : [schema]) : [];
+const allSchema = [...baseSchema, ...(crumbSchema ? [crumbSchema] : []), ...extra];
+---
+
+<!doctype html>
+<html lang="es-CL">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <meta name="author" content={SITE.legalName} />
+    <meta name="theme-color" content="#0E2A43" />
+    <meta name="geo.region" content="CL-VS" />
+    <meta name="geo.placename" content={SITE.city} />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:locale" content={SITE.locale} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Juan del Agua, consultor de IA y marketing digital" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script is:inline>document.documentElement.classList.add('js');</script>
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(allSchema)} />
+  </head>
+  <body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+    <div class="tide-bar" aria-hidden="true"></div>
+    <Header />
+    <main id="contenido">
+      <slot />
+    </main>
+    <Footer />
+    <WhatsAppFab message={waMessage} />
+
+    <script>
+      import '../scripts/fx.ts';
+    </script>
+  </body>
+</html>

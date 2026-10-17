@@ -1,0 +1,274 @@
+---
+/**
+ * Diagnóstico gratuito con IA (lead magnet).
+ * Conversación guiada de 7 pasos → POST /api/diagnostico → informe en pantalla
+ * → CTA a WhatsApp con el resumen prellenado.
+ */
+import { SITE } from '../data/site';
+interface Props { id?: string }
+const { id = 'diagnostico-agente' } = Astro.props;
+---
+
+<div class="agent" id={id} data-agent data-wa={SITE.whatsappNumber}>
+  <div class="agent-head">
+    <span class="pulse" aria-hidden="true"></span>
+    <div>
+      <p class="agent-title">Asistente de diagnóstico</p>
+      <p class="agent-sub">Inteligencia artificial · 3 minutos · sin costo</p>
+    </div>
+    <div class="progress" aria-hidden="true"><i data-progress></i></div>
+  </div>
+
+  <div class="chat" data-chat aria-live="polite"></div>
+
+  <form class="composer" data-composer novalidate></form>
+
+  <template data-tpl-loading>
+    <div class="loading">
+      <div class="glass"><span class="fill"></span></div>
+      <p>Analizando tus respuestas…</p>
+    </div>
+  </template>
+</div>
+
+<style>
+  .agent {
+    position: relative; display: grid; grid-template-rows: auto 1fr auto;
+    background: rgba(255, 255, 255, 0.72); border: 1px solid var(--linea); border-radius: 28px;
+    box-shadow: 0 40px 80px -50px rgba(14, 42, 67, 0.55);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    min-height: 560px; max-height: min(78vh, 760px); overflow: hidden; color: var(--tinta);
+  }
+  .agent-head { display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: center; padding: 18px 22px; border-bottom: 1px solid var(--linea); position: relative; }
+  .agent-title { font-weight: 700; font-size: var(--fs-sm); }
+  .agent-sub { font-size: var(--fs-xs); color: var(--piedra); }
+  .pulse { width: 12px; height: 12px; border-radius: 50%; background: var(--corriente); box-shadow: 0 0 0 0 rgba(30, 158, 147, 0.6); animation: pulse 2.4s infinite; }
+  @keyframes pulse { 70% { box-shadow: 0 0 0 12px rgba(30, 158, 147, 0); } 100% { box-shadow: 0 0 0 0 rgba(30, 158, 147, 0); } }
+  .progress { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: transparent; }
+  .progress i { display: block; height: 100%; width: 0; background: var(--corriente); transition: width 0.6s var(--ease); }
+
+  .chat { overflow-y: auto; padding: 22px; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
+  .chat :global(.msg) { max-width: 88%; padding: 12px 16px; border-radius: 18px; font-size: var(--fs-sm); line-height: 1.5; animation: drop 0.6s var(--ease) both; }
+  .chat :global(.msg.bot) { background: var(--bruma); border-bottom-left-radius: 6px; align-self: flex-start; }
+  .chat :global(.msg.user) { background: var(--marino); color: var(--perla); border-bottom-right-radius: 6px; align-self: flex-end; }
+  .chat :global(.msg.err) { background: #fdecec; color: #8a1c1c; }
+  @keyframes drop { from { opacity: 0; transform: translateY(14px) scale(0.98); filter: blur(4px); } to { opacity: 1; transform: none; filter: none; } }
+
+  .composer { border-top: 1px solid var(--linea); padding: 16px 18px 18px; display: grid; gap: 12px; background: rgba(245, 243, 236, 0.7); }
+  .composer:empty { display: none; }
+  .composer :global(.chips) { display: flex; flex-wrap: wrap; gap: 8px; }
+  .composer :global(.chip) {
+    border: 1.5px solid var(--linea); background: #fff; border-radius: 999px; padding: 8px 14px; font-size: var(--fs-xs); font-weight: 600; cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
+  }
+  .composer :global(.chip:hover) { border-color: var(--corriente); transform: translateY(-1px); }
+  .composer :global(.chip[aria-pressed='true']) { background: var(--corriente); border-color: var(--corriente); color: #fff; }
+  .composer :global(input[type='text']), .composer :global(textarea) {
+    width: 100%; font: inherit; font-size: var(--fs-sm); padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--linea); background: #fff; color: var(--tinta);
+  }
+  .composer :global(input:focus), .composer :global(textarea:focus) { outline: none; border-color: var(--corriente); }
+  .composer :global(textarea) { min-height: 96px; resize: vertical; }
+  .composer :global(.row) { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+  .composer :global(.hint) { font-size: var(--fs-xs); color: var(--piedra); }
+  .composer :global(.consent) { display: flex; gap: 10px; align-items: flex-start; font-size: var(--fs-xs); color: var(--piedra); line-height: 1.45; }
+  .composer :global(.consent input) { margin-top: 3px; accent-color: var(--corriente); }
+  .composer :global(.grid2) { display: grid; gap: 10px; }
+  @media (min-width: 560px) { .composer :global(.grid2) { grid-template-columns: 1fr 1fr; } }
+  .composer :global(.btn) { min-height: 44px; }
+
+  .chat :global(.loading) { align-self: center; display: grid; justify-items: center; gap: 12px; padding: 24px 0; color: var(--piedra); font-size: var(--fs-sm); }
+  .chat :global(.glass) { position: relative; width: 64px; height: 64px; border-radius: 50%; border: 2px solid var(--corriente); overflow: hidden; }
+  .chat :global(.fill) { position: absolute; left: -50%; width: 200%; height: 200%; top: 100%; background: var(--corriente); border-radius: 42%; animation: fill 3.2s ease-in-out infinite, spin 4s linear infinite; opacity: 0.85; }
+  @keyframes fill { 0% { top: 100%; } 60% { top: 30%; } 100% { top: 100%; } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Informe */
+  .chat :global(.report) { align-self: stretch; display: grid; gap: 14px; animation: drop 0.8s var(--ease) both; }
+  .chat :global(.report h3) { font-size: 1.5rem; }
+  .chat :global(.report .summary) { font-size: var(--fs-sm); color: var(--tinta); }
+  .chat :global(.op) { padding: 16px; border-radius: 16px; border: 1px solid var(--linea); background: #fff; display: grid; gap: 6px; }
+  .chat :global(.op h4) { font-family: var(--serif); font-size: 1.2rem; font-weight: 500; }
+  .chat :global(.op p) { font-size: var(--fs-xs); color: var(--piedra); line-height: 1.5; }
+  .chat :global(.op strong) { color: var(--tinta); }
+  .chat :global(.meta) { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chat :global(.meta span) { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; padding: 3px 9px; border-radius: 999px; background: rgba(30, 158, 147, 0.12); color: var(--corriente-ink); }
+  .chat :global(.meta span.tipo) { background: rgba(14, 42, 67, 0.08); color: var(--marino); }
+  .chat :global(.no) { padding: 14px 16px; border-radius: 16px; background: var(--bruma); font-size: var(--fs-xs); }
+  .chat :global(.no ul) { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 4px; }
+  .chat :global(.next) { padding: 16px; border-radius: 16px; background: var(--marino); color: var(--perla); font-size: var(--fs-sm); display: grid; gap: 12px; }
+  .chat :global(.next .btn) { justify-self: start; }
+  .chat :global(.disclaimer) { font-size: 0.72rem; color: var(--piedra); }
+</style>
+
+<script>
+  type Step =
+    | { key: string; ask: string; kind: 'text'; fields: { name: string; placeholder: string; required?: boolean }[] }
+    | { key: string; ask: string; kind: 'single' | 'multi'; options: string[] }
+    | { key: string; ask: string; kind: 'long'; placeholder: string }
+    | { key: string; ask: string; kind: 'contact' };
+
+  const STEPS: Step[] = [
+    { key: 'empresa', kind: 'text', ask: 'Hola, soy el asistente de diagnóstico de Juan del Agua. En unos minutos te entrego una primera lectura de dónde la inteligencia artificial y el marketing digital pueden ayudar a tu empresa. Para empezar: ¿cómo se llama tu empresa y a qué se dedica?',
+      fields: [{ name: 'empresa', placeholder: 'Nombre de la empresa (opcional)' }, { name: 'rubro', placeholder: 'Rubro o a qué se dedica', required: true }] },
+    { key: 'tamano', kind: 'single', ask: '¿Cuántas personas trabajan en la empresa?', options: ['Solo yo', '2 a 5', '6 a 20', '21 a 50', 'Más de 50'] },
+    { key: 'canales', kind: 'multi', ask: '¿Por dónde llegan tus clientes o consultas? Puedes elegir varios.', options: ['WhatsApp', 'Instagram o Facebook', 'Sitio web', 'Correo', 'Teléfono', 'Presencial', 'Marketplaces', 'Licitaciones o referidos'] },
+    { key: 'dolores', kind: 'multi', ask: '¿Qué es lo que más les está costando hoy?', options: ['Responder consultas a tiempo', 'Cotizar', 'Seguimiento de clientes', 'Datos repartidos en varias herramientas', 'Tareas administrativas repetitivas', 'Conseguir clientes nuevos', 'Medir qué funciona en marketing', 'Todo depende de mí'] },
+    { key: 'herramientas', kind: 'multi', ask: '¿Qué herramientas usan actualmente?', options: ['Planillas (Excel o Sheets)', 'CRM', 'WhatsApp Business', 'Facturación o ERP', 'Redes sociales', 'Herramientas de IA', 'Ninguna en particular'] },
+    { key: 'detalle', kind: 'long', ask: 'Describe con tus palabras el proceso que más tiempo les quita: qué pasa, quién lo hace y cada cuánto. Mientras más concreto, mejor el diagnóstico.', placeholder: 'Ej.: cada día llegan 30 consultas por WhatsApp sobre precios y stock; las responde una persona entre otras tareas y muchas quedan sin respuesta hasta la tarde…' },
+    { key: 'contacto', kind: 'contact', ask: 'Último paso, opcional: si quieres que Juan revise tu situación personalmente, deja tu nombre y un WhatsApp o correo.' },
+  ];
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-agent]')) {
+    const chat = root.querySelector<HTMLElement>('[data-chat]')!;
+    const form = root.querySelector<HTMLFormElement>('[data-composer]')!;
+    const bar = root.querySelector<HTMLElement>('[data-progress]')!;
+    const tplLoading = root.querySelector<HTMLTemplateElement>('[data-tpl-loading]')!;
+    const wa = root.dataset.wa!;
+    const answers: Record<string, unknown> = {};
+    let i = 0;
+    let started = false;
+
+    const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+    const scroll = () => (chat.scrollTop = chat.scrollHeight);
+
+    const say = (text: string, who: 'bot' | 'user' | 'err' = 'bot') => {
+      const el = document.createElement('div');
+      el.className = `msg ${who === 'err' ? 'bot err' : who}`;
+      el.textContent = text;
+      chat.append(el);
+      scroll();
+    };
+
+    const typing = (ms = 550) => new Promise((r) => setTimeout(r, ms));
+
+    const chip = (label: string) => `<button type="button" class="chip" aria-pressed="false" data-chip>${esc(label)}</button>`;
+
+    async function ask() {
+      const s = STEPS[i];
+      bar.style.width = `${(i / STEPS.length) * 100}%`;
+      form.innerHTML = '';
+      await typing(started ? 500 : 150);
+      started = true;
+      say(s.ask);
+
+      if (s.kind === 'text') {
+        form.innerHTML = `<div class="grid2">${s.fields.map((f) => `<input type="text" name="${f.name}" placeholder="${esc(f.placeholder)}" maxlength="140" ${f.required ? 'required' : ''} autocomplete="organization" />`).join('')}</div>
+          <div class="row"><span class="hint">Tus respuestas solo se usan para generar el diagnóstico.</span><button class="btn btn--agua" type="submit">Continuar</button></div>`;
+      } else if (s.kind === 'single' || s.kind === 'multi') {
+        form.innerHTML = `<div class="chips" role="group">${s.options.map(chip).join('')}</div>
+          ${s.kind === 'multi' ? '<div class="row"><span class="hint">Selecciona todas las que apliquen.</span><button class="btn btn--agua" type="submit">Continuar</button></div>' : ''}`;
+      } else if (s.kind === 'long') {
+        form.innerHTML = `<textarea name="detalle" maxlength="1500" placeholder="${esc(s.placeholder)}"></textarea>
+          <div class="row"><span class="hint">Opcional, pero mejora mucho el resultado.</span><button class="btn btn--agua" type="submit">Continuar</button></div>`;
+      } else {
+        form.innerHTML = `<div class="grid2"><input type="text" name="nombre" placeholder="Tu nombre" maxlength="80" autocomplete="name" /><input type="text" name="contacto" placeholder="WhatsApp o correo" maxlength="120" autocomplete="email" /></div>
+          <label class="consent"><input type="checkbox" name="consentimiento" /> <span>Autorizo a Juan del Agua a usar estos datos para contactarme sobre este diagnóstico, según la <a href="/privacidad" target="_blank">política de privacidad</a>.</span></label>
+          <div class="row"><span class="hint">Si prefieres, déjalo en blanco.</span><button class="btn btn--agua" type="submit">Generar mi diagnóstico</button></div>`;
+      }
+      form.querySelector<HTMLElement>('input, textarea, .chip')?.focus({ preventScroll: true });
+    }
+
+    form.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-chip]');
+      if (!b) return;
+      const s = STEPS[i];
+      if (s.kind === 'single') {
+        answers[s.key] = b.textContent!.trim();
+        say(b.textContent!.trim(), 'user');
+        next();
+      } else {
+        b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'));
+      }
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const s = STEPS[i];
+      const data = new FormData(form);
+      if (s.kind === 'text') {
+        const rubro = String(data.get('rubro') || '').trim();
+        if (!rubro) { form.querySelector<HTMLInputElement>('[name=rubro]')?.focus(); return; }
+        answers.empresa = String(data.get('empresa') || '').trim();
+        answers.rubro = rubro;
+        say([answers.empresa, rubro].filter(Boolean).join(' · '), 'user');
+      } else if (s.kind === 'multi') {
+        const picked = [...form.querySelectorAll('[aria-pressed="true"]')].map((b) => b.textContent!.trim());
+        if (picked.length === 0) { say('Selecciona al menos una opción para continuar.', 'err'); return; }
+        answers[s.key] = picked;
+        say(picked.join(', '), 'user');
+      } else if (s.kind === 'long') {
+        answers.detalle = String(data.get('detalle') || '').trim();
+        say(answers.detalle ? String(answers.detalle) : 'Prefiero no detallar.', 'user');
+      } else if (s.kind === 'contact') {
+        const contacto = String(data.get('contacto') || '').trim();
+        const consentimiento = data.get('consentimiento') === 'on';
+        if (contacto && !consentimiento) { say('Para guardar tus datos de contacto necesito que marques la autorización.', 'err'); return; }
+        answers.nombre = String(data.get('nombre') || '').trim();
+        answers.contacto = contacto;
+        answers.consentimiento = consentimiento;
+        say(contacto ? `${answers.nombre || 'Datos'} · ${contacto}` : 'Prefiero ver el diagnóstico sin dejar datos.', 'user');
+      }
+      next();
+    });
+
+    function next() {
+      i++;
+      if (i < STEPS.length) ask();
+      else generate();
+    }
+
+    async function generate() {
+      form.innerHTML = '';
+      bar.style.width = '100%';
+      const loading = tplLoading.content.firstElementChild!.cloneNode(true) as HTMLElement;
+      chat.append(loading);
+      scroll();
+      try {
+        const res = await fetch('/api/diagnostico', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(answers) });
+        const data = await res.json();
+        loading.remove();
+        if (!res.ok) throw new Error(data.error || 'No fue posible generar el diagnóstico.');
+        render(data.informe);
+      } catch (err) {
+        loading.remove();
+        say(err instanceof Error ? err.message : 'No fue posible generar el diagnóstico.', 'err');
+        form.innerHTML = `<div class="row"><span class="hint">Puedes intentarlo de nuevo o escribir directamente.</span><a class="btn btn--agua" href="https://wa.me/${wa}" target="_blank" rel="noopener">Escribir por WhatsApp</a></div>`;
+      }
+    }
+
+    function render(inf: { resumen: string; oportunidades: { titulo: string; problema: string; propuesta: string; tipo: string; esfuerzo: string; impacto: string }[]; no_conviene: string[]; primer_paso: string }) {
+      const resumenWa = [
+        'Hola Juan, hice el diagnóstico gratuito en su sitio web.',
+        `Empresa: ${answers.empresa || '-'} (${answers.rubro})`,
+        `Equipo: ${answers.tamano}`,
+        `Principales oportunidades: ${inf.oportunidades.map((o) => o.titulo).join('; ')}`,
+        'Me gustaría agendar el diagnóstico completo.',
+      ].join('\n');
+      const el = document.createElement('div');
+      el.className = 'report';
+      el.innerHTML = `
+        <h3>Tu diagnóstico preliminar</h3>
+        <p class="summary">${esc(inf.resumen)}</p>
+        ${inf.oportunidades.map((o, n) => `
+          <article class="op">
+            <div class="meta"><span class="tipo">${esc(o.tipo)}</span><span>Impacto ${esc(o.impacto.toLowerCase())}</span><span>Esfuerzo ${esc(o.esfuerzo.toLowerCase())}</span></div>
+            <h4>${n + 1}. ${esc(o.titulo)}</h4>
+            <p><strong>Hoy:</strong> ${esc(o.problema)}</p>
+            <p><strong>Propuesta:</strong> ${esc(o.propuesta)}</p>
+          </article>`).join('')}
+        <div class="no"><strong>Lo que hoy no conviene hacer</strong><ul>${inf.no_conviene.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>
+        <div class="next">
+          <div><strong>Primer paso sugerido</strong><br />${esc(inf.primer_paso)}</div>
+          <a class="btn btn--agua" href="https://wa.me/${wa}?text=${encodeURIComponent(resumenWa)}" target="_blank" rel="noopener">Agendar diagnóstico completo</a>
+        </div>
+        <p class="disclaimer">Diagnóstico orientativo generado con inteligencia artificial a partir de tus respuestas. No reemplaza una revisión en detalle de tu operación.</p>`;
+      chat.append(el);
+      chat.scrollTop = el.offsetTop - 12;
+    }
+
+    // Arranca cuando el asistente entra en pantalla (no antes, para no "hablar solo").
+    new IntersectionObserver(([e], obs) => {
+      if (e.isIntersecting) { obs.disconnect(); ask(); }
+    }, { threshold: 0.3 }).observe(root);
+  }
+</script>

@@ -1,0 +1,27 @@
+---
+interface Props { eyebrow: string; dark?: boolean }
+const { eyebrow, dark = false } = Astro.props;
+---
+
+<section class:list={['page-hero', { 'on-dark': dark }]}>
+  <div class="container">
+    <p class="eyebrow rise">{eyebrow}</p>
+    <h1 class="rise" style="--d:80ms"><slot name="title" /></h1>
+    <div class="lead rise" style="--d:160ms"><slot name="lead" /></div>
+    <div class="actions rise" style="--d:240ms"><slot /></div>
+  </div>
+  <svg class="current" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M-20 80 C 220 20, 420 120, 720 70 S 1200 10, 1460 60" fill="none" stroke="currentColor" stroke-width="1.5" />
+    <path d="M-20 100 C 260 50, 460 130, 760 92 S 1220 40, 1460 86" fill="none" stroke="currentColor" stroke-width="1" opacity=".5" />
+  </svg>
+</section>
+
+<style>
+  .page-hero { position: relative; padding: clamp(56px, 8vw, 112px) 0 clamp(72px, 9vw, 128px); overflow: hidden; }
+  .page-hero .container { position: relative; z-index: 1; display: grid; gap: 22px; }
+  h1 { max-width: 18ch; }
+  .lead { display: grid; gap: 1em; }
+  .actions:empty { display: none; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+  .current { position: absolute; left: 0; bottom: 8px; width: 100%; height: 90px; color: var(--corriente); opacity: 0.45; pointer-events: none; }
+</style>

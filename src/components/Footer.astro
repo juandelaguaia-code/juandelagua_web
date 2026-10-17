@@ -1,0 +1,61 @@
+---
+import { SITE, waLink } from '../data/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer on-dark">
+  <div class="container inner">
+    <div class="brand">
+      <a href="/" class="wordmark">Juan <em>del Agua</em></a>
+      <p class="muted">Consultoría en inteligencia artificial y marketing digital para pymes y empresas. Base en Viña del Mar, con atención en todo Chile, remota y presencial.</p>
+      <a class="btn btn--agua" href="/diagnostico">Diagnóstico gratuito</a>
+    </div>
+    <nav aria-label="Pie de página" class="cols">
+      <div>
+        <p class="col-title">Servicios</p>
+        <ul>
+          <li><a href="/consultoria-ia">Consultoría IA</a></li>
+          <li><a href="/marketing-digital">Marketing digital</a></li>
+          <li><a href="/claude-for-small-business">Claude para equipos</a></li>
+          <li><a href="/diagnostico">Diagnóstico gratuito</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="col-title">Juan del Agua</p>
+        <ul>
+          <li><a href="/sobre-mi">Sobre mí</a></li>
+          <li><a href="/contacto">Contacto</a></li>
+          <li><a href={waLink()} target="_blank" rel="noopener">WhatsApp</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="col-title">Redes</p>
+        <ul>
+          <li><a href={SITE.social.linkedin} target="_blank" rel="noopener me">LinkedIn</a></li>
+          <li><a href={SITE.social.youtube} target="_blank" rel="noopener me">YouTube</a></li>
+          <li><a href={SITE.social.instagram} target="_blank" rel="noopener me">Instagram</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+  <div class="container legal">
+    <p>© {year} {SITE.name} · {SITE.legalName}</p>
+    <p><a href="/privacidad">Política de privacidad</a></p>
+  </div>
+</footer>
+
+<style>
+  .site-footer { position: relative; padding: clamp(56px, 7vw, 88px) 0 96px; border-top: 1px solid var(--linea-dark); }
+  .inner { display: grid; gap: 48px; padding-bottom: 48px; border-bottom: 1px solid var(--linea-dark); }
+  @media (min-width: 900px) { .inner { grid-template-columns: 1.1fr 1.4fr; gap: 64px; } }
+  .brand { display: grid; gap: 18px; justify-items: start; max-width: 420px; }
+  .wordmark { font-family: var(--serif); font-size: 2rem; text-decoration: none; color: var(--perla); }
+  .wordmark em { font-style: italic; color: var(--corriente-soft); }
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 32px; }
+  .col-title { font-size: var(--fs-xs); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--corriente-soft); margin-bottom: 14px; }
+  ul { list-style: none; padding: 0; display: grid; gap: 10px; }
+  .cols a { text-decoration: none; color: rgba(245, 243, 236, 0.82); font-size: var(--fs-sm); transition: color 0.2s; }
+  .cols a:hover { color: var(--perla); }
+  .legal { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; padding-top: 24px; font-size: var(--fs-xs); color: rgba(245, 243, 236, 0.55); }
+  .legal a { color: inherit; }
+</style>

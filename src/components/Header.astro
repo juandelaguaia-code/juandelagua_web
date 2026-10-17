@@ -1,0 +1,114 @@
+---
+import { NAV, waLink } from '../data/site';
+import { cleanPath } from '../data/path';
+const path = cleanPath(Astro.url.pathname);
+const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
+---
+
+<header class="site-header" data-header>
+  <div class="container bar">
+    <a href="/" class="wordmark" aria-label="Juan del Agua, inicio">
+      Juan <em>del Agua</em>
+    </a>
+    <nav class="nav-desktop" aria-label="Principal">
+      <ul>
+        {NAV.map((item) => (
+          <li><a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+    <a class="btn btn--agua btn--sm cta-desktop" href="/diagnostico">Diagnóstico gratuito</a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-movil" data-menu-toggle>
+      <span class="sr-only">Abrir menú</span>
+      <span class="burger" aria-hidden="true"><i></i><i></i></span>
+    </button>
+  </div>
+</header>
+
+<!-- El panel móvil va FUERA del header: un ancestro con backdrop-filter rompe position:fixed -->
+<div class="menu-movil" id="menu-movil" data-menu hidden>
+  <nav aria-label="Principal móvil" class="container">
+    <ul>
+      <li><a href="/">Inicio</a></li>
+      {NAV.map((item) => (
+        <li><a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a></li>
+      ))}
+      <li><a href="/contacto">Contacto</a></li>
+    </ul>
+    <a class="btn btn--agua" href="/diagnostico">Diagnóstico gratuito</a>
+    <a class="btn btn--ghost" href={waLink()} target="_blank" rel="noopener">WhatsApp</a>
+  </nav>
+</div>
+
+<style>
+  .site-header {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(245, 243, 236, 0.82);
+    -webkit-backdrop-filter: saturate(1.4) blur(14px);
+    backdrop-filter: saturate(1.4) blur(14px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s;
+  }
+  .site-header.is-scrolled { border-bottom-color: var(--linea); }
+  .bar { height: var(--header-h); display: flex; align-items: center; gap: 24px; }
+  .wordmark {
+    font-family: var(--serif); font-size: 1.45rem; font-weight: 500; letter-spacing: -0.01em;
+    text-decoration: none; color: var(--marino); white-space: nowrap; margin-right: auto;
+  }
+  .wordmark em { font-style: italic; font-weight: 400; color: var(--corriente-ink); }
+  .nav-desktop ul { display: flex; gap: 4px; list-style: none; padding: 0; }
+  .nav-desktop a {
+    display: block; padding: 8px 12px; border-radius: 999px;
+    font-size: var(--fs-sm); font-weight: 500; text-decoration: none; color: var(--tinta);
+    transition: background-color 0.2s, color 0.2s;
+  }
+  .nav-desktop a:hover { background: rgba(14, 42, 67, 0.06); }
+  .nav-desktop a[aria-current='page'] { color: var(--corriente-ink); }
+  .btn--sm { min-height: 42px; padding: 0.6em 1.2em; }
+  .menu-toggle { display: none; width: 46px; height: 46px; border: 0; background: transparent; cursor: pointer; border-radius: 12px; }
+  .burger { display: grid; gap: 7px; width: 24px; margin: auto; }
+  .burger i { display: block; height: 2px; background: var(--marino); border-radius: 2px; transition: transform 0.35s var(--ease); }
+  .menu-toggle[aria-expanded='true'] .burger i:first-child { transform: translateY(4.5px) rotate(45deg); }
+  .menu-toggle[aria-expanded='true'] .burger i:last-child { transform: translateY(-4.5px) rotate(-45deg); }
+
+  .menu-movil {
+    position: fixed; inset: var(--header-h) 0 0 0; z-index: 49;
+    background: var(--perla); overflow-y: auto; padding: 24px 0 40px;
+  }
+  .menu-movil ul { list-style: none; padding: 0; margin-bottom: 28px; }
+  .menu-movil li { border-bottom: 1px solid var(--linea); }
+  .menu-movil a:not(.btn) {
+    display: block; padding: 16px 0; text-decoration: none;
+    font-family: var(--serif); font-size: 1.6rem; color: var(--marino);
+  }
+  .menu-movil a[aria-current='page'] { color: var(--corriente-ink); font-style: italic; }
+  .menu-movil .btn { width: 100%; margin-bottom: 10px; }
+
+  @media (max-width: 960px) {
+    .nav-desktop, .cta-desktop { display: none; }
+    .menu-toggle { display: block; }
+  }
+  @media (min-width: 961px) { .menu-movil { display: none !important; } }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+
+  const onScroll = () => header?.classList.toggle('is-scrolled', window.scrollY > 8);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  const setOpen = (open: boolean) => {
+    if (!toggle || !menu) return;
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.querySelector('.sr-only')!.textContent = open ? 'Cerrar menú' : 'Abrir menú';
+    menu.hidden = !open;
+    document.body.style.overflow = open ? 'hidden' : '';
+  };
+  toggle?.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+  menu?.addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('a')) setOpen(false); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
+  window.matchMedia('(min-width: 961px)').addEventListener('change', (e) => { if (e.matches) setOpen(false); });
+</script>

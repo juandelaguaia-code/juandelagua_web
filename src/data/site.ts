@@ -1,0 +1,48 @@
+// Datos de marca centralizados. Cambia aquí y se actualiza en todo el sitio.
+
+export const SITE = {
+  name: 'Juan del Agua',
+  legalName: 'Juan Araneda Gattavara',
+  url: 'https://juandelagua.com',
+  tagline: 'Consultor de IA y marketing digital para pymes y empresas en Chile',
+  description:
+    'Consultoría en inteligencia artificial y marketing digital para pymes y empresas en Chile: automatización de flujos, agentes de IA y estrategia digital medible.',
+  locale: 'es_CL',
+  region: 'Región de Valparaíso',
+  city: 'Viña del Mar',
+  whatsappNumber: '56984388246',
+  whatsappDisplay: '+56 9 8438 8246',
+  social: {
+    linkedin: 'https://www.linkedin.com/in/juan-del-agua-araneda-979a2236a',
+    youtube: 'https://www.youtube.com/@juandelaguaa',
+    instagram: 'https://www.instagram.com/juandelaguaa',
+  },
+} as const;
+
+export const waLink = (message = 'Hola Juan, vengo desde su sitio web y me gustaría conversar sobre mi empresa.') =>
+  `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(message)}`;
+
+export const NAV = [
+  { href: '/consultoria-ia', label: 'Consultoría IA' },
+  { href: '/marketing-digital', label: 'Marketing digital' },
+  { href: '/claude-for-small-business', label: 'Claude para equipos' },
+  { href: '/sobre-mi', label: 'Sobre mí' },
+] as const;
+
+export const CERTIFICATIONS = [
+  'Teaching the AI Fluency Framework',
+  'AI Fluency: Framework & Foundations',
+  'AI Fluency for Small Businesses',
+  'Introduction to Claude Cowork',
+] as const;
+
+/** Método de la consultoría en IA (no aplica a marketing digital). */
+export const METHOD = [
+  { name: 'Escuchar', q: '¿Qué está consumiendo más tiempo?', d: 'Levantamiento de cómo opera la empresa hoy: responsables, canales de entrada de clientes y puntos donde el trabajo se detiene.' },
+  { name: 'Detectar', q: '¿Qué conviene automatizar y qué no?', d: 'Se separa lo que vale la pena resolver con IA de lo que conviene ordenar primero o dejar como está. Cuando no conviene automatizar, se dice.' },
+  { name: 'Prototipar', q: 'Una versión acotada primero.', d: 'Se construye una versión pequeña del flujo para validar la idea antes de una inversión mayor.' },
+  { name: 'Mostrar', q: 'Validación con casos reales.', d: 'El prototipo se revisa funcionando con datos y situaciones reales de la empresa, junto al equipo.' },
+  { name: 'Implementar', q: 'Integración a la operación.', d: 'Se conecta con las herramientas que ya se usan, se documenta y se capacita al equipo. Nada queda como caja negra.' },
+  { name: 'Medir', q: '¿Qué cambió en la práctica?', d: 'Se comparan indicadores antes y después: horas, tiempos de respuesta y solicitudes atendidas.' },
+  { name: 'Mejorar', q: 'Ajuste continuo.', d: 'Con los datos de uso se afinan los flujos para que acompañen el crecimiento de la empresa.' },
+] as const;

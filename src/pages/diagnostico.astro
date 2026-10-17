@@ -1,0 +1,91 @@
+---
+import Base from '../layouts/Base.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Wave from '../components/Wave.astro';
+import WaterCanvas from '../components/WaterCanvas.astro';
+import DiagnosticoAgente from '../components/DiagnosticoAgente.astro';
+import { waLink } from '../data/site';
+import { serviceSchema } from '../data/faq';
+
+const msg = 'Hola Juan, vengo desde su sitio web. Quiero solicitar un diagnóstico completo para mi empresa.';
+const description =
+  'Diagnóstico gratuito con IA para pymes y empresas: descubre en 3 minutos qué procesos conviene automatizar y dónde mejorar tu marketing. Sin costo.';
+
+const pro = [
+  { t: 'Levantamiento', d: 'Una o más sesiones, presenciales o remotas, para revisar cómo opera la empresa y cómo llegan los clientes.' },
+  { t: 'Medición', d: 'Se cuantifica dónde se pierde tiempo y dónde se caen consultas, con datos de la propia operación.' },
+  { t: 'Priorización', d: 'Qué conviene resolver con IA, qué con marketing, qué conviene ordenar primero y qué no tocar.' },
+  { t: 'Propuesta', d: 'Documento con prioridades, plan por fases, plazos y presupuesto.' },
+];
+---
+
+<Base
+  title="Diagnóstico gratuito con IA para empresas"
+  description={description}
+  breadcrumbs={[{ name: 'Diagnóstico', path: '/diagnostico' }]}
+  waMessage={msg}
+  schema={serviceSchema({ name: 'Diagnóstico de procesos y marketing con IA', serviceType: 'Diagnóstico empresarial', description, path: '/diagnostico', offers: { '@type': 'Offer', price: '0', priceCurrency: 'CLP', name: 'Diagnóstico gratuito con IA' } })}
+>
+  <section class="dx on-dark">
+    <WaterCanvas lines={10} opacity={0.55} />
+    <div class="container dx-grid">
+      <div class="dx-text">
+        <p class="eyebrow rise">Diagnóstico gratuito con IA</p>
+        <h1 class="rise" style="--d:80ms">Antes de automatizar, <em>hay que mirar</em>.</h1>
+        <p class="lead rise" style="--d:160ms">Responde siete preguntas sobre cómo opera tu empresa. Un asistente de inteligencia artificial analiza tus respuestas y te entrega un diagnóstico preliminar en pantalla, en unos 3 minutos.</p>
+        <ul class="checklist rise" style="--d:240ms">
+          <li>Oportunidades ordenadas por impacto y esfuerzo</li>
+          <li>Qué resolver con IA, automatización o marketing</li>
+          <li>Lo que hoy no conviene hacer</li>
+          <li>Un primer paso concreto</li>
+        </ul>
+      </div>
+      <div class="rise" style="--d:200ms">
+        <DiagnosticoAgente id="agente-diagnostico" />
+      </div>
+    </div>
+  </section>
+  <Wave from="var(--marino)" to="var(--perla)" />
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Diagnóstico completo</p>
+        <h2 data-reveal style="--d:80ms">Cuando se necesita <em>más precisión</em>.</h2>
+        <p class="lead" data-reveal style="--d:160ms">El diagnóstico gratuito entrega una primera lectura. El diagnóstico completo lo realizo personalmente, con información de la operación real, y es el punto de partida de cualquier proyecto de IA o de marketing.</p>
+      </div>
+      <div class="grid grid-4">
+        {pro.map((p, i) => (
+          <article class="card" data-reveal style={`--d:${i * 90}ms`}>
+            <span class="num">0{i + 1}</span>
+            <h3>{p.t}</h3>
+            <p>{p.d}</p>
+          </article>
+        ))}
+      </div>
+      <aside class="card price-card" data-reveal>
+        <div>
+          <span class="tag">Inversión</span>
+          <h3>Se cotiza según el tamaño y la complejidad de la empresa</h3>
+          <p>Si después se contrata la implementación, el valor del diagnóstico completo se descuenta.</p>
+        </div>
+        <a class="btn btn--agua" href={waLink(msg)} target="_blank" rel="noopener">Solicitar diagnóstico completo</a>
+      </aside>
+    </div>
+  </section>
+
+  <Wave from="var(--perla)" to="var(--marino)" />
+  <CtaBand message={msg} />
+</Base>
+
+<style>
+  .dx { position: relative; overflow: hidden; padding: clamp(48px, 7vw, 96px) 0 clamp(56px, 7vw, 88px); }
+  .dx-grid { position: relative; display: grid; gap: 40px; align-items: start; }
+  @media (min-width: 1000px) { .dx-grid { grid-template-columns: 0.85fr 1.15fr; gap: 64px; } }
+  .dx-text { display: grid; gap: 22px; }
+  .dx-text .checklist li { color: rgba(245, 243, 236, 0.86); font-size: var(--fs-base); }
+  .price-card { margin-top: clamp(16px, 2.4vw, 28px); display: grid; gap: 20px; align-items: center; background: #fff; }
+  @media (min-width: 820px) { .price-card { grid-template-columns: 1fr auto; } }
+  .price-card h3 { font-size: var(--fs-xl); margin: 10px 0 6px; }
+  .price-card .tag { justify-self: start; }
+</style>

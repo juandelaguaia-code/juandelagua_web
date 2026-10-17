@@ -1,0 +1,32 @@
+---
+/**
+ * Ola divisoria entre secciones. `from` = color de la sección de arriba,
+ * `to` = color de la de abajo. Las capas se desplazan con el scroll (--p)
+ * y además derivan suavemente, como una corriente.
+ */
+interface Props { from: string; to: string; flip?: boolean }
+const { from, to, flip = false } = Astro.props;
+---
+
+<div class:list={['wave', { flip }]} style={`--from:${from};--to:${to}`} data-fx data-fx-range="1.2" aria-hidden="true">
+  <svg viewBox="0 0 4320 120" preserveAspectRatio="none">
+    <path class="w3" d="M0 64 C 240 24 480 104 720 64 S 1200 24 1440 64 S 1920 104 2160 64 S 2640 24 2880 64 S 3360 104 3600 64 S 4080 24 4320 64 V120 H0 Z" />
+    <path class="w2" d="M0 80 C 260 50 460 110 720 80 S 1180 50 1440 80 S 1900 110 2160 80 S 2620 50 2880 80 S 3340 110 3600 80 S 4060 50 4320 80 V120 H0 Z" />
+    <path class="w1" d="M0 92 C 200 70 520 112 720 92 S 1240 72 1440 92 S 1960 112 2160 92 S 2680 72 2880 92 S 3400 112 3600 92 S 4120 72 4320 92 V120 H0 Z" />
+  </svg>
+</div>
+
+<style>
+  .wave { position: relative; height: clamp(56px, 7vw, 110px); margin: -1px 0; background: var(--from); overflow: hidden; }
+  .wave.flip { transform: scaleY(-1); background: var(--to); }
+  .wave.flip path { fill: var(--from) !important; }
+  svg { position: absolute; left: 0; bottom: 0; width: 300%; height: 100%; display: block; }
+  path { fill: var(--to); }
+  .w3 { opacity: 0.25; }
+  .w2 { opacity: 0.5; }
+  .fx .wave svg { transform: translateX(calc(var(--p, 0) * -18%)); }
+  .fx .wave .w3 { animation: drift 14s linear infinite; }
+  .fx .wave .w2 { animation: drift 20s linear infinite reverse; }
+  .fx .wave .w1 { animation: drift 26s linear infinite; }
+  @keyframes drift { from { transform: translateX(0); } to { transform: translateX(-33.3333%); } }
+</style>

@@ -1,0 +1,55 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import WhatsAppIcon from '../components/WhatsAppIcon.astro';
+import { SITE, waLink } from '../data/site';
+
+const description = 'Contacto de Juan del Agua, consultoría en IA y marketing digital para pymes y empresas en Chile. Atención directa por WhatsApp.';
+const contact = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: 'Contacto Juan del Agua',
+  url: `${SITE.url}/contacto`,
+  mainEntity: { '@id': `${SITE.url}/#negocio` },
+};
+---
+
+<Base title="Contacto" description={description} breadcrumbs={[{ name: 'Contacto', path: '/contacto' }]} schema={contact}>
+  <PageHero eyebrow="Contacto">
+    <Fragment slot="title">Contacto <em>directo</em>.</Fragment>
+    <Fragment slot="lead"><p>Las consultas las respondo personalmente. Basta con indicar a qué se dedica la empresa y qué necesita resolver. Para una primera lectura inmediata está el <a href="/diagnostico">diagnóstico gratuito con IA</a>.</p></Fragment>
+  </PageHero>
+
+  <section class="section bg-bruma">
+    <div class="container grid grid-3">
+      <a class="card wa" href={waLink()} target="_blank" rel="noopener" data-reveal>
+        <span class="icon"><WhatsAppIcon /></span>
+        <h2>WhatsApp</h2>
+        <p>{SITE.whatsappDisplay}</p>
+        <span class="link-arrow">Abrir conversación →</span>
+      </a>
+      <div class="card" data-reveal style="--d:100ms">
+        <h2>Dónde estoy</h2>
+        <p>Base en Viña del Mar, Región de Valparaíso. Atención a pymes y empresas de todo Chile, incluida Santiago, de forma remota o presencial.</p>
+      </div>
+      <div class="card" data-reveal style="--d:200ms">
+        <h2>Redes</h2>
+        <ul class="social">
+          <li><a class="link-arrow" href={SITE.social.linkedin} target="_blank" rel="noopener me">LinkedIn →</a></li>
+          <li><a class="link-arrow" href={SITE.social.youtube} target="_blank" rel="noopener me">YouTube →</a></li>
+          <li><a class="link-arrow" href={SITE.social.instagram} target="_blank" rel="noopener me">Instagram →</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .card h2 { font-size: var(--fs-xl); }
+  .wa { background: var(--marino); color: var(--perla); border-color: transparent; }
+  .wa p { color: rgba(245, 243, 236, 0.8); font-size: var(--fs-lg); }
+  .wa .link-arrow { color: var(--corriente-soft); }
+  .icon { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: var(--corriente); color: #fff; }
+  .icon :global(svg) { width: 26px; height: 26px; }
+  .social { list-style: none; padding: 0; display: grid; gap: 10px; }
+</style>

@@ -1,0 +1,35 @@
+---
+import { waLink } from '../data/site';
+import WhatsAppIcon from './WhatsAppIcon.astro';
+interface Props { message?: string }
+const { message } = Astro.props;
+---
+
+<a class="wa-fab" href={waLink(message)} target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
+  <WhatsAppIcon />
+  <span class="wa-label">WhatsApp</span>
+</a>
+
+<style>
+  .wa-fab {
+    position: fixed; right: max(16px, env(safe-area-inset-right)); bottom: max(16px, env(safe-area-inset-bottom)); z-index: 40;
+    display: inline-flex; align-items: center; gap: 10px;
+    height: 56px; padding: 0 20px 0 16px; border-radius: 999px;
+    background: var(--corriente); color: #fff; text-decoration: none; font-weight: 600; font-size: var(--fs-sm);
+    box-shadow: 0 14px 30px -12px rgba(14, 42, 67, 0.55), 0 0 0 0 rgba(30, 158, 147, 0.5);
+    transition: transform 0.35s var(--ease), background-color 0.25s;
+    animation: wa-pulse 3.2s var(--ease) 2.5s 2;
+  }
+  .wa-fab:hover { transform: translateY(-3px); background: #178a80; }
+  .wa-fab :global(svg) { width: 24px; height: 24px; }
+  @keyframes wa-pulse {
+    0% { box-shadow: 0 14px 30px -12px rgba(14, 42, 67, 0.55), 0 0 0 0 rgba(30, 158, 147, 0.5); }
+    70% { box-shadow: 0 14px 30px -12px rgba(14, 42, 67, 0.55), 0 0 0 16px rgba(30, 158, 147, 0); }
+    100% { box-shadow: 0 14px 30px -12px rgba(14, 42, 67, 0.55), 0 0 0 0 rgba(30, 158, 147, 0); }
+  }
+  @media (max-width: 520px) {
+    .wa-fab { width: 56px; padding: 0; justify-content: center; }
+    .wa-label { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { .wa-fab { animation: none; } }
+</style>

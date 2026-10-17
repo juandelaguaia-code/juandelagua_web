@@ -1,0 +1,161 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Faq from '../components/Faq.astro';
+import Wave from '../components/Wave.astro';
+import WaterCanvas from '../components/WaterCanvas.astro';
+import { waLink } from '../data/site';
+import { faqSchema, serviceSchema, type FaqItem } from '../data/faq';
+
+const msg = 'Hola Juan, vengo desde su sitio web. Me interesa un diagnóstico de marketing digital para mi empresa.';
+const description =
+  'Marketing digital para pymes y empresas en Chile: estrategia, campañas en Meta, Google y LinkedIn, redes sociales, contenido, sitios web y SEO.';
+
+const servicios = [
+  {
+    id: 'estrategia', t: 'Estrategia digital', d: 'Definición de público objetivo, propuesta de valor, canales y objetivos medibles antes de invertir en difusión.',
+    items: ['Análisis de marca y competencia', 'Cliente ideal y propuesta de valor', 'Plan de marketing con indicadores', 'Embudo de captación y conversión'],
+  },
+  {
+    id: 'campanas', t: 'Campañas pagadas', d: 'Diseño, implementación y optimización de campañas en las plataformas donde se encuentra el cliente, con presupuesto controlado.',
+    items: ['Meta Ads (Instagram y Facebook)', 'Google Ads (búsqueda y local)', 'LinkedIn Ads para venta a empresas', 'Segmentación, piezas y textos', 'Reporte de costo por contacto'],
+  },
+  {
+    id: 'contenido', t: 'Redes sociales y contenido', d: 'Línea editorial sostenible en el tiempo, con pilares de contenido, calendario y formatos adaptados a cada red.',
+    items: ['Pilares de contenido y tono de marca', 'Calendario y parrilla mensual', 'Guiones para videos y reels', 'Medición y ajuste por pilar'],
+  },
+  {
+    id: 'web-seo', t: 'Sitios web y SEO', d: 'Sitios rápidos que explican la oferta con claridad, convierten visitas en contactos y aparecen en las búsquedas relevantes.',
+    items: ['Sitios y landing pages', 'SEO técnico y de contenido', 'SEO local y perfil de empresa en Google', 'Analítica y medición de conversiones'],
+  },
+];
+
+const proceso = [
+  { n: 'Diagnóstico', t: 'Revisión del punto de partida', d: 'Situación actual de la marca, canales, competencia, resultados previos y objetivos comerciales.' },
+  { n: 'Propuesta', t: 'Estrategia y presupuesto', d: 'Plan con objetivos, canales, acciones e inversión sugerida en publicidad, junto al presupuesto del servicio.' },
+  { n: 'Ejecución', t: 'Implementación', d: 'Campañas, contenidos y sitio en marcha, con medición configurada desde el primer día.' },
+  { n: 'Medición', t: 'Reporte y ajuste', d: 'Reporte periódico de resultados y ajustes según lo que muestran los datos.' },
+];
+
+const faq: FaqItem[] = [
+  { q: '¿Cómo se define el valor del servicio?', a: 'Cada empresa parte con un diagnóstico. Con esa información se entrega una propuesta con estrategia, alcance y presupuesto ajustado a sus objetivos.' },
+  { q: '¿La inversión en publicidad está incluida?', a: 'No. La inversión en publicidad se paga directamente a Meta, Google o LinkedIn con un medio de pago de la empresa, lo que permite controlar en todo momento cuánto se gasta. Los honorarios se indican por separado en la propuesta.' },
+  { q: '¿Se garantizan ventas?', a: 'No. Se definen objetivos medibles, se reporta qué está funcionando y se ajusta en base a datos. Ningún proveedor serio puede garantizar ventas.' },
+  { q: '¿Qué relación tiene el marketing con la inteligencia artificial?', a: 'Una campaña que genera consultas pierde valor si nadie responde a tiempo. Las campañas se pueden conectar con un agente de IA que responde de inmediato, registra al contacto y hace seguimiento.' },
+  { q: '¿Trabajas con equipos de diseño o agencias existentes?', a: 'Sí. Puedo trabajar junto al equipo interno o la agencia que ya tenga la empresa, aportando estrategia, medición e integración con IA.' },
+];
+---
+
+<Base
+  title="Marketing digital para pymes y empresas en Chile"
+  description={description}
+  breadcrumbs={[{ name: 'Marketing digital', path: '/marketing-digital' }]}
+  waMessage={msg}
+  schema={[
+    {
+      ...serviceSchema({ name: 'Marketing digital para pymes y empresas', serviceType: 'Marketing digital', description, path: '/marketing-digital' }),
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: 'Servicios de marketing digital',
+        itemListElement: servicios.map((s) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: s.t, description: s.d } })),
+      },
+    },
+    faqSchema(faq),
+  ]}
+>
+  <PageHero eyebrow="Marketing digital">
+    <Fragment slot="title">Marketing digital orientado a <em>generar clientes</em>.</Fragment>
+    <Fragment slot="lead"><p>Estrategia, campañas, contenido y sitios web para pymes y empresas en Chile. Cada trabajo parte con un diagnóstico y una propuesta con objetivos, alcance y presupuesto definidos.</p></Fragment>
+    <a class="btn btn--agua" href={waLink(msg)} target="_blank" rel="noopener">Solicitar diagnóstico de marketing</a>
+    <a class="btn btn--ghost" href="#servicios">Ver servicios</a>
+  </PageHero>
+  <Wave from="var(--perla)" to="var(--bruma)" />
+
+  <section class="section bg-bruma" id="servicios">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Servicios</p>
+        <h2 data-reveal style="--d:80ms">Cuatro áreas que <em>funcionan mejor en conjunto</em>.</h2>
+        <p class="lead" data-reveal style="--d:160ms">Se pueden contratar por separado o combinadas. El diagnóstico define por dónde conviene comenzar.</p>
+      </div>
+      <div class="grid grid-2">
+        {servicios.map((s, i) => (
+          <article class="card" id={s.id} data-reveal style={`--d:${(i % 2) * 100}ms`}>
+            <span class="num">0{i + 1}</span>
+            <h3>{s.t}</h3>
+            <p>{s.d}</p>
+            <ul class="checklist">{s.items.map((it) => <li>{it}</li>)}</ul>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+  <Wave from="var(--bruma)" to="var(--marino)" />
+
+  <section class="section on-dark combo-sec">
+    <WaterCanvas lines={7} opacity={0.35} />
+    <div class="container combo">
+      <div>
+        <p class="eyebrow" data-reveal>Marketing + inteligencia artificial</p>
+        <h2 data-reveal style="--d:80ms">La campaña genera la consulta. <em>La IA asegura la respuesta.</em></h2>
+      </div>
+      <div class="combo-flow">
+        <div class="step" data-reveal><span>1</span><p><strong>La campaña o el contenido</strong> atrae al público correcto.</p></div>
+        <div class="step" data-reveal style="--d:80ms"><span>2</span><p><strong>El contacto escribe</strong> por WhatsApp, Instagram o el sitio web.</p></div>
+        <div class="step" data-reveal style="--d:160ms"><span>3</span><p><strong>Un agente de IA</strong> responde de inmediato y registra sus datos.</p></div>
+        <div class="step" data-reveal style="--d:240ms"><span>4</span><p><strong>El contacto queda en seguimiento</strong>, asociado a la campaña que lo originó.</p></div>
+      </div>
+    </div>
+  </section>
+  <Wave from="var(--marino)" to="var(--perla)" />
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Cómo trabajo</p>
+        <h2 data-reveal style="--d:80ms">Diagnóstico, <em>propuesta y presupuesto</em>.</h2>
+        <p class="lead" data-reveal style="--d:160ms">No hay planes genéricos: el alcance y la inversión se definen después de conocer la empresa.</p>
+      </div>
+      <ol class="proceso">
+        {proceso.map((p, i) => (
+          <li class="card" data-reveal style={`--d:${i * 90}ms`}>
+            <span class="num">0{i + 1} · {p.n}</span>
+            <h3>{p.t}</h3>
+            <p>{p.d}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+  <Wave from="var(--perla)" to="var(--bruma)" />
+
+  <section class="section bg-bruma">
+    <div class="container" style="max-width:920px">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Preguntas frecuentes</p>
+        <h2 data-reveal style="--d:80ms">Sobre el <em>marketing digital</em>.</h2>
+      </div>
+      <div data-reveal style="--d:120ms"><Faq items={faq} /></div>
+    </div>
+  </section>
+
+  <Wave from="var(--bruma)" to="var(--marino)" />
+  <CtaBand message={msg} title="¿Tu marketing está <em>generando clientes</em>?" text="Cuéntame qué acciones has realizado y qué resultados has obtenido. Con esa información preparo un diagnóstico y una propuesta con presupuesto." />
+</Base>
+
+<style>
+  .combo-sec { position: relative; overflow: hidden; }
+  .combo { position: relative; display: grid; gap: 40px; align-items: center; }
+  @media (min-width: 900px) { .combo { grid-template-columns: 1fr 1.1fr; gap: 72px; } }
+  .combo h2 { margin-top: 18px; }
+  .combo-flow { display: grid; position: relative; }
+  .step { display: grid; grid-template-columns: 48px 1fr; gap: 18px; align-items: center; padding: 16px 0; position: relative; }
+  .step:not(:last-child)::after { content: ''; position: absolute; left: 23px; top: 64px; bottom: -16px; width: 1.5px; background: linear-gradient(var(--corriente), rgba(30, 158, 147, 0.2)); }
+  .step span { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; border: 1.5px solid var(--corriente); font-family: var(--serif); font-style: italic; font-size: 1.2rem; color: var(--corriente-soft); }
+  .step p { color: rgba(245, 243, 236, 0.78); }
+  .step strong { color: var(--perla); font-weight: 600; }
+  .proceso { list-style: none; padding: 0; display: grid; gap: clamp(16px, 2.4vw, 28px); }
+  @media (min-width: 760px) { .proceso { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1100px) { .proceso { grid-template-columns: repeat(4, 1fr); } }
+</style>

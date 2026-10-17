@@ -1,0 +1,213 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Faq from '../components/Faq.astro';
+import Wave from '../components/Wave.astro';
+import { METHOD, waLink } from '../data/site';
+import { faqSchema, serviceSchema, type FaqItem } from '../data/faq';
+
+const msg = 'Hola Juan, vengo desde su sitio web. Me interesa la consultoría en IA para mi empresa.';
+const description =
+  'Consultoría en IA para pymes y empresas en Chile: automatización de flujos, agentes de IA e IA aplicada al equipo. Diagnóstico, implementación y mantención.';
+
+const lineas = [
+  {
+    t: 'Automatización de flujos',
+    d: 'Procesos repetitivos que hoy dependen de traspasos manuales pasan a ejecutarse solos: registro de clientes, cotizaciones, seguimiento, reportes e integración entre herramientas.',
+    items: ['Integración de WhatsApp, redes, correo y CRM', 'Cotizaciones y seguimiento automáticos', 'Migración y orden de datos', 'Reportes que se generan solos'],
+  },
+  {
+    t: 'Agentes de IA',
+    d: 'Asistentes que atienden, califican y derivan consultas en los canales donde están los clientes, con reglas claras sobre qué resuelven y qué pasa a una persona.',
+    items: ['Atención inmediata por WhatsApp y web', 'Calificación de consultas y agendamiento', 'Respuestas basadas en información de la empresa', 'Derivación a una persona cuando corresponde'],
+  },
+  {
+    t: 'IA aplicada al equipo',
+    d: 'Adopción de inteligencia artificial en el trabajo diario: asistentes configurados con el contexto de la empresa y capacitación para usarlos con criterio.',
+    items: ['Asistentes con el contexto de la empresa', 'Redacción, resumen y análisis de documentos', 'Capacitación práctica al equipo', 'Buenas prácticas y uso responsable'],
+  },
+];
+
+const etapas = [
+  {
+    n: '01', t: 'Diagnóstico', d: 'Levantamiento de cómo opera la empresa: canales de entrada de clientes, responsables, herramientas y puntos donde se pierde tiempo.',
+    items: ['Mapa de procesos actuales', 'Puntos de pérdida de tiempo y de consultas', 'Qué conviene automatizar y qué no', 'Propuesta por fases con presupuesto'],
+    note: 'Si se contrata la implementación, el valor del diagnóstico se descuenta.',
+  },
+  {
+    n: '02', t: 'Implementación', d: 'Diseño y construcción de los flujos con las herramientas y datos de la empresa: primero un prototipo acotado, luego la integración completa.',
+    items: ['Flujos probados con casos reales', 'Conexión con las herramientas existentes', 'Documentación de funcionamiento', 'Capacitación al equipo'],
+  },
+  {
+    n: '03', t: 'Mantención', d: 'Monitoreo, soporte y mejoras mensuales, con medición de si los flujos están entregando el resultado esperado.',
+    items: ['Monitoreo y soporte', 'Mejoras según el uso real', 'Reporte de indicadores'],
+  },
+];
+
+const faq: FaqItem[] = [
+  { q: '¿Qué tipo de empresas pueden trabajar contigo?', a: 'Pymes y empresas con equipo y procesos que se repiten a diario: atención por WhatsApp, cotizaciones, seguimiento de clientes, agendamiento o gestión documental.' },
+  { q: '¿Cuánto toma una implementación?', a: 'Depende del alcance. Se trabaja por fases cortas, partiendo por un prototipo que se puede revisar funcionando. El diagnóstico entrega plazos concretos para cada fase.' },
+  { q: '¿Es necesario cambiar las herramientas actuales?', a: 'En general no. El objetivo es conectar lo que la empresa ya usa. Si alguna herramienta limita el proceso, se plantea con alternativas.' },
+  { q: '¿Cómo se resguardan los datos de los clientes?', a: 'Se trabaja con el mínimo acceso necesario, se documenta dónde queda cada dato y quién tiene acceso, y se definen por escrito las condiciones de tratamiento.' },
+  { q: '¿Qué ocurre si un agente de IA se equivoca?', a: 'Cada agente se prueba con casos reales antes de operar y se definen las situaciones que siempre revisa una persona. Durante la mantención se monitorean sus respuestas.' },
+];
+---
+
+<Base
+  title="Consultoría en inteligencia artificial para pymes y empresas"
+  description={description}
+  breadcrumbs={[{ name: 'Consultoría IA', path: '/consultoria-ia' }]}
+  waMessage={msg}
+  schema={[
+    serviceSchema({ name: 'Consultoría en inteligencia artificial', serviceType: 'Consultoría en inteligencia artificial', description, path: '/consultoria-ia' }),
+    {
+      '@context': 'https://schema.org',
+      '@type': 'HowTo',
+      name: 'Método de consultoría en IA de Juan del Agua',
+      step: METHOD.map((s, i) => ({ '@type': 'HowToStep', position: i + 1, name: s.name, text: s.d })),
+    },
+    faqSchema(faq),
+  ]}
+>
+  <PageHero eyebrow="Consultoría en inteligencia artificial">
+    <Fragment slot="title">Inteligencia artificial aplicada a <em>cómo opera tu empresa</em>.</Fragment>
+    <Fragment slot="lead"><p>Automatización de flujos, agentes de IA y adopción de IA en el equipo, para pymes y empresas. Cada proyecto parte con un diagnóstico y termina con soluciones funcionando, documentadas y medidas.</p></Fragment>
+    <a class="btn btn--agua" href="/#diagnostico">Diagnóstico gratuito con IA</a>
+    <a class="btn btn--ghost" href={waLink(msg)} target="_blank" rel="noopener">Solicitar diagnóstico completo</a>
+  </PageHero>
+  <Wave from="var(--perla)" to="var(--bruma)" />
+
+  <!-- LÍNEAS DE TRABAJO -->
+  <section class="section bg-bruma">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Qué hago</p>
+        <h2 data-reveal style="--d:80ms">Tres líneas de trabajo, <em>una misma lógica</em>.</h2>
+        <p class="lead" data-reveal style="--d:160ms">Resolver primero lo que más tiempo consume, con la solución más simple que funcione.</p>
+      </div>
+      <div class="grid grid-3">
+        {lineas.map((l, i) => (
+          <article class="card linea" data-reveal style={`--d:${i * 100}ms`}>
+            <span class="num">0{i + 1}</span>
+            <h3>{l.t}</h3>
+            <p>{l.d}</p>
+            <ul class="checklist">{l.items.map((it) => <li>{it}</li>)}</ul>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+  <Wave from="var(--bruma)" to="var(--marino)" />
+
+  <!-- MÉTODO -->
+  <section class="section on-dark method" id="metodo">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>El método</p>
+        <h2 data-reveal style="--d:80ms">Siete pasos, <em>todos a la vista</em>.</h2>
+        <p class="lead" data-reveal style="--d:160ms">Ningún proyecto queda como caja negra. En cada etapa se sabe qué se está construyendo, por qué y qué cambió.</p>
+      </div>
+      <ol class="cauce" data-fx data-fx-range="1.1" data-fx-offset="0.3">
+        <svg class="cauce-line" viewBox="0 0 40 1000" preserveAspectRatio="none" aria-hidden="true">
+          <path class="bed" d="M20 0 C 38 80, 2 160, 20 240 S 38 400, 20 480 S 2 640, 20 720 S 38 880, 20 1000" pathLength="1" />
+          <path class="water" d="M20 0 C 38 80, 2 160, 20 240 S 38 400, 20 480 S 2 640, 20 720 S 38 880, 20 1000" pathLength="1" />
+        </svg>
+        {METHOD.map((s, i) => (
+          <li data-reveal>
+            <span class="dot" aria-hidden="true">{i + 1}</span>
+            <div class="body">
+              <h3>{s.name}</h3>
+              <p class="q">{s.q}</p>
+              <p>{s.d}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+  <Wave from="var(--marino)" to="var(--perla)" />
+
+  <!-- ETAPAS -->
+  <section class="section" id="etapas">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Cómo se contrata</p>
+        <h2 data-reveal style="--d:80ms">Tres etapas. <em>Se avanza solo si tiene sentido.</em></h2>
+      </div>
+      <div class="stages">
+        {etapas.map((e, i) => (
+          <article class="card stage" data-reveal style={`--d:${i * 100}ms`}>
+            <span class="num">{e.n}</span>
+            <h3>{e.t}</h3>
+            <p>{e.d}</p>
+            <ul class="checklist">{e.items.map((it) => <li>{it}</li>)}</ul>
+            {e.note && <p class="note">{e.note}</p>}
+          </article>
+        ))}
+      </div>
+      <p class="muted pricing-note" data-reveal>Cada proyecto se cotiza a partir del diagnóstico, con una propuesta por fases, plazos y presupuesto.</p>
+    </div>
+  </section>
+
+  <!-- CRITERIO -->
+  <section class="section bg-bruma">
+    <div class="container honest">
+      <div>
+        <p class="eyebrow" data-reveal>Criterio</p>
+        <h2 data-reveal style="--d:80ms">Lo que <em>no</em> forma parte del servicio.</h2>
+        <p class="lead" data-reveal style="--d:160ms">Parte de la consultoría es señalar cuándo una inversión no se justifica.</p>
+      </div>
+      <ul class="checklist checklist--no" data-reveal style="--d:120ms">
+        <li>Automatizar procesos que primero requieren ser ordenados.</li>
+        <li>Entregar sistemas que solo el consultor entiende.</li>
+        <li>Prometer resultados garantizados: se mide y se reportan los números reales.</li>
+        <li>Recomendar herramientas que el equipo no va a utilizar.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container" style="max-width:920px">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Preguntas frecuentes</p>
+        <h2 data-reveal style="--d:80ms">Sobre la <em>consultoría en IA</em>.</h2>
+      </div>
+      <div data-reveal style="--d:120ms"><Faq items={faq} /></div>
+    </div>
+  </section>
+
+  <Wave from="var(--perla)" to="var(--marino)" />
+  <CtaBand message={msg} title="¿Qué proceso está <em>consumiendo más tiempo</em>?" />
+</Base>
+
+<style>
+  .linea h3 { font-size: clamp(1.4rem, 1.2rem + 0.8vw, 1.9rem); }
+
+  /* Método: un cauce que se llena al bajar */
+  .cauce { position: relative; list-style: none; padding: 0; display: grid; gap: clamp(20px, 3vw, 36px); max-width: 860px; }
+  .cauce-line { position: absolute; left: 6px; top: 26px; bottom: 26px; width: 40px; height: calc(100% - 52px); overflow: visible; }
+  .cauce-line path { fill: none; stroke-width: 2; vector-effect: non-scaling-stroke; stroke-linecap: round; }
+  .cauce-line .bed { stroke: rgba(245, 243, 236, 0.12); }
+  .cauce-line .water { stroke: var(--corriente-soft); stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--p, 1)); filter: drop-shadow(0 0 6px rgba(92, 200, 189, 0.6)); }
+  .cauce li { position: relative; display: grid; grid-template-columns: 52px 1fr; gap: 24px; align-items: start; }
+  .cauce .dot {
+    position: relative; z-index: 1; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%;
+    background: var(--marino); border: 1.5px solid var(--corriente); font-family: var(--serif); font-style: italic; font-size: 1.25rem; color: var(--corriente-soft);
+  }
+  .cauce .body { display: grid; gap: 6px; padding-top: 6px; }
+  .cauce h3 { font-size: clamp(1.5rem, 1.2rem + 1vw, 2.1rem); }
+  .cauce .q { font-family: var(--serif); font-style: italic; color: var(--corriente-soft); font-size: var(--fs-lg); }
+  .cauce .body p:last-child { color: rgba(245, 243, 236, 0.72); font-size: var(--fs-sm); max-width: 60ch; }
+
+  .stages { display: grid; gap: clamp(16px, 2.4vw, 28px); }
+  @media (min-width: 960px) { .stages { grid-template-columns: repeat(3, 1fr); } }
+  .stage .checklist { margin-top: 6px; }
+  .note { font-size: var(--fs-xs) !important; padding: 12px 14px; border-radius: 10px; background: rgba(30, 158, 147, 0.1); color: var(--corriente-ink) !important; font-weight: 600; }
+  .pricing-note { margin-top: 28px; }
+  .honest { display: grid; gap: 32px; align-items: center; }
+  @media (min-width: 900px) { .honest { grid-template-columns: 1fr 1fr; gap: 72px; } }
+  .honest > div { display: grid; gap: 18px; }
+  .honest .checklist li { font-size: var(--fs-lg); padding: 14px 0 14px 34px; border-bottom: 1px solid var(--linea); }
+  .honest .checklist li::before { top: 1.45em; }
+</style>
