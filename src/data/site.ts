@@ -32,7 +32,7 @@ export const waLink = (message = 'Hola Juan, vengo desde su sitio web y me gusta
   `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(message)}`;
 
 export const NAV = [
-  { href: '/consultor-ia', label: 'Consultoría IA' },
+  { href: '/consultor-ia', label: 'Consultor IA' },
   { href: '/marketing-digital', label: 'Marketing' },
   { href: '/sobre-mi', label: 'Sobre mí' },
 ] as const;
