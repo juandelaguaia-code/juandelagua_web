@@ -1,0 +1,58 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE } from '../data/site';
+
+const VERSION = '1.0';
+const UPDATED = '18 de octubre de 2026';
+---
+
+<Base title="Términos y condiciones" description="Condiciones de uso de juandelagua.com y de contratación de los servicios de consultoría en IA y marketing digital de Juan del Agua." breadcrumbs={[{ name: 'Términos', path: '/terminos' }]}>
+  <section class="section">
+    <div class="container prose">
+      <p class="eyebrow">Legal</p>
+      <h1>Términos y condiciones</h1>
+      <p class="muted">Versión {VERSION} · Última actualización: {UPDATED}.</p>
+
+      <h2>1. Titular del sitio</h2>
+      <p>El sitio <strong>juandelagua.com</strong> pertenece a {SITE.legalName} ("{SITE.name}"), consultor en inteligencia artificial y marketing digital, con domicilio en {SITE.city}, Chile. Contacto: <a href={`mailto:${SITE.email}`}>{SITE.email}</a> · WhatsApp {SITE.whatsappDisplay}.</p>
+
+      <h2>2. Aceptación</h2>
+      <p>Al usar este sitio aceptas estos términos. Si no estás de acuerdo con ellos, te pido no usarlo. El uso del sitio es gratuito y no requiere registro.</p>
+
+      <h2>3. Información publicada</h2>
+      <p>El contenido del sitio describe los servicios de forma general y tiene un fin informativo. No constituye una oferta vinculante ni una asesoría para un caso particular. Las características, plazos y precios de cada servicio se definen en la propuesta que se entrega por escrito a cada cliente.</p>
+
+      <h2>4. Contratación de servicios</h2>
+      <ul>
+        <li>Los servicios no se contratan ni se pagan a través del sitio. Se acuerdan a partir de una propuesta escrita que detalla el alcance, los entregables, los plazos, el precio y la forma de pago.</li>
+        <li>Lo que establezca la propuesta aceptada o el contrato firmado prevalece sobre estos términos en todo lo que regule.</li>
+        <li>Los servicios se prestan con diligencia profesional, pero no se garantizan resultados comerciales específicos, como ventas, posiciones en buscadores o rendimiento de campañas, porque dependen de factores que no controla el consultor. Los resultados se miden y se reportan con datos reales.</li>
+        <li>Cuando el cliente tenga la calidad de consumidor, o de micro o pequeña empresa en los casos que contempla la ley, se respetarán los derechos que le otorga la Ley N° 19.496 sobre protección de los derechos de los consumidores.</li>
+      </ul>
+
+      <h2>5. Uso adecuado del sitio</h2>
+      <p>Te comprometes a usar el sitio de forma lícita y a no intentar dañarlo, sobrecargarlo, acceder a áreas no públicas ni usarlo para enviar contenido no solicitado o malicioso.</p>
+
+      <h2>6. Propiedad intelectual</h2>
+      <p>Los textos, el diseño, las fotografías, el logotipo y la marca "{SITE.name}" pertenecen a su titular y están protegidos por la Ley N° 17.336 de propiedad intelectual y demás normas aplicables. Puedes compartir enlaces al sitio, pero no copiar ni reutilizar su contenido con fines comerciales sin autorización escrita.</p>
+      <p>Los nombres y marcas de terceros mencionados en el sitio, como Anthropic, Claude, Meta, Google, LinkedIn o WhatsApp, pertenecen a sus respectivos dueños. Su mención no implica una alianza, representación ni patrocinio. Las certificaciones de Anthropic Academy que se muestran son individuales y pueden verificarse en los enlaces publicados.</p>
+
+      <h2>7. Enlaces a sitios de terceros</h2>
+      <p>El sitio contiene enlaces a servicios externos. No se asume responsabilidad por su contenido, disponibilidad ni políticas, que se rigen por sus propios términos.</p>
+
+      <h2>8. Disponibilidad y responsabilidad</h2>
+      <p>Se procura que el sitio esté disponible y que su información sea correcta y esté actualizada, pero puede haber interrupciones por mantención o fallas técnicas, o información que quede desactualizada. En la medida que la ley lo permita, no se responde por daños derivados de esas situaciones ni del uso que se haga de la información general del sitio.</p>
+
+      <h2>9. Datos personales</h2>
+      <p>El tratamiento de datos personales se explica en la <a href="/privacidad">política de privacidad</a> y el uso de cookies en la <a href="/cookies">política de cookies</a>.</p>
+
+      <h2>10. Cambios</h2>
+      <p>Estos términos pueden actualizarse. La versión vigente, con su fecha, estará siempre publicada en esta página. Los cambios no afectan los servicios ya contratados, que se rigen por lo acordado en su momento.</p>
+
+      <h2>11. Ley aplicable y jurisdicción</h2>
+      <p>Estos términos se rigen por las leyes de la República de Chile. Cualquier controversia se someterá a los tribunales ordinarios de justicia de {SITE.city}, sin perjuicio de los derechos que la ley reconoce a los consumidores para reclamar ante el Servicio Nacional del Consumidor (SERNAC) o ante el tribunal de su domicilio.</p>
+
+      <p class="related">Ver también: <a href="/privacidad">Política de privacidad</a> · <a href="/cookies">Política de cookies</a></p>
+    </div>
+  </section>
+</Base>

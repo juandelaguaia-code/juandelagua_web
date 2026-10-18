@@ -1,0 +1,52 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE } from '../data/site';
+
+const VERSION = '1.0';
+const UPDATED = '18 de octubre de 2026';
+---
+
+<Base title="Política de cookies" description="juandelagua.com no usa cookies: ni propias ni de terceros. Así se miden las visitas sin rastrearte." breadcrumbs={[{ name: 'Cookies', path: '/cookies' }]}>
+  <section class="section">
+    <div class="container prose">
+      <p class="eyebrow">Legal</p>
+      <h1>Política de cookies</h1>
+      <p class="muted">Versión {VERSION} · Última actualización: {UPDATED}.</p>
+
+      <p class="highlight"><strong>En resumen: este sitio no usa cookies.</strong> Ni propias ni de terceros, ni de publicidad ni de seguimiento. Por eso no verás un aviso pidiéndote que las aceptes.</p>
+
+      <h2>1. Qué son las cookies</h2>
+      <p>Las cookies son pequeños archivos que un sitio web guarda en tu navegador para recordar información sobre ti o sobre tu visita. Algunas son necesarias para que un sitio funcione. Otras sirven para medir visitas, mostrar publicidad o seguirte de un sitio a otro, y estas requieren tu consentimiento previo.</p>
+
+      <h2>2. Qué usa este sitio</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Tipo</th><th>¿Se usa?</th></tr></thead>
+          <tbody>
+            <tr><td>Cookies técnicas o necesarias</td><td>No</td></tr>
+            <tr><td>Cookies de analítica</td><td>No</td></tr>
+            <tr><td>Cookies de publicidad o redes sociales</td><td>No</td></tr>
+            <tr><td>Almacenamiento local del navegador (localStorage)</td><td>No</td></tr>
+            <tr><td>Contenido incrustado de terceros (videos, mapas, formularios)</td><td>No</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>3. Cómo se miden las visitas sin cookies</h2>
+      <p>Las estadísticas del sitio se obtienen con <strong>Plausible Analytics</strong>, una herramienta de código abierto instalada en un servidor propio. Funciona sin cookies y sin guardar direcciones IP: solo cuenta visitas de forma agregada, como cuántas personas vieron cada página o desde qué país llegaron. No permite identificarte ni seguirte entre sitios, y esa información no se comparte con plataformas de publicidad. El detalle está en la <a href="/privacidad">política de privacidad</a>.</p>
+      <p>Si aun así no quieres que tu visita se cuente, puedes usar un bloqueador de contenido en tu navegador.</p>
+
+      <h2>4. Sitios externos</h2>
+      <p>Al hacer clic en los enlaces a WhatsApp, LinkedIn, Instagram, YouTube o a la verificación de certificados, sales de este sitio. Esos servicios pueden usar sus propias cookies según sus políticas, sobre las que este sitio no tiene control.</p>
+
+      <h2>5. Cómo administrar las cookies en tu navegador</h2>
+      <p>Puedes ver y eliminar las cookies de cualquier sitio, o bloquearlas, desde la configuración de privacidad de tu navegador (Chrome, Safari, Firefox, Edge u otro).</p>
+
+      <h2>6. Cambios</h2>
+      <p>Si en el futuro el sitio incorpora alguna herramienta que use cookies no necesarias, esta política se actualizará antes de hacerlo y se te pedirá tu consentimiento previo.</p>
+      <p>Consultas: <a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+
+      <p class="related">Ver también: <a href="/privacidad">Política de privacidad</a> · <a href="/terminos">Términos y condiciones</a></p>
+    </div>
+  </section>
+</Base>

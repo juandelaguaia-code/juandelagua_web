@@ -12,6 +12,8 @@ export const SITE = {
   city: 'Viña del Mar',
   // Servidor de Plausible (servicio "plausible" en EasyPanel, con este dominio)
   plausibleUrl: 'https://analytics.juandelagua.com',
+  // Correo de contacto y para ejercer derechos sobre datos personales (páginas legales)
+  email: 'juandelagua.ia@gmail.com',
   whatsappNumber: '56984388246',
   whatsappDisplay: '+56 9 8438 8246',
   social: {

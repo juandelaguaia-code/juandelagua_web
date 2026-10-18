@@ -38,7 +38,7 @@ const year = new Date().getFullYear();
   </div>
   <div class="container legal">
     <p>© {year} {SITE.name} · {SITE.legalName}</p>
-    <p><a href="/privacidad">Política de privacidad</a></p>
+    <p class="legal-links"><a href="/privacidad">Privacidad</a><a href="/cookies">Cookies</a><a href="/terminos">Términos y condiciones</a></p>
   </div>
 </footer>
 
@@ -56,4 +56,5 @@ const year = new Date().getFullYear();
   .cols a:hover { color: var(--perla); }
   .legal { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; padding-top: 24px; font-size: var(--fs-xs); color: rgba(245, 243, 236, 0.55); }
   .legal a { color: inherit; }
+  .legal-links { display: flex; flex-wrap: wrap; gap: 6px 18px; }
 </style>

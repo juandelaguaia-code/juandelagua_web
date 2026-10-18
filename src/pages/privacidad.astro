@@ -1,38 +1,96 @@
 ---
 import Base from '../layouts/Base.astro';
 import { SITE } from '../data/site';
+
+// Cambia la versión y la fecha cada vez que se modifique el contenido de la política.
+const VERSION = '2.0';
+const UPDATED = '18 de octubre de 2026';
 ---
 
-<Base title="Política de privacidad" description="Cómo trata Juan del Agua los datos personales de quienes visitan juandelagua.com o lo contactan." breadcrumbs={[{ name: 'Privacidad', path: '/privacidad' }]}>
+<Base title="Política de privacidad" description="Cómo trata Juan del Agua los datos personales de quienes visitan juandelagua.com o lo contactan, y cómo ejercer tus derechos." breadcrumbs={[{ name: 'Privacidad', path: '/privacidad' }]}>
   <section class="section">
     <div class="container prose">
       <p class="eyebrow">Legal</p>
       <h1>Política de privacidad</h1>
-      <p class="muted">Última actualización: octubre de 2026.</p>
+      <p class="muted">Versión {VERSION} · Última actualización: {UPDATED}.</p>
 
-      <h2>Responsable</h2>
-      <p>{SITE.legalName} ("{SITE.name}"), con domicilio en {SITE.city}, Chile. Contacto: WhatsApp {SITE.whatsappDisplay}.</p>
+      <p>Esta política explica qué datos personales se tratan en <strong>juandelagua.com</strong> y en los canales de contacto asociados, para qué se usan, con quién se comparten y cómo puedes ejercer tus derechos. Se rige por la Ley N° 19.628 sobre protección de la vida privada y por sus modificaciones introducidas por la Ley N° 21.719, cuya entrada en vigencia está fijada para el 1 de diciembre de 2026.</p>
 
-      <h2>Qué datos se reciben</h2>
+      <h2>1. Responsable del tratamiento</h2>
       <ul>
-        <li><strong>Contacto directo:</strong> los datos que se envían por WhatsApp u otro canal al escribirme.</li>
+        <li><strong>Responsable:</strong> {SITE.legalName} ("{SITE.name}").</li>
+        <li><strong>Domicilio:</strong> {SITE.city}, {SITE.region}, Chile.</li>
+        <li><strong>Correo:</strong> <a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
+        <li><strong>WhatsApp:</strong> {SITE.whatsappDisplay}</li>
       </ul>
-      <p>El sitio no crea cuentas de usuario.</p>
 
-      <h2>Para qué se usan</h2>
+      <h2>2. Qué datos se tratan</h2>
+      <h3>a) Al visitar el sitio</h3>
       <ul>
-        <li>Responder consultas y, si se solicita, preparar una propuesta.</li>
+        <li><strong>Estadísticas de visitas.</strong> Se usa Plausible Analytics, instalado en un servidor propio. Registra datos agregados: páginas visitadas, sitio desde el que llegas, tipo de navegador, sistema operativo y dispositivo, y país, región o ciudad aproximados. Tu dirección IP y tu navegador solo se usan en el momento de la visita para generar un identificador anónimo que cambia cada día. <strong>La IP no se guarda, no se usan cookies</strong> y no es posible identificarte ni seguirte entre sitios.</li>
+        <li><strong>Registros técnicos del servidor.</strong> Como cualquier sitio web, el servidor recibe tu IP, la fecha y hora, la página solicitada y el tipo de navegador. Se usan solo para el funcionamiento y la seguridad del sitio, y se eliminan periódicamente.</li>
       </ul>
-      <p>Los datos no se venden ni se ceden a terceros con fines comerciales.</p>
+      <h3>b) Cuando me contactas</h3>
+      <p>Si escribes por WhatsApp, correo u otro canal, trato los datos que tú mismo entregas: nombre, número o correo, empresa y el contenido de tu mensaje.</p>
+      <h3>c) Si contratas un servicio</h3>
+      <p>Los datos necesarios para preparar la propuesta, ejecutar el proyecto y emitir los documentos tributarios. Cuando un proyecto requiere acceder a datos de clientes de tu empresa, ese acceso se limita al mínimo necesario y se rige por las condiciones acordadas por escrito.</p>
+      <p>El sitio no tiene formularios ni cuentas de usuario, no solicita datos sensibles y no está dirigido a menores de edad.</p>
 
-      <h2>Datos de clientes en proyectos</h2>
-      <p>En los proyectos contratados, los datos de clientes de la empresa se usan solo para el proyecto, con el mínimo acceso necesario y bajo condiciones acordadas por escrito.</p>
+      <h2>3. Para qué se usan y con qué base legal</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Finalidad</th><th>Base de licitud</th></tr></thead>
+          <tbody>
+            <tr><td>Medir el uso del sitio de forma agregada para mejorarlo</td><td>Interés legítimo, con un método que no identifica a las personas</td></tr>
+            <tr><td>Mantener el sitio disponible y seguro</td><td>Interés legítimo</td></tr>
+            <tr><td>Responder consultas y preparar propuestas</td><td>Medidas precontractuales solicitadas por ti</td></tr>
+            <tr><td>Ejecutar los servicios contratados</td><td>Ejecución de un contrato</td></tr>
+            <tr><td>Emitir boletas o facturas y cumplir obligaciones tributarias</td><td>Obligación legal</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>No se envían comunicaciones comerciales sin tu autorización, y tus datos no se venden ni se ceden a terceros con fines comerciales. No se toman decisiones automatizadas ni se elaboran perfiles que produzcan efectos sobre ti.</p>
 
-      <h2>Medición del sitio</h2>
-      <p>Si el sitio usa herramientas de analítica, serán herramientas que miden visitas de forma agregada, sin perfilar a personas individuales.</p>
+      <h2>4. Con quién se comparten</h2>
+      <p>Solo con proveedores que prestan servicios necesarios para el funcionamiento del sitio y del contacto:</p>
+      <ul>
+        <li><strong>Hostinger:</strong> servidor donde se alojan el sitio y las estadísticas.</li>
+        <li><strong>Cloudflare:</strong> resolución del dominio (DNS).</li>
+        <li><strong>Google (Gmail)</strong> y <strong>Meta (WhatsApp)</strong>: si me escribes por esos canales. Estos servicios tratan tus datos además según sus propias políticas de privacidad.</li>
+      </ul>
+      <p>Algunos de estos proveedores pueden procesar datos fuera de Chile, por ejemplo en Estados Unidos o la Unión Europea. En esos casos se trata de proveedores que ofrecen garantías contractuales de protección de datos.</p>
 
-      <h2>Derechos</h2>
-      <p>De acuerdo con la legislación chilena de protección de datos personales, es posible solicitar acceso, rectificación o eliminación de los datos escribiendo por WhatsApp al número indicado.</p>
+      <h2>5. Cuánto tiempo se conservan</h2>
+      <ul>
+        <li><strong>Estadísticas:</strong> se conservan de forma agregada, sin datos que te identifiquen.</li>
+        <li><strong>Registros técnicos:</strong> por el tiempo mínimo necesario para la seguridad del sitio.</li>
+        <li><strong>Consultas que no terminan en contratación:</strong> hasta 12 meses desde el último contacto.</li>
+        <li><strong>Clientes:</strong> mientras dure la relación y, después, por los plazos que exige la ley, por ejemplo los tributarios.</li>
+      </ul>
+
+      <h2>6. Seguridad</h2>
+      <p>El sitio funciona solo con conexión cifrada (HTTPS), las estadísticas se alojan en un servidor propio en lugar de plataformas publicitarias, y el acceso a la información está restringido al responsable. Ningún sistema es infalible, pero se aplican medidas razonables y proporcionales a los datos tratados.</p>
+
+      <h2>7. Tus derechos</h2>
+      <p>Puedes ejercer en cualquier momento tus derechos de:</p>
+      <ul>
+        <li><strong>Acceso:</strong> saber qué datos tuyos se tratan.</li>
+        <li><strong>Rectificación:</strong> corregir datos inexactos o incompletos.</li>
+        <li><strong>Supresión:</strong> pedir que se eliminen.</li>
+        <li><strong>Oposición:</strong> oponerte a un tratamiento determinado.</li>
+        <li><strong>Portabilidad:</strong> recibir tus datos en un formato estructurado, cuando corresponda.</li>
+        <li><strong>Bloqueo:</strong> suspender temporalmente el tratamiento mientras se resuelve una solicitud.</li>
+      </ul>
+      <p>Para ejercerlos, escribe a <a href={`mailto:${SITE.email}`}>{SITE.email}</a> indicando tu nombre, el derecho que quieres ejercer y un medio de contacto. La respuesta se entregará dentro de 30 días corridos, prorrogables por una vez en otros 30 cuando la solicitud lo requiera. El ejercicio de estos derechos es gratuito.</p>
+      <p>Si consideras que tu solicitud no fue atendida correctamente, puedes reclamar ante la Agencia de Protección de Datos Personales o, según corresponda, ante los tribunales de justicia.</p>
+
+      <h2>8. Enlaces a otros sitios</h2>
+      <p>El sitio enlaza a WhatsApp, LinkedIn, Instagram, YouTube y a las páginas de verificación de certificados de Anthropic. Al visitarlos se aplican sus propias políticas de privacidad y de cookies.</p>
+
+      <h2>9. Cambios a esta política</h2>
+      <p>Esta política puede actualizarse por cambios en la ley o en el funcionamiento del sitio. La versión vigente, con su fecha, estará siempre publicada en esta página.</p>
+
+      <p class="related">Ver también: <a href="/cookies">Política de cookies</a> · <a href="/terminos">Términos y condiciones</a></p>
     </div>
   </section>
 </Base>

@@ -202,6 +202,15 @@ p { text-wrap: pretty; }
 .prose h2 { font-size: var(--fs-xl); margin: 2em 0 0.6em; }
 .prose p, .prose ul { margin-bottom: 1em; color: var(--tinta); }
 .prose ul { padding-left: 1.2em; }
+.prose h3 { font-size: var(--fs-lg); margin: 1.4em 0 0.4em; }
+.prose li { margin-bottom: 0.4em; }
+.prose a { color: var(--corriente-ink); }
+.prose .highlight { padding: 18px 20px; border-radius: var(--radius); background: rgba(30, 158, 147, 0.1); border-left: 3px solid var(--corriente); }
+.prose .related { margin-top: 3em; padding-top: 1.4em; border-top: 1px solid var(--linea); font-size: var(--fs-sm); }
+.table-wrap { overflow-x: auto; margin-bottom: 1em; }
+.prose table { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
+.prose th, .prose td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--linea); }
+.prose th { font-weight: 600; background: var(--bruma); }
 
 /* ---------- animaciones de entrada ---------- */
 /* .rise: contenido sobre el pliegue, anima solo con CSS (no espera JS, no afecta LCP) */
