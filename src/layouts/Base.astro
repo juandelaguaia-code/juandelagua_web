@@ -49,7 +49,7 @@ const baseSchema = [
       url: c.url,
       recognizedBy: { '@type': 'Organization', name: 'Anthropic', url: 'https://www.anthropic.com' },
     })),
-    jobTitle: 'Consultor en inteligencia artificial y marketing digital',
+    jobTitle: 'Consultor en inteligencia artificial y marketing',
     description: SITE.description,
     knowsAbout: [
       'Inteligencia artificial aplicada a pymes',
@@ -57,7 +57,7 @@ const baseSchema = [
       'Agentes de inteligencia artificial',
       'Agentes de IA para WhatsApp',
       'Integración de CRM',
-      'Marketing digital',
+      'Marketing',
       'Publicidad en Meta Ads y Google Ads',
       'Estrategia de contenido',
       'SEO local',
@@ -129,7 +129,7 @@ const allSchema = [...baseSchema, ...(crumbSchema ? [crumbSchema] : []), ...extr
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Juan del Agua, consultor de IA y marketing digital" />
+    <meta property="og:image:alt" content="Juan del Agua, consultor de IA y marketing" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />

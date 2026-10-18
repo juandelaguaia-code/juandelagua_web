@@ -4,9 +4,9 @@ export const SITE = {
   name: 'Juan del Agua',
   legalName: 'Juan del Agua Araneda Gattavara',
   url: 'https://juandelagua.com',
-  tagline: 'Consultor de IA y marketing digital para pymes y empresas en Chile',
+  tagline: 'Consultor de IA y marketing para empresas y pymes en Chile',
   description:
-    'Consultoría en inteligencia artificial y marketing digital para pymes y empresas en Chile: automatización de flujos, agentes de IA y estrategia digital medible.',
+    'Consultoría en inteligencia artificial y marketing para empresas y pymes en Chile: automatización de flujos, agentes de IA y estrategia digital medible.',
   locale: 'es_CL',
   region: 'Región de Valparaíso',
   city: 'Viña del Mar',
@@ -32,8 +32,8 @@ export const waLink = (message = 'Hola Juan, vengo desde su sitio web y me gusta
   `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(message)}`;
 
 export const NAV = [
-  { href: '/consultoria-ia', label: 'Consultoría IA' },
-  { href: '/marketing-digital', label: 'Marketing digital' },
+  { href: '/consultor-ia', label: 'Consultoría IA' },
+  { href: '/marketing-digital', label: 'Marketing' },
   { href: '/sobre-mi', label: 'Sobre mí' },
 ] as const;
 
@@ -48,7 +48,7 @@ export const CERTIFICATIONS = [
   { name: 'AI Fluency: Framework & Foundations', img: 4, url: 'https://verify.skilljar.com/c/yoy4ms4mciyr' },
 ] as const;
 
-/** Método de la consultoría en IA (no aplica a marketing digital). */
+/** Método de la consultoría en IA (no aplica a marketing). */
 export const METHOD = [
   { name: 'Escuchar', q: '¿Qué está consumiendo más tiempo?', d: 'Levantamiento de cómo opera la empresa hoy: responsables, canales de entrada de clientes y puntos donde el trabajo se detiene.' },
   { name: 'Detectar', q: '¿Qué conviene automatizar y qué no?', d: 'Se separa lo que vale la pena resolver con IA de lo que conviene ordenar primero o dejar como está. Cuando no conviene automatizar, se dice.' },

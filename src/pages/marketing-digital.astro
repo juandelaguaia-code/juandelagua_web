@@ -8,9 +8,9 @@ import WaterCanvas from '../components/WaterCanvas.astro';
 import { waLink } from '../data/site';
 import { faqSchema, serviceSchema, type FaqItem } from '../data/faq';
 
-const msg = 'Hola Juan, vengo desde su sitio web. Me interesa un diagnóstico de marketing digital para mi empresa.';
+const msg = 'Hola Juan, vengo desde su sitio web. Me interesa un diagnóstico de marketing para mi empresa.';
 const description =
-  'Marketing digital para pymes y empresas en Chile: estrategia, campañas en Meta, Google y LinkedIn, redes sociales, contenido, sitios web y SEO.';
+  'Marketing para empresas y pymes en Chile: estrategia, campañas en Meta, Google y LinkedIn, redes sociales, contenido, sitios web y SEO.';
 
 const servicios = [
   {
@@ -48,25 +48,25 @@ const faq: FaqItem[] = [
 ---
 
 <Base
-  title="Marketing digital para empresas en Chile"
+  title="Marketing para empresas en Chile"
   description={description}
-  breadcrumbs={[{ name: 'Marketing digital', path: '/marketing-digital' }]}
+  breadcrumbs={[{ name: 'Marketing', path: '/marketing-digital' }]}
   waMessage={msg}
   schema={[
     {
-      ...serviceSchema({ name: 'Marketing digital para pymes y empresas', serviceType: 'Marketing digital', description, path: '/marketing-digital' }),
+      ...serviceSchema({ name: 'Marketing para empresas y pymes', serviceType: 'Marketing', description, path: '/marketing-digital' }),
       hasOfferCatalog: {
         '@type': 'OfferCatalog',
-        name: 'Servicios de marketing digital',
+        name: 'Servicios de marketing',
         itemListElement: servicios.map((s) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: s.t, description: s.d } })),
       },
     },
     faqSchema(faq),
   ]}
 >
-  <PageHero eyebrow="Marketing digital">
-    <Fragment slot="title">Marketing digital orientado a <em>generar clientes</em>.</Fragment>
-    <Fragment slot="lead"><p>Estrategia, campañas, contenido y sitios web para pymes y empresas en Chile. Cada trabajo parte con un diagnóstico y una propuesta con objetivos, alcance y presupuesto definidos.</p></Fragment>
+  <PageHero eyebrow="Marketing">
+    <Fragment slot="title">Marketing orientado a <em>generar clientes</em>.</Fragment>
+    <Fragment slot="lead"><p>Estrategia, campañas, contenido y sitios web para empresas y pymes en Chile. Cada trabajo parte con un diagnóstico y una propuesta con objetivos, alcance y presupuesto definidos.</p></Fragment>
     <a class="btn btn--agua" href={waLink(msg)} target="_blank" rel="noopener">Solicitar diagnóstico de marketing</a>
     <a class="btn btn--ghost" href="#servicios">Ver servicios</a>
   </PageHero>
@@ -134,7 +134,7 @@ const faq: FaqItem[] = [
     <div class="container" style="max-width:920px">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Preguntas frecuentes</p>
-        <h2 data-reveal style="--d:80ms">Sobre el <em>marketing digital</em>.</h2>
+        <h2 data-reveal style="--d:80ms">Sobre el <em>marketing</em>.</h2>
       </div>
       <div data-reveal style="--d:120ms"><Faq items={faq} /></div>
     </div>

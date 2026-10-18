@@ -29,7 +29,7 @@ export const FAQ_HOME: FaqItem[] = [
   },
   {
     q: '¿Trabajas con pymes y también con empresas más grandes?',
-    a: 'Sí. Trabajo con pymes y empresas de distintos tamaños. El alcance y las fases se ajustan al tamaño del equipo y a la complejidad de los procesos.',
+    a: 'Sí. Trabajo con empresas y pymes de distintos tamaños. El alcance y las fases se ajustan al tamaño del equipo y a la complejidad de los procesos.',
   },
   {
     q: '¿Atiendes fuera de la Región de Valparaíso?',

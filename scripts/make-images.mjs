@@ -15,7 +15,7 @@ const text = Buffer.from(`
   </defs>
   <rect width="1200" height="630" fill="url(#g)"/>
   <text x="640" y="250" font-family="Georgia, serif" font-size="68" fill="#F5F3EC">Juan <tspan font-style="italic" fill="#5CC8BD">del Agua</tspan></text>
-  <text x="642" y="318" font-family="Segoe UI, Arial, sans-serif" font-size="30" fill="#F5F3EC" opacity=".85">Consultor de IA y marketing digital</text>
+  <text x="642" y="318" font-family="Segoe UI, Arial, sans-serif" font-size="30" fill="#F5F3EC" opacity=".85">Consultor de IA y marketing</text>
   <text x="642" y="360" font-family="Segoe UI, Arial, sans-serif" font-size="30" fill="#F5F3EC" opacity=".85">para pymes de Chile</text>
   <rect x="642" y="410" width="64" height="3" fill="#1E9E93"/>
   <text x="642" y="460" font-family="Segoe UI, Arial, sans-serif" font-size="24" fill="#5CC8BD">juandelagua.com</text>

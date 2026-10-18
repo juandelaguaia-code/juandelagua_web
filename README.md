@@ -1,6 +1,6 @@
 # juandelagua.com
 
-Sitio de **Juan del Agua**: consultor de IA y marketing digital para pymes y empresas en Chile.
+Sitio de **Juan del Agua**: consultor de IA y marketing para empresas y pymes en Chile.
 Astro: páginas estáticas + un endpoint Node (`/api/diagnostico`) para el agente de diagnóstico con IA. Docker, pensado para EasyPanel.
 
 ## Trabajar en local
@@ -30,7 +30,7 @@ Sin clave, el diagnóstico funciona igual con un informe por reglas.
 
 ## Páginas
 
-`/` · `/consultoria-ia` (incluye el método) · `/marketing-digital` · `/sobre-mi` · `/contacto` · `/privacidad` · `404`
+`/` · `/consultor-ia` (incluye el método) · `/marketing-digital` · `/sobre-mi` · `/contacto` · `/privacidad` · `404`
 
 ## SEO incluido
 

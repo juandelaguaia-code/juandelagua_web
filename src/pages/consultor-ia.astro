@@ -9,7 +9,7 @@ import { faqSchema, serviceSchema, type FaqItem } from '../data/faq';
 
 const msg = 'Hola Juan, vengo desde su sitio web. Me interesa la consultoría en IA para mi empresa.';
 const description =
-  'Consultoría en IA para pymes y empresas en Chile: automatización de flujos, agentes de IA e IA aplicada al equipo. Diagnóstico, implementación y mantención.';
+  'Consultoría en IA para empresas y pymes en Chile: automatización de flujos, agentes de IA e IA aplicada al equipo. Diagnóstico, implementación y mantención.';
 
 const lineas = [
   {
@@ -46,7 +46,7 @@ const etapas = [
 ];
 
 const faq: FaqItem[] = [
-  { q: '¿Qué tipo de empresas pueden trabajar contigo?', a: 'Pymes y empresas con equipo y procesos que se repiten a diario: atención por WhatsApp, cotizaciones, seguimiento de clientes, agendamiento o gestión documental.' },
+  { q: '¿Qué tipo de empresas pueden trabajar contigo?', a: 'Empresas y pymes con equipo y procesos que se repiten a diario: atención por WhatsApp, cotizaciones, seguimiento de clientes, agendamiento o gestión documental.' },
   { q: '¿Cuánto toma una implementación?', a: 'Depende del alcance. Se trabaja por fases cortas, partiendo por un prototipo que se puede revisar funcionando. El diagnóstico entrega plazos concretos para cada fase.' },
   { q: '¿Es necesario cambiar las herramientas actuales?', a: 'En general no. El objetivo es conectar lo que la empresa ya usa. Si alguna herramienta limita el proceso, se plantea con alternativas.' },
   { q: '¿Cómo se resguardan los datos de los clientes?', a: 'Se trabaja con el mínimo acceso necesario, se documenta dónde queda cada dato y quién tiene acceso, y se definen por escrito las condiciones de tratamiento.' },
@@ -57,10 +57,10 @@ const faq: FaqItem[] = [
 <Base
   title="Consultoría en IA para empresas en Chile"
   description={description}
-  breadcrumbs={[{ name: 'Consultoría IA', path: '/consultoria-ia' }]}
+  breadcrumbs={[{ name: 'Consultoría IA', path: '/consultor-ia' }]}
   waMessage={msg}
   schema={[
-    serviceSchema({ name: 'Consultoría en inteligencia artificial', serviceType: 'Consultoría en inteligencia artificial', description, path: '/consultoria-ia' }),
+    serviceSchema({ name: 'Consultoría en inteligencia artificial', serviceType: 'Consultoría en inteligencia artificial', description, path: '/consultor-ia' }),
     {
       '@context': 'https://schema.org',
       '@type': 'HowTo',
@@ -72,7 +72,7 @@ const faq: FaqItem[] = [
 >
   <PageHero eyebrow="Consultoría en inteligencia artificial">
     <Fragment slot="title">Inteligencia artificial aplicada a <em>cómo opera tu empresa</em>.</Fragment>
-    <Fragment slot="lead"><p>Automatización de flujos, agentes de IA y adopción de IA en el equipo, para pymes y empresas. Cada proyecto parte con un diagnóstico y termina con soluciones funcionando, documentadas y medidas.</p></Fragment>
+    <Fragment slot="lead"><p>Automatización de flujos, agentes de IA y adopción de IA en el equipo, para empresas y pymes. Cada proyecto parte con un diagnóstico y termina con soluciones funcionando, documentadas y medidas.</p></Fragment>
     <a class="btn btn--agua" href={waLink(msg)} target="_blank" rel="noopener">Solicitar diagnóstico completo</a>
   </PageHero>
   <Wave from="var(--perla)" to="var(--bruma)" />
