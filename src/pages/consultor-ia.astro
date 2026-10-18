@@ -9,7 +9,7 @@ import { faqSchema, serviceSchema, type FaqItem } from '../data/faq';
 
 const msg = 'Hola Juan, vengo desde su sitio web. Me interesa la consultoría en IA para mi empresa.';
 const description =
-  'Consultoría en IA para empresas y pymes en Chile: automatización de flujos, agentes de IA e IA aplicada al equipo. Diagnóstico, implementación y mantención.';
+  'Consultor en IA para empresas y pymes en Chile: automatización de flujos, agentes de IA e IA aplicada al equipo. Diagnóstico, implementación y mantención.';
 
 const lineas = [
   {
@@ -55,9 +55,9 @@ const faq: FaqItem[] = [
 ---
 
 <Base
-  title="Consultoría en IA para empresas en Chile"
+  title="Consultoría IA y consultor en IA para empresas"
   description={description}
-  breadcrumbs={[{ name: 'Consultor IA', path: '/consultor-ia' }]}
+  breadcrumbs={[{ name: 'Consultoría IA', path: '/consultor-ia' }]}
   waMessage={msg}
   schema={[
     serviceSchema({ name: 'Consultoría en inteligencia artificial', serviceType: 'Consultoría en inteligencia artificial', description, path: '/consultor-ia' }),

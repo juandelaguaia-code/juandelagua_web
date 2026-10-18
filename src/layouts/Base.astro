@@ -62,7 +62,8 @@ const baseSchema = [
       'Estrategia de contenido',
       'SEO local',
     ],
-    alumniOf: { '@type': 'CollegeOrUniversity', name: 'Duoc UC' },
+    // Estudiante en curso: 'affiliation' (no 'alumniOf', que significa egresado)
+    affiliation: { '@type': 'CollegeOrUniversity', name: 'Duoc UC' },
     address: { '@type': 'PostalAddress', addressLocality: SITE.city, addressRegion: SITE.region, addressCountry: 'CL' },
     sameAs: Object.values(SITE.social),
     worksFor: { '@id': businessId },
