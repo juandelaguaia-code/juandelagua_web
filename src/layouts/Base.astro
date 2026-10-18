@@ -6,7 +6,7 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import WhatsAppFab from '../components/WhatsAppFab.astro';
-import { SITE } from '../data/site';
+import { SITE, CERTIFICATIONS } from '../data/site';
 import { cleanPath } from '../data/path';
 
 interface Crumb { name: string; path: string }
@@ -36,9 +36,19 @@ const baseSchema = [
     '@type': 'Person',
     '@id': personId,
     name: SITE.name,
-    alternateName: SITE.legalName,
+    alternateName: [SITE.legalName, 'Juan Araneda Gattavara', 'Juan Araneda'],
+    givenName: 'Juan del Agua',
+    familyName: 'Araneda Gattavara',
     url: SITE.url,
     image: `${SITE.url}/og.jpg`,
+    // Certificaciones verificables: refuerzan autoridad (E-E-A-T) en búsquedas por nombre
+    hasCredential: CERTIFICATIONS.map((c) => ({
+      '@type': 'EducationalOccupationalCredential',
+      name: c.name,
+      credentialCategory: 'certificate',
+      url: c.url,
+      recognizedBy: { '@type': 'Organization', name: 'Anthropic', url: 'https://www.anthropic.com' },
+    })),
     jobTitle: 'Consultor en inteligencia artificial y marketing digital',
     description: SITE.description,
     knowsAbout: [
@@ -96,7 +106,7 @@ const allSchema = [...baseSchema, ...(crumbSchema ? [crumbSchema] : []), ...extr
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    {!noindex && <link rel="canonical" href={canonical} />}
     {noindex && <meta name="robots" content="noindex, follow" />}
     <meta name="author" content={SITE.legalName} />
     <meta name="theme-color" content="#0E2A43" />
