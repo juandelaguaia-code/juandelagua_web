@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import { SITE } from '../data/site';
 ---
 
-<Base title="Política de privacidad" description="Cómo trata Juan del Agua los datos personales de quienes visitan juandelagua.com, usan el diagnóstico gratuito o lo contactan." breadcrumbs={[{ name: 'Privacidad', path: '/privacidad' }]}>
+<Base title="Política de privacidad" description="Cómo trata Juan del Agua los datos personales de quienes visitan juandelagua.com o lo contactan." breadcrumbs={[{ name: 'Privacidad', path: '/privacidad' }]}>
   <section class="section">
     <div class="container prose">
       <p class="eyebrow">Legal</p>
@@ -15,21 +15,15 @@ import { SITE } from '../data/site';
 
       <h2>Qué datos se reciben</h2>
       <ul>
-        <li><strong>Diagnóstico gratuito con IA:</strong> las respuestas sobre la empresa (rubro, tamaño, canales, dificultades, herramientas y la descripción que se escriba) y, solo si se entregan de forma voluntaria y con autorización expresa, nombre y un WhatsApp o correo.</li>
         <li><strong>Contacto directo:</strong> los datos que se envían por WhatsApp u otro canal al escribirme.</li>
       </ul>
       <p>El sitio no crea cuentas de usuario.</p>
 
       <h2>Para qué se usan</h2>
       <ul>
-        <li>Generar el diagnóstico preliminar que se muestra en pantalla.</li>
         <li>Responder consultas y, si se solicita, preparar una propuesta.</li>
-        <li>Contactar a quien dejó sus datos en el diagnóstico, solo en relación con ese diagnóstico.</li>
       </ul>
       <p>Los datos no se venden ni se ceden a terceros con fines comerciales.</p>
-
-      <h2>Procesamiento con inteligencia artificial</h2>
-      <p>Para generar el diagnóstico, las respuestas se envían a la API de Anthropic (proveedor del modelo Claude), que las procesa para producir el informe. Se recomienda no incluir datos personales de terceros ni información confidencial en las respuestas.</p>
 
       <h2>Datos de clientes en proyectos</h2>
       <p>En los proyectos contratados, los datos de clientes de la empresa se usan solo para el proyecto, con el mínimo acceso necesario y bajo condiciones acordadas por escrito.</p>

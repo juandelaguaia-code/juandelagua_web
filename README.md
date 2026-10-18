@@ -25,15 +25,12 @@ Sin clave, el diagnóstico funciona igual con un informe por reglas.
 | Cada página | `src/pages/*.astro` (la ruta = el nombre del archivo) |
 | SEO global, schema (JSON-LD), Open Graph | `src/layouts/Base.astro` |
 | Fotos | `src/assets/img/` (Astro las optimiza a AVIF/WebP) |
-| Agente de diagnóstico: preguntas y pantalla | `src/components/DiagnosticoAgente.astro` |
-| Agente: prompt, esquema del informe, informe de respaldo | `src/lib/diagnostico.ts` |
-| Agente: endpoint (modelo, límite por IP, webhook de leads) | `src/pages/api/diagnostico.ts` |
 | Animaciones de agua ligadas al scroll | `src/scripts/fx.ts`, `src/components/Wave.astro`, `src/components/WaterCanvas.astro` |
 | Imagen para compartir (OG) y favicon | `public/og.jpg`, `public/favicon.svg` → regenerar con `node scripts/make-images.mjs` |
 
 ## Páginas
 
-`/` · `/consultoria-ia` (incluye el método) · `/marketing-digital` · `/diagnostico` · `/claude-for-small-business` · `/sobre-mi` · `/contacto` · `/privacidad` · `404`
+`/` · `/consultoria-ia` (incluye el método) · `/marketing-digital` · `/sobre-mi` · `/contacto` · `/privacidad` · `404`
 
 ## SEO incluido
 

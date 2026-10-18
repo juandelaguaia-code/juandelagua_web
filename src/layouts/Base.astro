@@ -107,6 +107,9 @@ const allSchema = [...baseSchema, ...(crumbSchema ? [crumbSchema] : []), ...extr
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
+    {/* Analítica Plausible (self-hosted en EasyPanel). Solo en producción para no contar visitas locales. */}
+    {import.meta.env.PROD && <script defer data-domain="juandelagua.com" src={`${SITE.plausibleUrl}/js/script.js`}></script>}
+
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={SITE.name} />
     <meta property="og:locale" content={SITE.locale} />

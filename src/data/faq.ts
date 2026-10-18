@@ -37,7 +37,7 @@ export const FAQ_HOME: FaqItem[] = [
   },
   {
     q: '¿Cómo se cotiza un proyecto?',
-    a: 'Cada proyecto parte con un diagnóstico y, a partir de él, se entrega una propuesta por fases con presupuesto. Claude para equipos es la excepción: tiene un valor fijo de $150.000 CLP.',
+    a: 'Cada proyecto parte con un diagnóstico y, a partir de él, se entrega una propuesta por fases con presupuesto.',
   },
   {
     q: '¿Qué pasa si el diagnóstico indica que no conviene automatizar?',

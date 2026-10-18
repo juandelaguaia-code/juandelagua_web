@@ -5,8 +5,7 @@ import CtaBand from '../components/CtaBand.astro';
 import Faq from '../components/Faq.astro';
 import Wave from '../components/Wave.astro';
 import WaterCanvas from '../components/WaterCanvas.astro';
-import DiagnosticoAgente from '../components/DiagnosticoAgente.astro';
-import { CERTIFICATIONS } from '../data/site';
+import { CERTIFICATIONS, waLink } from '../data/site';
 import { FAQ_HOME, faqSchema } from '../data/faq';
 import hero from '../assets/img/juan-hero.jpg';
 import retrato from '../assets/img/juan-retrato.jpg';
@@ -18,7 +17,14 @@ const dolores = [
   { t: 'Marketing sin resultados claros', d: 'Se publica contenido o se invierte en publicidad sin objetivos definidos ni medición de qué genera clientes.' },
 ];
 
-const DESC = 'Consultoría en inteligencia artificial y marketing digital para pymes y empresas en Chile: automatización de flujos, agentes de IA y estrategia digital medible.';
+// Frase del medio: una línea por idea; las palabras con `em` van en acento.
+const statement = [
+  [{ t: 'Menos' }, { t: 'trabajo' }, { t: 'manual.', em: true }],
+  [{ t: 'Marketing' }, { t: 'con' }, { t: 'resultados.', em: true }],
+  [{ t: 'Recupera' }, { t: 'tiempo' }, { t: 'para' }, { t: 'vivir', em: true }, { t: 'mejor.', em: true }],
+];
+
+const DESC ='Consultoría en inteligencia artificial y marketing digital para pymes y empresas en Chile: automatización de flujos, agentes de IA y estrategia digital medible.';
 ---
 
 <Base title="Juan del Agua | Consultoría en IA y marketing digital para empresas en Chile" description={DESC} schema={faqSchema(FAQ_HOME)}>
@@ -30,22 +36,18 @@ const DESC = 'Consultoría en inteligencia artificial y marketing digital para p
     <WaterCanvas class="hero-water" lines={10} opacity={0.7} />
     <div class="container hero-inner">
       <p class="eyebrow rise">Consultoría en IA y marketing digital · Pymes y empresas</p>
-      <h1 class="rise" style="--d:80ms">Procesos que <em>fluyen</em>. Clientes que no se pierden.</h1>
-      <p class="lead rise" style="--d:160ms">
-        Automatización de flujos, agentes de inteligencia artificial y marketing digital para pymes y empresas en Chile.
-        Diagnostico cómo opera tu empresa, implemento lo que conviene y lo dejo funcionando, documentado y medido.
-      </p>
+      <h1 class="rise" style="--d:80ms"><span>Si todo pasa por ti,</span> <span>tu empresa tiene un <em>techo</em>.</span></h1>
+      <p class="lead rise" style="--d:160ms">IA y marketing digital para empresas en Chile. Implemento lo que conviene y lo dejo funcionando.</p>
       <div class="btn-row rise" style="--d:240ms">
-        <a class="btn btn--agua" href="#diagnostico">Diagnóstico gratuito con IA</a>
+        <a class="btn btn--agua" href={waLink()} target="_blank" rel="noopener">Conversemos por WhatsApp</a>
         <a class="btn btn--ghost" href="/consultoria-ia">Ver consultoría en IA</a>
       </div>
       <ul class="hero-proof rise" style="--d:320ms">
-        <li><strong>4</strong> certificaciones de Anthropic Academy</li>
+        <li><a href="/sobre-mi#certificaciones">Certificado por <strong>Anthropic</strong></a></li>
         <li>Ingeniería en Marketing Digital, Duoc UC</li>
         <li>Atención en todo Chile</li>
       </ul>
     </div>
-    <a class="scroll-cue" href="#situaciones" aria-label="Bajar a la siguiente sección"><span></span></a>
   </section>
   <Wave from="var(--marino)" to="var(--perla)" />
 
@@ -55,6 +57,7 @@ const DESC = 'Consultoría en inteligencia artificial y marketing digital para p
       <div class="section-head">
         <p class="eyebrow" data-reveal>Situaciones frecuentes</p>
         <h2 data-reveal style="--d:80ms">¿Reconoces alguna de <em>estas</em> en tu empresa?</h2>
+        <p class="lead" data-reveal style="--d:160ms">Son las cuatro señales más comunes de que la empresa puede trabajar de forma más simple.</p>
       </div>
       <div class="grid grid-4">
         {dolores.map((p, i) => (
@@ -73,7 +76,15 @@ const DESC = 'Consultoría en inteligencia artificial y marketing digital para p
   <section class="statement on-dark">
     <WaterCanvas lines={7} opacity={0.35} />
     <div class="container">
-      <p class="statement-text" data-fx data-fx-range="0.85"><span class="fill-text">Que el trabajo fluya sin que todo dependa de una sola persona. Que cada consulta tenga respuesta. Que cada peso invertido en marketing se pueda medir.</span></p>
+      <p class="statement-text" data-rise aria-label={statement.map((l) => l.map((w) => w.t).join(' ')).join(' ')}>
+        {statement.map((line, li) => (
+          <span class="rise-line" aria-hidden="true">
+            {line.map((w, wi) => (
+              <><span class="rise-mask"><span class:list={['rise-word', { accent: w.em }]} style={`--i:${li * 4 + wi}`}>{w.t}</span></span>{' '}</>
+            ))}
+          </span>
+        ))}
+      </p>
     </div>
   </section>
   <Wave from="var(--marino)" to="var(--bruma)" />
@@ -83,8 +94,8 @@ const DESC = 'Consultoría en inteligencia artificial y marketing digital para p
     <div class="container">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Servicios</p>
-        <h2 data-reveal style="--d:80ms">Dos frentes, <em>un mismo objetivo</em>.</h2>
-        <p class="lead" data-reveal style="--d:160ms">La inteligencia artificial ordena lo que ocurre dentro de la empresa. El marketing digital ordena cómo llegan los clientes. Con frecuencia, el problema está en el punto donde ambos se encuentran.</p>
+        <h2 data-reveal style="--d:80ms">Dos frentes, <em style="white-space:nowrap">un mismo objetivo</em>.</h2>
+        <p class="lead" data-reveal style="--d:160ms">La IA ordena lo que pasa dentro de la empresa. El marketing, cómo llegan los clientes.</p>
       </div>
 
       <div class="svc-grid">
@@ -113,66 +124,35 @@ const DESC = 'Consultoría en inteligencia artificial y marketing digital para p
           </ul>
           <span class="link-arrow">Ver marketing digital →</span>
         </a>
-
-        <a href="/claude-for-small-business" class="card svc svc--strip" data-reveal style="--d:200ms">
-          <div>
-            <span class="tag">Para comenzar</span>
-            <h3>Claude para equipos</h3>
-            <p>Instalación de Claude, un asistente configurado con el contexto de la empresa y dos sesiones de capacitación.</p>
-          </div>
-          <p class="price">$150.000<small>CLP · pago único</small></p>
-        </a>
       </div>
     </div>
   </section>
   <Wave from="var(--bruma)" to="var(--perla)" />
 
-  <!-- LEAD MAGNET: DIAGNÓSTICO CON IA -->
-  <section class="section lead-magnet" id="diagnostico">
-    <div class="container lm">
-      <div class="lm-text">
-        <p class="eyebrow" data-reveal>Diagnóstico gratuito</p>
-        <h2 data-reveal style="--d:80ms">Descubre en 3 minutos <em>dónde la IA puede ayudar</em> a tu empresa.</h2>
-        <p class="lead" data-reveal style="--d:160ms">Un asistente de inteligencia artificial te hace siete preguntas sobre cómo opera tu empresa y te entrega un diagnóstico preliminar en pantalla.</p>
-        <ul class="checklist" data-reveal style="--d:220ms">
-          <li>Las oportunidades más claras, ordenadas por impacto y esfuerzo</li>
-          <li>Qué conviene resolver con IA, con automatización o con marketing</li>
-          <li>Lo que hoy no conviene hacer, y por qué</li>
-          <li>Un primer paso concreto para esta semana</li>
-        </ul>
-        <p class="muted small" data-reveal style="--d:260ms">Sin costo y sin compromiso. Dejar tus datos de contacto es opcional.</p>
-      </div>
-      <div class="lm-agent" data-reveal style="--d:120ms">
-        <DiagnosticoAgente />
-      </div>
-    </div>
-  </section>
-  <Wave from="var(--perla)" to="var(--bruma)" />
-
   <!-- SOBRE MÍ -->
-  <section class="section bg-bruma">
+  <section class="section">
     <div class="container about">
       <div class="about-photo" data-reveal>
-        <Image src={retrato} alt="Juan Araneda Gattavara, Juan del Agua" widths={[360, 560, 720]} sizes="(min-width: 900px) 420px, 80vw" />
+        <Image src={retrato} alt="Juan del Agua Araneda Gattavara" widths={[360, 560, 720]} sizes="(min-width: 900px) 420px, 80vw" />
       </div>
       <div class="about-text">
         <p class="eyebrow" data-reveal>Quién está detrás</p>
-        <h2 data-reveal style="--d:80ms">Juan Araneda Gattavara, <em>Juan del Agua</em>.</h2>
+        <h2 data-reveal style="--d:80ms"><em>Juan del Agua</em> Araneda Gattavara.</h2>
         <p class="lead" data-reveal style="--d:160ms">
           Desarrollo soluciones con inteligencia artificial que operan en negocios reales y curso Ingeniería en Marketing Digital en Duoc UC.
           Esa combinación permite abordar tanto el problema operativo como el comercial, con un proceso transparente en cada etapa.
         </p>
         <ul class="certs" data-reveal style="--d:220ms" aria-label="Certificaciones">
-          {CERTIFICATIONS.map((c) => <li>{c}<span>Anthropic Academy</span></li>)}
+          {CERTIFICATIONS.map((c) => <li><a href={c.url} target="_blank" rel="noopener">{c.name}<span>Anthropic Academy · Verificar ↗</span></a></li>)}
         </ul>
         <a class="link-arrow" href="/sobre-mi" data-reveal style="--d:280ms">Conocer más →</a>
       </div>
     </div>
   </section>
-  <Wave from="var(--bruma)" to="var(--perla)" />
+  <Wave from="var(--perla)" to="var(--bruma)" />
 
   <!-- FAQ -->
-  <section class="section">
+  <section class="section bg-bruma">
     <div class="container faq-wrap">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Preguntas frecuentes</p>
@@ -182,7 +162,7 @@ const DESC = 'Consultoría en inteligencia artificial y marketing digital para p
     </div>
   </section>
 
-  <Wave from="var(--perla)" to="var(--marino)" />
+  <Wave from="var(--bruma)" to="var(--marino)" />
   <CtaBand />
 </Base>
 
@@ -204,14 +184,14 @@ const DESC = 'Consultoría en inteligencia artificial y marketing digital para p
   }
   .hero :global(.hero-water) { z-index: -1; }
   .hero-inner { display: grid; gap: 22px; opacity: calc(1 - var(--x, 0) * 0.9); transform: translateY(calc(var(--x, 0) * -40px)); }
-  .hero h1 { max-width: 15ch; }
+  .hero h1 { font-size: clamp(2.5rem, 1.4rem + 3.8vw, 4.75rem); }
+  .hero h1 span { display: block; text-wrap: balance; }
   .hero-proof { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 12px; font-size: var(--fs-sm); color: rgba(245, 243, 236, 0.72); }
   .hero-proof li { display: flex; align-items: center; gap: 8px; }
   .hero-proof li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--corriente); }
   .hero-proof strong { color: var(--perla); font-family: var(--serif); font-size: 1.2em; font-weight: 500; }
-  .scroll-cue { position: absolute; left: 50%; bottom: 18px; width: 26px; height: 42px; margin-left: -13px; border: 1.5px solid rgba(245, 243, 236, 0.4); border-radius: 14px; display: none; }
-  .scroll-cue span { position: absolute; left: 50%; top: 8px; width: 4px; height: 8px; margin-left: -2px; border-radius: 2px; background: var(--corriente-soft); animation: cue 2s var(--ease) infinite; }
-  @keyframes cue { 0% { opacity: 0; transform: translateY(0); } 40% { opacity: 1; } 100% { opacity: 0; transform: translateY(14px); } }
+  .hero-proof a { color: inherit; text-decoration: underline; text-decoration-color: rgba(92, 200, 189, 0.5); text-underline-offset: 4px; transition: color 0.2s, text-decoration-color 0.2s; }
+  .hero-proof a:hover { color: var(--perla); text-decoration-color: var(--corriente-soft); }
 
   @media (min-width: 960px) {
     .hero { display: grid; align-items: center; padding: 72px 0 96px; min-height: min(92vh, 800px); }
@@ -219,20 +199,24 @@ const DESC = 'Consultoría en inteligencia artificial y marketing digital para p
     .hero-photo :global(img) { object-position: 25% 30%; }
     .hero-photo::after { background: linear-gradient(90deg, var(--marino) 0%, rgba(14, 42, 67, 0.6) 22%, rgba(14, 42, 67, 0) 55%), linear-gradient(0deg, rgba(14, 42, 67, 0.6), transparent 35%); }
     .hero-inner > * { max-width: 620px; }
-    .scroll-cue { display: block; }
   }
 
   /* SITUACIONES */
-  .pain h3 { font-size: clamp(1.3rem, 1.1rem + 0.6vw, 1.6rem); }
+  .pain h3 { font-size: clamp(1.35rem, 1.1rem + 0.7vw, 1.65rem); }
+  .pain p { font-size: var(--fs-base); }
 
   /* FRASE */
   .statement { position: relative; overflow: hidden; padding: clamp(80px, 12vw, 160px) 0; }
   .statement .container { position: relative; }
-  .statement-text { font-family: var(--serif); font-size: clamp(1.9rem, 1.2rem + 3.4vw, 4rem); line-height: 1.15; letter-spacing: -0.015em; max-width: 24ch; }
+  /* Una línea por idea, a todo el ancho */
+  .statement-text { font-family: var(--serif); font-size: clamp(2.3rem, 0.6rem + 5vw, 5rem); line-height: 1.04; letter-spacing: -0.025em; display: grid; gap: 0.06em; }
+  .rise-line { display: block; }
+  @media (min-width: 900px) { .rise-line { white-space: nowrap; } }
+  .rise-word.accent { font-style: italic; color: var(--corriente-soft); }
 
   /* SERVICIOS */
   .svc-grid { display: grid; gap: clamp(16px, 2.4vw, 28px); }
-  @media (min-width: 900px) { .svc-grid { grid-template-columns: 1.25fr 1fr; } .svc--strip { grid-column: 1 / -1; } }
+  @media (min-width: 900px) { .svc-grid { grid-template-columns: 1.25fr 1fr; } }
   .svc { gap: 18px; }
   .svc h3 { font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.4rem); }
   .svc .tag { justify-self: start; }
@@ -240,16 +224,6 @@ const DESC = 'Consultoría en inteligencia artificial y marketing digital para p
   .svc--main.card { border-color: transparent; }
   .svc--main .checklist li { color: rgba(245, 243, 236, 0.86); }
   .svc .link-arrow { margin-top: 6px; justify-self: start; }
-  .svc--strip { display: grid; gap: 20px; align-items: center; background: var(--perla); }
-  @media (min-width: 720px) { .svc--strip { grid-template-columns: 1fr auto; } }
-  .svc--strip h3 { margin: 10px 0 6px; font-size: clamp(1.4rem, 1.2rem + 0.8vw, 1.9rem); }
-
-  /* LEAD MAGNET */
-  .lm { display: grid; gap: 40px; align-items: start; }
-  @media (min-width: 1000px) { .lm { grid-template-columns: 0.9fr 1.1fr; gap: 64px; } }
-  .lm-text { display: grid; gap: 20px; }
-  .lm-text .checklist li { font-size: var(--fs-base); }
-  .small { font-size: var(--fs-xs); }
 
   /* SOBRE MÍ */
   .about { display: grid; gap: 40px; align-items: center; }
@@ -259,8 +233,10 @@ const DESC = 'Consultoría en inteligencia artificial y marketing digital para p
   .about-text { display: grid; gap: 20px; }
   .certs { list-style: none; padding: 0; display: grid; gap: 10px; }
   @media (min-width: 560px) { .certs { grid-template-columns: 1fr 1fr; } }
-  .certs li { padding: 14px 16px; border-radius: var(--radius); background: var(--perla); border: 1px solid var(--linea); font-weight: 600; font-size: var(--fs-sm); line-height: 1.35; display: grid; gap: 2px; }
+  .certs a { height: 100%; padding: 14px 16px; border-radius: var(--radius); background: var(--bruma); border: 1px solid var(--linea); font-weight: 600; font-size: var(--fs-sm); line-height: 1.35; display: grid; gap: 2px; text-decoration: none; transition: border-color 0.25s, transform 0.3s var(--ease); }
+  .certs a:hover { border-color: rgba(30, 158, 147, 0.55); transform: translateY(-2px); }
   .certs span { font-weight: 500; font-size: var(--fs-xs); color: var(--piedra); }
+  .certs a:hover span { color: var(--corriente-ink); }
 
   .faq-wrap { max-width: 920px; }
 </style>

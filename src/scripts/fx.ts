@@ -64,4 +64,15 @@ if (reduce) {
   window.addEventListener('scroll', request, { passive: true });
   window.addEventListener('resize', request);
   window.addEventListener('load', request);
+
+  // [data-rise]: el texto emerge palabra por palabra al entrar en pantalla (una sola vez).
+  const io = new IntersectionObserver(
+    (entries) => entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('is-in');
+      io.unobserve(e.target);
+    }),
+    { rootMargin: '0px 0px -20% 0px', threshold: 0.2 },
+  );
+  document.querySelectorAll('[data-rise]').forEach((el) => io.observe(el));
 }

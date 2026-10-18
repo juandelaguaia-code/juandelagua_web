@@ -1,6 +1,7 @@
 ---
 import { NAV, waLink } from '../data/site';
 import { cleanPath } from '../data/path';
+import SocialLinks from './SocialLinks.astro';
 const path = cleanPath(Astro.url.pathname);
 const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
 ---
@@ -17,7 +18,8 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
         ))}
       </ul>
     </nav>
-    <a class="btn btn--agua btn--sm cta-desktop" href="/diagnostico">Diagnóstico gratuito</a>
+    <SocialLinks class="social-desktop" />
+    <a class="btn btn--agua btn--sm cta-desktop" href="/contacto">Contacto</a>
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-movil" data-menu-toggle>
       <span class="sr-only">Abrir menú</span>
       <span class="burger" aria-hidden="true"><i></i><i></i></span>
@@ -35,8 +37,8 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
       ))}
       <li><a href="/contacto">Contacto</a></li>
     </ul>
-    <a class="btn btn--agua" href="/diagnostico">Diagnóstico gratuito</a>
-    <a class="btn btn--ghost" href={waLink()} target="_blank" rel="noopener">WhatsApp</a>
+    <a class="btn btn--agua" href={waLink()} target="_blank" rel="noopener">WhatsApp</a>
+    <SocialLinks class="social-mobile" />
   </nav>
 </div>
 
@@ -84,6 +86,9 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
   .menu-movil a[aria-current='page'] { color: var(--corriente-ink); font-style: italic; }
   .menu-movil .btn { width: 100%; margin-bottom: 10px; }
 
+  .bar :global(.social-desktop) { margin-right: -8px; }
+  .menu-movil :global(.social-mobile) { justify-content: center; margin-top: 10px; }
+  @media (max-width: 1100px) { .bar :global(.social-desktop) { display: none; } }
   @media (max-width: 960px) {
     .nav-desktop, .cta-desktop { display: none; }
     .menu-toggle { display: block; }

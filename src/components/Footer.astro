@@ -8,7 +8,7 @@ const year = new Date().getFullYear();
     <div class="brand">
       <a href="/" class="wordmark">Juan <em>del Agua</em></a>
       <p class="muted">Consultoría en inteligencia artificial y marketing digital para pymes y empresas. Base en Viña del Mar, con atención en todo Chile, remota y presencial.</p>
-      <a class="btn btn--agua" href="/diagnostico">Diagnóstico gratuito</a>
+      <a class="btn btn--agua" href={waLink()} target="_blank" rel="noopener">Escribir por WhatsApp</a>
     </div>
     <nav aria-label="Pie de página" class="cols">
       <div>
@@ -16,8 +16,6 @@ const year = new Date().getFullYear();
         <ul>
           <li><a href="/consultoria-ia">Consultoría IA</a></li>
           <li><a href="/marketing-digital">Marketing digital</a></li>
-          <li><a href="/claude-for-small-business">Claude para equipos</a></li>
-          <li><a href="/diagnostico">Diagnóstico gratuito</a></li>
         </ul>
       </div>
       <div>

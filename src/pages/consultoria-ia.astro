@@ -73,8 +73,7 @@ const faq: FaqItem[] = [
   <PageHero eyebrow="Consultoría en inteligencia artificial">
     <Fragment slot="title">Inteligencia artificial aplicada a <em>cómo opera tu empresa</em>.</Fragment>
     <Fragment slot="lead"><p>Automatización de flujos, agentes de IA y adopción de IA en el equipo, para pymes y empresas. Cada proyecto parte con un diagnóstico y termina con soluciones funcionando, documentadas y medidas.</p></Fragment>
-    <a class="btn btn--agua" href="/#diagnostico">Diagnóstico gratuito con IA</a>
-    <a class="btn btn--ghost" href={waLink(msg)} target="_blank" rel="noopener">Solicitar diagnóstico completo</a>
+    <a class="btn btn--agua" href={waLink(msg)} target="_blank" rel="noopener">Solicitar diagnóstico completo</a>
   </PageHero>
   <Wave from="var(--perla)" to="var(--bruma)" />
 
@@ -108,7 +107,7 @@ const faq: FaqItem[] = [
         <h2 data-reveal style="--d:80ms">Siete pasos, <em>todos a la vista</em>.</h2>
         <p class="lead" data-reveal style="--d:160ms">Ningún proyecto queda como caja negra. En cada etapa se sabe qué se está construyendo, por qué y qué cambió.</p>
       </div>
-      <ol class="cauce" data-fx data-fx-range="1.1" data-fx-offset="0.3">
+      <ol class="cauce" data-cauce>
         <svg class="cauce-line" viewBox="0 0 40 1000" preserveAspectRatio="none" aria-hidden="true">
           <path class="bed" d="M20 0 C 38 80, 2 160, 20 240 S 38 400, 20 480 S 2 640, 20 720 S 38 880, 20 1000" pathLength="1" />
           <path class="water" d="M20 0 C 38 80, 2 160, 20 240 S 38 400, 20 480 S 2 640, 20 720 S 38 880, 20 1000" pathLength="1" />
@@ -181,24 +180,57 @@ const faq: FaqItem[] = [
   <CtaBand message={msg} title="¿Qué proceso está <em>consumiendo más tiempo</em>?" />
 </Base>
 
+<script>
+  // Cauce del método: la línea va del círculo 1 al 7 y se llena según dónde está la
+  // "línea de agua" (60% de la pantalla). Cada paso alcanzado se marca con .is-wet.
+  const cauce = document.querySelector<HTMLElement>('[data-cauce]');
+  if (cauce) {
+    const steps = [...cauce.querySelectorAll<HTMLElement>(':scope > li')];
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // offsetTop no se ve afectado por la animación de entrada (transform) de cada paso
+    const centers = () => steps.map((li) => li.offsetTop + (li.querySelector<HTMLElement>('.dot')?.offsetTop ?? 0) + 26);
+    let c = centers();
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const first = c[0], last = c[c.length - 1];
+      cauce.style.setProperty('--line-h', `${last - first}px`);
+      const y = reduce ? Infinity : window.innerHeight * 0.6 - cauce.getBoundingClientRect().top;
+      const p = Math.min(1, Math.max(0, (y - first) / Math.max(last - first, 1)));
+      cauce.style.setProperty('--p', p.toFixed(4));
+      steps.forEach((li, i) => li.classList.toggle('is-wet', y >= c[i] - 2));
+    };
+    const request = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+    const remeasure = () => { c = centers(); request(); };
+    update();
+    window.addEventListener('scroll', request, { passive: true });
+    window.addEventListener('resize', remeasure);
+    window.addEventListener('load', remeasure);
+  }
+</script>
+
 <style>
   .linea h3 { font-size: clamp(1.4rem, 1.2rem + 0.8vw, 1.9rem); }
 
   /* Método: un cauce que se llena al bajar */
   .cauce { position: relative; list-style: none; padding: 0; display: grid; gap: clamp(20px, 3vw, 36px); max-width: 860px; }
-  .cauce-line { position: absolute; left: 6px; top: 26px; bottom: 26px; width: 40px; height: calc(100% - 52px); overflow: visible; }
+  /* Va del centro del primer círculo al centro del último; --line-h lo calcula el script de abajo. */
+  .cauce-line { position: absolute; left: 6px; top: 26px; width: 40px; height: var(--line-h, calc(100% - 52px)); overflow: visible; }
   .cauce-line path { fill: none; stroke-width: 2; vector-effect: non-scaling-stroke; stroke-linecap: round; }
   .cauce-line .bed { stroke: rgba(245, 243, 236, 0.12); }
   .cauce-line .water { stroke: var(--corriente-soft); stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--p, 1)); filter: drop-shadow(0 0 6px rgba(92, 200, 189, 0.6)); }
+  .cauce li.is-wet .dot { background: var(--corriente); color: #fff; box-shadow: 0 0 0 6px rgba(92, 200, 189, 0.16); }
   .cauce li { position: relative; display: grid; grid-template-columns: 52px 1fr; gap: 24px; align-items: start; }
   .cauce .dot {
-    position: relative; z-index: 1; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%;
+    position: relative; z-index: 1; transition: background-color 0.4s, color 0.4s, box-shadow 0.4s; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%;
     background: var(--marino); border: 1.5px solid var(--corriente); font-family: var(--serif); font-style: italic; font-size: 1.25rem; color: var(--corriente-soft);
   }
   .cauce .body { display: grid; gap: 6px; padding-top: 6px; }
   .cauce h3 { font-size: clamp(1.5rem, 1.2rem + 1vw, 2.1rem); }
   .cauce .q { font-family: var(--serif); font-style: italic; color: var(--corriente-soft); font-size: var(--fs-lg); }
   .cauce .body p:last-child { color: rgba(245, 243, 236, 0.72); font-size: var(--fs-sm); max-width: 60ch; }
+
+  .cauce li.is-wet .dot { background: var(--corriente); color: #fff; box-shadow: 0 0 0 6px rgba(92, 200, 189, 0.16); }
 
   .stages { display: grid; gap: clamp(16px, 2.4vw, 28px); }
   @media (min-width: 960px) { .stages { grid-template-columns: repeat(3, 1fr); } }
