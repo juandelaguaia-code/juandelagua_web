@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import { SITE } from '../data/site';
 
-const VERSION = '1.0';
+const VERSION = '1.1';
 const UPDATED = '18 de octubre de 2026';
 ---
 
@@ -26,7 +26,7 @@ const UPDATED = '18 de octubre de 2026';
             <tr><td>Cookies técnicas o necesarias</td><td>No</td></tr>
             <tr><td>Cookies de analítica</td><td>No</td></tr>
             <tr><td>Cookies de publicidad o redes sociales</td><td>No</td></tr>
-            <tr><td>Almacenamiento local del navegador (localStorage)</td><td>No</td></tr>
+            <tr><td>Almacenamiento local del navegador (localStorage)</td><td>Solo si tú lo pides con el botón del punto 3, para recordar que no quieres que se cuenten tus visitas</td></tr>
             <tr><td>Contenido incrustado de terceros (videos, mapas, formularios)</td><td>No</td></tr>
           </tbody>
         </table>
@@ -34,7 +34,13 @@ const UPDATED = '18 de octubre de 2026';
 
       <h2>3. Cómo se miden las visitas sin cookies</h2>
       <p>Las estadísticas del sitio se obtienen con <strong>Plausible Analytics</strong>, una herramienta de código abierto instalada en un servidor propio. Funciona sin cookies y sin guardar direcciones IP: solo cuenta visitas de forma agregada, como cuántas personas vieron cada página o desde qué país llegaron. No permite identificarte ni seguirte entre sitios, y esa información no se comparte con plataformas de publicidad. El detalle está en la <a href="/privacidad">política de privacidad</a>.</p>
-      <p>Si aun así no quieres que tu visita se cuente, puedes usar un bloqueador de contenido en tu navegador.</p>
+      <h3>No contar mis visitas</h3>
+      <p>Si no quieres que tus visitas se incluyan en las estadísticas, puedes excluirlas con este botón. La preferencia se guarda solo en este navegador y puedes cambiarla cuando quieras.</p>
+      <div class="optout" data-optout>
+        <p class="optout-status" data-optout-status aria-live="polite">Tus visitas se cuentan de forma anónima.</p>
+        <button type="button" class="btn btn--ghost" data-optout-btn>No contar mis visitas</button>
+      </div>
+      <p class="muted small">También puedes usar un bloqueador de contenido en tu navegador.</p>
 
       <h2>4. Sitios externos</h2>
       <p>Al hacer clic en los enlaces a WhatsApp, LinkedIn, Instagram, YouTube o a la verificación de certificados, sales de este sitio. Esos servicios pueden usar sus propias cookies según sus políticas, sobre las que este sitio no tiene control.</p>
@@ -44,9 +50,40 @@ const UPDATED = '18 de octubre de 2026';
 
       <h2>6. Cambios</h2>
       <p>Si en el futuro el sitio incorpora alguna herramienta que use cookies no necesarias, esta política se actualizará antes de hacerlo y se te pedirá tu consentimiento previo.</p>
-      <p>Consultas: <a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+      <p>Consultas: <a href={`mailto:${SITE.privacyEmail}`}>{SITE.privacyEmail}</a></p>
 
       <p class="related">Ver también: <a href="/privacidad">Política de privacidad</a> · <a href="/terminos">Términos y condiciones</a></p>
     </div>
   </section>
 </Base>
+
+<style>
+  .optout { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; padding: 18px 20px; margin-bottom: 1em; border-radius: var(--radius); border: 1px solid var(--linea); background: #fbfaf6; }
+  .optout-status { margin: 0 !important; font-weight: 600; }
+  .small { font-size: var(--fs-xs); }
+</style>
+
+<script>
+  // Plausible no registra la visita si localStorage.plausible_ignore === 'true' (función oficial de Plausible).
+  const KEY = 'plausible_ignore';
+  const status = document.querySelector<HTMLElement>('[data-optout-status]');
+  const btn = document.querySelector<HTMLButtonElement>('[data-optout-btn]');
+  const read = () => { try { return localStorage.getItem(KEY) === 'true'; } catch { return false; } };
+  const render = () => {
+    if (!status || !btn) return;
+    const off = read();
+    status.textContent = off ? 'Tus visitas no se están contando en este navegador.' : 'Tus visitas se cuentan de forma anónima.';
+    btn.textContent = off ? 'Volver a contar mis visitas' : 'No contar mis visitas';
+  };
+  btn?.addEventListener('click', () => {
+    try {
+      if (read()) localStorage.removeItem(KEY);
+      else localStorage.setItem(KEY, 'true');
+    } catch {
+      if (status) status.textContent = 'Tu navegador no permite guardar esta preferencia. Puedes usar un bloqueador de contenido.';
+      return;
+    }
+    render();
+  });
+  render();
+</script>

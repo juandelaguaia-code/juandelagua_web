@@ -14,7 +14,7 @@ const UPDATED = '18 de octubre de 2026';
       <p class="muted">Versión {VERSION} · Última actualización: {UPDATED}.</p>
 
       <h2>1. Titular del sitio</h2>
-      <p>El sitio <strong>juandelagua.com</strong> pertenece a {SITE.legalName} ("{SITE.name}"), consultor en inteligencia artificial y marketing digital, con domicilio en {SITE.city}, Chile. Contacto: <a href={`mailto:${SITE.email}`}>{SITE.email}</a> · WhatsApp {SITE.whatsappDisplay}.</p>
+      <p>El sitio <strong>juandelagua.com</strong> pertenece a {SITE.legalName} ("{SITE.name}"){SITE.rut && `, RUT ${SITE.rut}`}, consultor en inteligencia artificial y marketing digital, con domicilio en {SITE.city}, Chile. Contacto: <a href={`mailto:${SITE.email}`}>{SITE.email}</a> · WhatsApp {SITE.whatsappDisplay}.</p>
 
       <h2>2. Aceptación</h2>
       <p>Al usar este sitio aceptas estos términos. Si no estás de acuerdo con ellos, te pido no usarlo. El uso del sitio es gratuito y no requiere registro.</p>

@@ -13,6 +13,9 @@ yarn-error.log*
 pnpm-debug.log*
 
 
+# documentos internos de cumplimiento (no publicar: el repo es público)
+privado/
+
 # environment variables
 .env
 .env.production

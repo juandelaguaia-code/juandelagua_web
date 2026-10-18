@@ -41,6 +41,9 @@ const contact = {
         </ul>
       </div>
     </div>
+    <div class="container"><p class="privacy-note">
+      <strong>Tus datos:</strong> lo que me escribas por WhatsApp o correo se usa solo para responder tu consulta y, si lo pides, preparar una propuesta. Contactarme no te suscribe a mensajes promocionales. Responsable: {SITE.legalName}. Para acceder, corregir o eliminar tus datos, escribe a <a href={`mailto:${SITE.privacyEmail}`}>{SITE.privacyEmail}</a>. Más detalle en la <a href="/privacidad">política de privacidad</a>.
+    </p></div>
   </section>
 </Base>
 
@@ -52,4 +55,6 @@ const contact = {
   .icon { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: var(--corriente); color: #fff; }
   .icon :global(svg) { width: 26px; height: 26px; }
   .social { list-style: none; padding: 0; display: grid; gap: 10px; }
+  .privacy-note { margin-top: 32px; font-size: var(--fs-xs); line-height: 1.6; color: var(--piedra); max-width: 90ch; }
+  .privacy-note a { color: var(--corriente-ink); }
 </style>

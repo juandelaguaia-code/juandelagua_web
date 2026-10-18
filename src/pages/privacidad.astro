@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import { SITE } from '../data/site';
 
 // Cambia la versión y la fecha cada vez que se modifique el contenido de la política.
-const VERSION = '2.0';
+const VERSION = '2.1';
 const UPDATED = '18 de octubre de 2026';
 ---
 
@@ -14,13 +14,14 @@ const UPDATED = '18 de octubre de 2026';
       <h1>Política de privacidad</h1>
       <p class="muted">Versión {VERSION} · Última actualización: {UPDATED}.</p>
 
-      <p>Esta política explica qué datos personales se tratan en <strong>juandelagua.com</strong> y en los canales de contacto asociados, para qué se usan, con quién se comparten y cómo puedes ejercer tus derechos. Se rige por la Ley N° 19.628 sobre protección de la vida privada y por sus modificaciones introducidas por la Ley N° 21.719, cuya entrada en vigencia está fijada para el 1 de diciembre de 2026.</p>
+      <p>Esta política explica qué datos personales se tratan en <strong>juandelagua.com</strong> y en los canales de contacto asociados, para qué se usan, con quién se comparten y cómo puedes ejercer tus derechos. Se rige por la Ley N° 19.628 sobre Protección de los Datos Personales, en su texto modificado por la Ley N° 21.719, cuya entrada en vigencia está fijada para el 1 de diciembre de 2026. Se aplican sus principios de licitud, finalidad, proporcionalidad, calidad, responsabilidad, seguridad, transparencia y confidencialidad.</p>
 
       <h2>1. Responsable del tratamiento</h2>
       <ul>
         <li><strong>Responsable:</strong> {SITE.legalName} ("{SITE.name}").</li>
+        {SITE.rut && <li><strong>RUT:</strong> {SITE.rut}</li>}
         <li><strong>Domicilio:</strong> {SITE.city}, {SITE.region}, Chile.</li>
-        <li><strong>Correo:</strong> <a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
+        <li><strong>Correo para temas de datos personales:</strong> <a href={`mailto:${SITE.privacyEmail}`}>{SITE.privacyEmail}</a></li>
         <li><strong>WhatsApp:</strong> {SITE.whatsappDisplay}</li>
       </ul>
 
@@ -34,7 +35,7 @@ const UPDATED = '18 de octubre de 2026';
       <p>Si escribes por WhatsApp, correo u otro canal, trato los datos que tú mismo entregas: nombre, número o correo, empresa y el contenido de tu mensaje.</p>
       <h3>c) Si contratas un servicio</h3>
       <p>Los datos necesarios para preparar la propuesta, ejecutar el proyecto y emitir los documentos tributarios. Cuando un proyecto requiere acceder a datos de clientes de tu empresa, ese acceso se limita al mínimo necesario y se rige por las condiciones acordadas por escrito.</p>
-      <p>El sitio no tiene formularios ni cuentas de usuario, no solicita datos sensibles y no está dirigido a menores de edad.</p>
+      <p>El sitio no tiene formularios ni cuentas de usuario, no solicita datos sensibles (como salud, biometría o ubicación precisa) y no está dirigido a menores de edad. No se tratan a sabiendas datos de menores de 14 años. Si detectamos que se entregaron sin la autorización de sus padres o representantes, se eliminan.</p>
 
       <h2>3. Para qué se usan y con qué base legal</h2>
       <div class="table-wrap">
@@ -49,7 +50,7 @@ const UPDATED = '18 de octubre de 2026';
           </tbody>
         </table>
       </div>
-      <p>No se envían comunicaciones comerciales sin tu autorización, y tus datos no se venden ni se ceden a terceros con fines comerciales. No se toman decisiones automatizadas ni se elaboran perfiles que produzcan efectos sobre ti.</p>
+      <p>Tus datos se usan solo para la finalidad por la que los entregaste. <strong>No se envían comunicaciones comerciales</strong> (correos, listas de difusión de WhatsApp u otras) <strong>sin tu consentimiento previo y expreso</strong>, que puedes retirar en cualquier momento. Contactarme por una consulta no te suscribe a nada. Tus datos no se venden ni se ceden a terceros con fines comerciales. No se toman decisiones automatizadas ni se elaboran perfiles que produzcan efectos sobre ti.</p>
 
       <h2>4. Con quién se comparten</h2>
       <p>Solo con proveedores que prestan servicios necesarios para el funcionamiento del sitio y del contacto:</p>
@@ -69,7 +70,14 @@ const UPDATED = '18 de octubre de 2026';
       </ul>
 
       <h2>6. Seguridad</h2>
-      <p>El sitio funciona solo con conexión cifrada (HTTPS), las estadísticas se alojan en un servidor propio en lugar de plataformas publicitarias, y el acceso a la información está restringido al responsable. Ningún sistema es infalible, pero se aplican medidas razonables y proporcionales a los datos tratados.</p>
+      <p>Se aplican medidas técnicas y organizativas proporcionales a los datos tratados:</p>
+      <ul>
+        <li>El sitio funciona solo con conexión cifrada (HTTPS).</li>
+        <li>Las estadísticas se alojan en un servidor propio, no en plataformas publicitarias.</li>
+        <li>Las cuentas de administración (servidor, dominio, correo y repositorio) están protegidas con contraseñas robustas y verificación en dos pasos.</li>
+        <li>El acceso a la información está restringido al responsable, que mantiene el deber de confidencialidad incluso después de terminada la relación.</li>
+      </ul>
+      <p>Si ocurre un incidente de seguridad que afecte datos personales, se notificará a la Agencia de Protección de Datos Personales sin dilación indebida y, cuando el incidente implique un riesgo alto para tus derechos, también se te informará directamente.</p>
 
       <h2>7. Tus derechos</h2>
       <p>Puedes ejercer en cualquier momento tus derechos de:</p>
@@ -81,8 +89,14 @@ const UPDATED = '18 de octubre de 2026';
         <li><strong>Portabilidad:</strong> recibir tus datos en un formato estructurado, cuando corresponda.</li>
         <li><strong>Bloqueo:</strong> suspender temporalmente el tratamiento mientras se resuelve una solicitud.</li>
       </ul>
-      <p>Para ejercerlos, escribe a <a href={`mailto:${SITE.email}`}>{SITE.email}</a> indicando tu nombre, el derecho que quieres ejercer y un medio de contacto. La respuesta se entregará dentro de 30 días corridos, prorrogables por una vez en otros 30 cuando la solicitud lo requiera. El ejercicio de estos derechos es gratuito.</p>
-      <p>Si consideras que tu solicitud no fue atendida correctamente, puedes reclamar ante la Agencia de Protección de Datos Personales o, según corresponda, ante los tribunales de justicia.</p>
+      <p>Para ejercerlos, escribe a <a href={`mailto:${SITE.privacyEmail}`}>{SITE.privacyEmail}</a> con el asunto "Datos personales", indicando tu nombre, el derecho que quieres ejercer y un medio de contacto. Si es necesario, se te pedirá acreditar tu identidad para proteger tus datos.</p>
+      <ul>
+        <li><strong>Plazo de respuesta:</strong> 30 días corridos desde que se recibe la solicitud, prorrogables por una vez en otros 30 días corridos, con aviso fundado.</li>
+        <li><strong>Bloqueo temporal:</strong> se resuelve dentro de 2 días hábiles.</li>
+        <li><strong>Costo:</strong> el ejercicio de estos derechos es gratuito.</li>
+        <li><strong>Rechazo:</strong> si una solicitud se rechaza total o parcialmente, se te informarán los fundamentos y tu derecho a reclamar.</li>
+      </ul>
+      <p>Si tu solicitud no es respondida en plazo o no estás de acuerdo con la respuesta, puedes reclamar ante la <strong>Agencia de Protección de Datos Personales</strong> dentro de 30 días hábiles o, según corresponda, ante los tribunales de justicia.</p>
 
       <h2>8. Enlaces a otros sitios</h2>
       <p>El sitio enlaza a WhatsApp, LinkedIn, Instagram, YouTube y a las páginas de verificación de certificados de Anthropic. Al visitarlos se aplican sus propias políticas de privacidad y de cookies.</p>
