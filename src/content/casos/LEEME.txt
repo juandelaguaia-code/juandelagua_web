@@ -1,0 +1,20 @@
+Casos para /casos. Un archivo .md por caso, solo con autorización escrita del cliente.
+Si no autoriza su nombre: anonymous: true, client descriptivo y cifras agregadas (Ley 21.719).
+
+Ejemplo (nombre-del-caso.md):
+
+---
+title: "De 4 horas a 6 minutos en responder"
+client: "Clínica dental en Viña del Mar"
+anonymous: true
+service: "Campaña + agente"
+problem: "Las consultas de Instagram se respondían al día siguiente y la mitad se enfriaba."
+solution: "Campaña en Meta con un agente en WhatsApp que responde, califica y agenda."
+metrics:
+  - { label: "Tiempo de respuesta", before: "4 h", after: "6 min" }
+  - { label: "Costo por contacto", before: "Sin medir", after: "$3.200" }
+testimonial: "Ahora sé cuánto me cuesta cada paciente nuevo."
+testimonialAuthor: "Dueña de la clínica"
+date: 2027-02-01
+authorized: true
+---

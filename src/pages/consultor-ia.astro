@@ -4,12 +4,15 @@ import PageHero from '../components/PageHero.astro';
 import CtaBand from '../components/CtaBand.astro';
 import Faq from '../components/Faq.astro';
 import Wave from '../components/Wave.astro';
+import PlanCard from '../components/PlanCard.astro';
+import DiagnosticoButton from '../components/DiagnosticoButton.astro';
 import { METHOD, waLink } from '../data/site';
-import { faqSchema, serviceSchema, type FaqItem } from '../data/faq';
+import { faqSchema, serviceSchema, FAQ_PRECIOS, type FaqItem } from '../data/faq';
+import { PLANES, AUTOMATIZACION_ORDER, desde, planServiceSchema } from '../data/planes';
 
 const msg = 'Hola Juan, vengo desde su sitio web. Me interesa la consultoría en IA para mi empresa.';
 const description =
-  'Consultor en IA para empresas y pymes en Chile: automatización de flujos, agentes de IA e IA aplicada al equipo. Diagnóstico, implementación y mantención.';
+  'Consultor en IA para pymes y medianas en Chile: agentes de IA en WhatsApp e Instagram, automatización y consultoría por fases. Precios publicados y diagnóstico gratis.';
 
 const lineas = [
   {
@@ -31,12 +34,12 @@ const lineas = [
 
 const etapas = [
   {
-    n: '01', t: 'Diagnóstico', d: 'Levantamiento de cómo opera la empresa: canales de entrada de clientes, responsables, herramientas y puntos donde se pierde tiempo.',
-    items: ['Mapa de procesos actuales', 'Puntos de pérdida de tiempo y de consultas', 'Qué conviene automatizar y qué no', 'Propuesta por fases con presupuesto'],
-    note: 'Si se contrata la implementación, el valor del diagnóstico se descuenta.',
+    n: '01', t: 'Diagnóstico gratis', d: 'Conversación de 30 minutos, por videollamada o presencial en la región, para entender cómo opera tu empresa y dónde se pierde tiempo.',
+    items: ['3 oportunidades concretas para tu caso', 'Qué conviene automatizar y qué no', 'Propuesta por fases en 48 horas, si tiene sentido'],
+    note: 'El diagnóstico es gratis. No incluye informe escrito.',
   },
   {
-    n: '02', t: 'Implementación', d: 'Diseño y construcción de los flujos con las herramientas y datos de la empresa: primero un prototipo acotado, luego la integración completa.',
+    n: '02', t: 'Implementación', d: 'Diseño y construcción de los flujos con las herramientas y datos de la empresa: primero un piloto acotado, luego la integración completa.',
     items: ['Flujos probados con casos reales', 'Conexión con las herramientas existentes', 'Documentación de funcionamiento', 'Capacitación al equipo'],
   },
   {
@@ -46,10 +49,14 @@ const etapas = [
 ];
 
 const faq: FaqItem[] = [
+  { q: '¿Cuánto cuesta?', a: `Los precios están publicados: Agente Starter ${desde(PLANES.starter)}, Campaña + agente ${desde(PLANES.combo)} y la consultoría por fases ${PLANES.consultoria.setupLabel} + IVA. El diagnóstico de 30 minutos es gratis.` },
   { q: '¿Qué tipo de empresas pueden trabajar contigo?', a: 'Empresas y pymes con equipo y procesos que se repiten a diario: atención por WhatsApp, cotizaciones, seguimiento de clientes, agendamiento o gestión documental.' },
   { q: '¿Cuánto toma una implementación?', a: 'Depende del alcance. Se trabaja por fases cortas, partiendo por un prototipo que se puede revisar funcionando. El diagnóstico entrega plazos concretos para cada fase.' },
   { q: '¿Es necesario cambiar las herramientas actuales?', a: 'En general no. El objetivo es conectar lo que la empresa ya usa. Si alguna herramienta limita el proceso, se plantea con alternativas.' },
-  { q: '¿Cómo se resguardan los datos de los clientes?', a: 'Se trabaja con el mínimo acceso necesario, se documenta dónde queda cada dato y quién tiene acceso, y se definen por escrito las condiciones de tratamiento.' },
+  { q: '¿Cómo se resguardan los datos de los clientes?', a: 'Según la Ley 21.719: se trabaja con el mínimo acceso necesario, se documenta dónde queda cada dato y quién tiene acceso, y se definen por escrito las condiciones de tratamiento. NDA a solicitud.' },
+  { q: '¿De quién son las cuentas del agente?', a: 'Tuyas. Las cuentas de IA, Cloudflare y WhatsApp quedan a nombre de tu empresa y su costo (aprox. $5.000–30.000 al mes) lo pagas directo al proveedor.' },
+  FAQ_PRECIOS[1],
+  FAQ_PRECIOS[4],
   { q: '¿Qué ocurre si un agente de IA se equivoca?', a: 'Cada agente se prueba con casos reales antes de operar y se definen las situaciones que siempre revisa una persona. Durante la mantención se monitorean sus respuestas.' },
 ];
 ---
@@ -61,6 +68,7 @@ const faq: FaqItem[] = [
   waMessage={msg}
   schema={[
     serviceSchema({ name: 'Consultoría en inteligencia artificial', serviceType: 'Consultoría en inteligencia artificial', description, path: '/consultor-ia' }),
+    ...AUTOMATIZACION_ORDER.map((id) => planServiceSchema(PLANES[id])),
     {
       '@context': 'https://schema.org',
       '@type': 'HowTo',
@@ -72,8 +80,9 @@ const faq: FaqItem[] = [
 >
   <PageHero eyebrow="Consultoría en inteligencia artificial">
     <Fragment slot="title">Inteligencia artificial aplicada a <em>cómo opera tu empresa</em>.</Fragment>
-    <Fragment slot="lead"><p>Automatización de flujos, agentes de IA y adopción de IA en el equipo, para empresas y pymes. Cada proyecto parte con un diagnóstico y termina con soluciones funcionando, documentadas y medidas.</p></Fragment>
-    <a class="btn btn--agua" href={waLink(msg)} target="_blank" rel="noopener">Solicitar diagnóstico completo</a>
+    <Fragment slot="lead"><p>¿Tu chatbot responde pero no vende? Agentes de IA que atienden, califican y agendan en tus canales, automatización de flujos e IA para tu equipo. Todo parte con un diagnóstico gratis de 30 minutos y termina funcionando, documentado y medido.</p></Fragment>
+    <DiagnosticoButton />
+    <a class="btn btn--ghost" href="#planes">Ver precios</a>
   </PageHero>
   <Wave from="var(--perla)" to="var(--bruma)" />
 
@@ -95,6 +104,21 @@ const faq: FaqItem[] = [
           </article>
         ))}
       </div>
+    </div>
+  </section>
+
+  <!-- PLANES -->
+  <section class="section bg-bruma" id="planes">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Planes</p>
+        <h2 data-reveal style="--d:80ms">No pierdes ninguna consulta y <em>sabes cuánto te cuesta cada cliente</em>.</h2>
+        <p class="lead" data-reveal style="--d:160ms">Precios en pesos + IVA. Cuentas y datos siempre a tu nombre.</p>
+      </div>
+      <div class="grid grid-3">
+        {AUTOMATIZACION_ORDER.map((id, i) => <PlanCard plan={PLANES[id]} dark={PLANES[id].star} delay={i * 90} />)}
+      </div>
+      <p data-reveal style="margin-top:28px"><a class="link-arrow" href="/planes">Ver todos los planes y condiciones →</a></p>
     </div>
   </section>
   <Wave from="var(--bruma)" to="var(--marino)" />
@@ -145,7 +169,7 @@ const faq: FaqItem[] = [
           </article>
         ))}
       </div>
-      <p class="muted pricing-note" data-reveal>Cada proyecto se cotiza a partir del diagnóstico, con una propuesta por fases, plazos y presupuesto.</p>
+      <p class="muted pricing-note" data-reveal>Los planes tienen precio publicado. La consultoría por fases parte {PLANES.consultoria.setupLabel} + IVA y se cotiza con una propuesta por fases, plazos y presupuesto, en 48 horas después del diagnóstico. <a href="/planes">Ver planes</a>.</p>
     </div>
   </section>
 
@@ -177,7 +201,7 @@ const faq: FaqItem[] = [
   </section>
 
   <Wave from="var(--perla)" to="var(--marino)" />
-  <CtaBand message={msg} title="¿Qué proceso está <em>consumiendo más tiempo</em>?" />
+  <CtaBand message={msg} title="¿Qué proceso está <em>consumiendo más tiempo</em>?" text="Cuéntamelo en el diagnóstico gratis de 30 minutos. Te llevas 3 oportunidades concretas y, si no conviene automatizar, te lo digo." />
 </Base>
 
 <script>

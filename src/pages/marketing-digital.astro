@@ -5,12 +5,15 @@ import CtaBand from '../components/CtaBand.astro';
 import Faq from '../components/Faq.astro';
 import Wave from '../components/Wave.astro';
 import WaterCanvas from '../components/WaterCanvas.astro';
-import { waLink } from '../data/site';
-import { faqSchema, serviceSchema, type FaqItem } from '../data/faq';
+import PlanCard from '../components/PlanCard.astro';
+import ComboFlow from '../components/ComboFlow.astro';
+import DiagnosticoButton from '../components/DiagnosticoButton.astro';
+import { faqSchema, serviceSchema, FAQ_PRECIOS, type FaqItem } from '../data/faq';
+import { PLANES, CONTENIDO_ORDER, desde, clp, planServiceSchema } from '../data/planes';
 
-const msg = 'Hola Juan, vengo desde su sitio web. Me interesa un diagnóstico de marketing para mi empresa.';
+const msg = 'Hola Juan, vengo desde tu sitio web. Me interesa el diagnóstico gratis de marketing para mi empresa.';
 const description =
-  'Marketing para empresas y pymes en Chile: estrategia, campañas en Meta, Google y LinkedIn, redes sociales, contenido, sitios web y SEO.';
+  'Marketing para pymes en Chile: campañas Meta con reporte de costo por contacto, contenido semanal, web y SEO. Precios publicados y diagnóstico gratis.';
 
 const servicios = [
   {
@@ -32,14 +35,16 @@ const servicios = [
 ];
 
 const proceso = [
-  { n: 'Diagnóstico', t: 'Revisión del punto de partida', d: 'Situación actual de la marca, canales, competencia, resultados previos y objetivos comerciales.' },
-  { n: 'Propuesta', t: 'Estrategia y presupuesto', d: 'Plan con objetivos, canales, acciones e inversión sugerida en publicidad, junto al presupuesto del servicio.' },
+  { n: 'Diagnóstico gratis', t: 'Revisión del punto de partida', d: '30 minutos para revisar tu marca, canales, competencia, resultados previos y objetivos comerciales.' },
+  { n: 'Propuesta', t: 'Plan y precio en 48 horas', d: 'Plan con objetivos, canales, acciones e inversión sugerida en publicidad, con el plan que corresponde y su precio publicado.' },
   { n: 'Ejecución', t: 'Implementación', d: 'Campañas, contenidos y sitio en marcha, con medición configurada desde el primer día.' },
   { n: 'Medición', t: 'Reporte y ajuste', d: 'Reporte periódico de resultados y ajustes según lo que muestran los datos.' },
 ];
 
 const faq: FaqItem[] = [
-  { q: '¿Cómo se define el valor del servicio?', a: 'Cada empresa parte con un diagnóstico. Con esa información se entrega una propuesta con estrategia, alcance y presupuesto ajustado a sus objetivos.' },
+  { q: '¿Cuánto cuesta?', a: `Los precios están publicados: Plan Base ${clp(PLANES.base.setup)} + IVA (pago único), Gestión de campañas Meta ${desde(PLANES.campanas)}, Plan Crecer ${desde(PLANES.crecer)} y Plan Escalar ${desde(PLANES.escalar)}. El diagnóstico de 30 minutos es gratis.` },
+  FAQ_PRECIOS[1],
+  FAQ_PRECIOS[2],
   { q: '¿La inversión en publicidad está incluida?', a: 'No. La inversión en publicidad se paga directamente a Meta, Google o LinkedIn con un medio de pago de la empresa, lo que permite controlar en todo momento cuánto se gasta. Los honorarios se indican por separado en la propuesta.' },
   { q: '¿Se garantizan ventas?', a: 'No. Se definen objetivos medibles, se reporta qué está funcionando y se ajusta en base a datos. Ningún proveedor serio puede garantizar ventas.' },
   { q: '¿Qué relación tiene el marketing con la inteligencia artificial?', a: 'Una campaña que genera consultas pierde valor si nadie responde a tiempo. Las campañas se pueden conectar con un agente de IA que responde de inmediato, registra al contacto y hace seguimiento.' },
@@ -61,14 +66,15 @@ const faq: FaqItem[] = [
         itemListElement: servicios.map((s) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: s.t, description: s.d } })),
       },
     },
+    ...(['campanas', ...CONTENIDO_ORDER] as const).map((id) => planServiceSchema(PLANES[id])),
     faqSchema(faq),
   ]}
 >
   <PageHero eyebrow="Marketing">
     <Fragment slot="title">Marketing orientado a <em>generar clientes</em>.</Fragment>
-    <Fragment slot="lead"><p>Estrategia, campañas, contenido y sitios web para empresas y pymes en Chile. Cada trabajo parte con un diagnóstico y una propuesta con objetivos, alcance y presupuesto definidos.</p></Fragment>
-    <a class="btn btn--agua" href={waLink(msg)} target="_blank" rel="noopener">Solicitar diagnóstico de marketing</a>
-    <a class="btn btn--ghost" href="#servicios">Ver servicios</a>
+    <Fragment slot="lead"><p>Campañas, contenido y sitios web para pymes en Chile, medidos desde el primer día: cada mes sabes cuánto te cuesta cada contacto. Todo parte con un diagnóstico gratis de 30 minutos.</p></Fragment>
+    <DiagnosticoButton />
+    <a class="btn btn--ghost" href="#planes">Ver planes y precios</a>
   </PageHero>
   <Wave from="var(--perla)" to="var(--bruma)" />
 
@@ -77,7 +83,7 @@ const faq: FaqItem[] = [
       <div class="section-head">
         <p class="eyebrow" data-reveal>Servicios</p>
         <h2 data-reveal style="--d:80ms">Cuatro áreas que <em>funcionan mejor en conjunto</em>.</h2>
-        <p class="lead" data-reveal style="--d:160ms">Se pueden contratar por separado o combinadas. El diagnóstico define por dónde conviene comenzar.</p>
+        <p class="lead" data-reveal style="--d:160ms">Se pueden contratar por separado o combinadas. El diagnóstico gratis define por dónde conviene comenzar.</p>
       </div>
       <div class="grid grid-2">
         {servicios.map((s, i) => (
@@ -91,21 +97,42 @@ const faq: FaqItem[] = [
       </div>
     </div>
   </section>
-  <Wave from="var(--bruma)" to="var(--marino)" />
+  <Wave from="var(--bruma)" to="var(--perla)" />
+
+  <!-- PLANES -->
+  <section class="section" id="planes">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Planes</p>
+        <h2 data-reveal style="--d:80ms">Contenido y campañas <em>con precio publicado</em>.</h2>
+        <p class="lead" data-reveal style="--d:160ms">Pesos + IVA. La pauta la pagas tú directo a la plataforma. Crecer y Escalar tienen cupo limitado.</p>
+      </div>
+      <div class="grid grid-3">
+        {CONTENIDO_ORDER.map((id, i) => <PlanCard plan={PLANES[id]} delay={i * 90} />)}
+      </div>
+      <div class="grid grid-2" style="margin-top:clamp(16px, 2.4vw, 28px)">
+        <PlanCard plan={PLANES.campanas} />
+        <div class="card" data-reveal style="--d:90ms">
+          <span class="num">¿Y si sumas un agente?</span>
+          <h3>Campaña + agente</h3>
+          <p>{PLANES.combo.summary}</p>
+          <p class="price">{clp(PLANES.combo.monthly)}<small>/mes + IVA</small></p>
+          <a class="link-arrow" href="/planes#combo">Ver la oferta estrella →</a>
+        </div>
+      </div>
+      <p data-reveal style="margin-top:28px"><a class="link-arrow" href="/planes">Ver todos los planes y condiciones →</a></p>
+    </div>
+  </section>
+  <Wave from="var(--perla)" to="var(--marino)" />
 
   <section class="section on-dark combo-sec">
     <WaterCanvas lines={7} opacity={0.35} />
     <div class="container combo">
       <div>
         <p class="eyebrow" data-reveal>Marketing + inteligencia artificial</p>
-        <h2 data-reveal style="--d:80ms">La campaña genera la consulta. <em>La IA asegura la respuesta.</em></h2>
+        <h2 data-reveal style="--d:80ms">Tu campaña trae la consulta. <em>Tu agente la responde en minutos.</em></h2>
       </div>
-      <div class="combo-flow">
-        <div class="step" data-reveal><span>1</span><p><strong>La campaña o el contenido</strong> atrae al público correcto.</p></div>
-        <div class="step" data-reveal style="--d:80ms"><span>2</span><p><strong>El contacto escribe</strong> por WhatsApp, Instagram o el sitio web.</p></div>
-        <div class="step" data-reveal style="--d:160ms"><span>3</span><p><strong>Un agente de IA</strong> responde de inmediato y registra sus datos.</p></div>
-        <div class="step" data-reveal style="--d:240ms"><span>4</span><p><strong>El contacto queda en seguimiento</strong>, asociado a la campaña que lo originó.</p></div>
-      </div>
+      <ComboFlow />
     </div>
   </section>
   <Wave from="var(--marino)" to="var(--perla)" />
@@ -114,8 +141,8 @@ const faq: FaqItem[] = [
     <div class="container">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Cómo trabajo</p>
-        <h2 data-reveal style="--d:80ms">Diagnóstico, <em>propuesta y presupuesto</em>.</h2>
-        <p class="lead" data-reveal style="--d:160ms">No hay planes genéricos: el alcance y la inversión se definen después de conocer la empresa.</p>
+        <h2 data-reveal style="--d:80ms">Diagnóstico gratis, <em>propuesta en 48 horas</em>.</h2>
+        <p class="lead" data-reveal style="--d:160ms">Los precios están publicados; el diagnóstico sirve para elegir el plan que de verdad te conviene.</p>
       </div>
       <ol class="proceso">
         {proceso.map((p, i) => (
@@ -141,7 +168,7 @@ const faq: FaqItem[] = [
   </section>
 
   <Wave from="var(--bruma)" to="var(--marino)" />
-  <CtaBand message={msg} title="¿Tu marketing está <em>generando clientes</em>?" text="Cuéntame qué acciones has realizado y qué resultados has obtenido. Con esa información preparo un diagnóstico y una propuesta con presupuesto." />
+  <CtaBand message={msg} title="¿Tu marketing está <em>generando clientes</em>?" text="Cuéntame qué has hecho y qué resultados has tenido. En el diagnóstico gratis de 30 minutos te llevas 3 oportunidades concretas y, si tiene sentido, una propuesta en 48 horas." />
 </Base>
 
 <style>
@@ -149,12 +176,6 @@ const faq: FaqItem[] = [
   .combo { position: relative; display: grid; gap: 40px; align-items: center; }
   @media (min-width: 900px) { .combo { grid-template-columns: 1fr 1.1fr; gap: 72px; } }
   .combo h2 { margin-top: 18px; }
-  .combo-flow { display: grid; position: relative; }
-  .step { display: grid; grid-template-columns: 48px 1fr; gap: 18px; align-items: center; padding: 16px 0; position: relative; }
-  .step:not(:last-child)::after { content: ''; position: absolute; left: 23px; top: 64px; bottom: -16px; width: 1.5px; background: linear-gradient(var(--corriente), rgba(30, 158, 147, 0.2)); }
-  .step span { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; border: 1.5px solid var(--corriente); font-family: var(--serif); font-style: italic; font-size: 1.2rem; color: var(--corriente-soft); }
-  .step p { color: rgba(245, 243, 236, 0.78); }
-  .step strong { color: var(--perla); font-weight: 600; }
   .proceso { list-style: none; padding: 0; display: grid; gap: clamp(16px, 2.4vw, 28px); }
   @media (min-width: 760px) { .proceso { grid-template-columns: repeat(2, 1fr); } }
   @media (min-width: 1100px) { .proceso { grid-template-columns: repeat(4, 1fr); } }

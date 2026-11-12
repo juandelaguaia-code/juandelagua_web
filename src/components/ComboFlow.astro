@@ -1,0 +1,27 @@
+---
+// Diagrama de la oferta estrella: anuncio → consulta → agente → reporte. Va sobre fondo Marino (.on-dark).
+interface Props { steps?: { t: string; d: string }[] }
+const {
+  steps = [
+    { t: 'El anuncio', d: 'atrae al público correcto en Instagram o Facebook.' },
+    { t: 'La consulta', d: 'llega por WhatsApp o Instagram, a cualquier hora.' },
+    { t: 'Tu agente de IA', d: 'responde en minutos, califica y agenda. Si hace falta, deriva a una persona.' },
+    { t: 'El reporte mensual', d: 'te muestra cuánto te costó cada contacto y qué campaña lo trajo.' },
+  ],
+} = Astro.props;
+---
+
+<div class="combo-flow">
+  {steps.map((s, i) => (
+    <div class="step" data-reveal style={`--d:${i * 80}ms`}><span>{i + 1}</span><p><strong>{s.t}</strong> {s.d}</p></div>
+  ))}
+</div>
+
+<style>
+  .combo-flow { display: grid; position: relative; }
+  .step { display: grid; grid-template-columns: 48px 1fr; gap: 18px; align-items: center; padding: 16px 0; position: relative; }
+  .step:not(:last-child)::after { content: ''; position: absolute; left: 23px; top: 64px; bottom: -16px; width: 1.5px; background: linear-gradient(var(--corriente), rgba(30, 158, 147, 0.2)); }
+  .step span { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; border: 1.5px solid var(--corriente); font-family: var(--serif); font-style: italic; font-size: 1.2rem; color: var(--corriente-soft); }
+  .step p { color: rgba(245, 243, 236, 0.78); }
+  .step strong { color: var(--perla); font-weight: 600; }
+</style>

@@ -1,0 +1,69 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Wave from '../components/Wave.astro';
+import DiagnosticoButton from '../components/DiagnosticoButton.astro';
+
+const casos = (await getCollection('casos', (c) => c.data.authorized)).sort((a, b) => +b.data.date - +a.data.date);
+const description = 'Casos de clientes de Juan del Agua: problema, qué se hizo, cifras antes y después y testimonio. Publicados solo con autorización (Ley 21.719).';
+---
+
+<Base title="Casos: agentes de IA y campañas medidas" description={description} breadcrumbs={[{ name: 'Casos', path: '/casos' }]}>
+  <PageHero eyebrow="Casos">
+    <Fragment slot="title">Casos reales, <em>con cifras</em>.</Fragment>
+    <Fragment slot="lead"><p>Problema, qué se hizo, cifras antes y después, y lo que dice el cliente. Solo se publica con autorización escrita; si no, de forma anónima y con cifras agregadas.</p></Fragment>
+    <DiagnosticoButton />
+  </PageHero>
+  <Wave from="var(--perla)" to="var(--bruma)" />
+
+  <section class="section bg-bruma">
+    <div class="container">
+      {casos.length === 0 ? (
+        <div class="card" data-reveal>
+          <h2>Estoy documentando los primeros casos con autorización.</h2>
+          <p>Mientras, puedes ver el proceso real, con pantallas y errores incluidos, en el <a href="/blog">blog</a>.</p>
+          <a class="link-arrow" href="/blog">Ir al blog →</a>
+        </div>
+      ) : (
+        <div class="grid grid-2">
+          {casos.map((c) => (
+            <article class="card" data-reveal>
+              <span class="tag">{c.data.service}</span>
+              <h2>{c.data.title}</h2>
+              <p class="muted">{c.data.client}</p>
+              <h3>Problema</h3>
+              <p>{c.data.problem}</p>
+              <h3>Qué se hizo</h3>
+              <p>{c.data.solution}</p>
+              {c.data.metrics.length > 0 && (
+                <div class="table-wrap">
+                  <table>
+                    <thead><tr><th>Indicador</th><th>Antes</th><th>Después</th></tr></thead>
+                    <tbody>{c.data.metrics.map((m) => <tr><td>{m.label}</td><td>{m.before}</td><td>{m.after}</td></tr>)}</tbody>
+                  </table>
+                </div>
+              )}
+              {c.data.testimonial && (
+                <blockquote>
+                  <p>“{c.data.testimonial}”</p>
+                  {c.data.testimonialAuthor && <footer>— {c.data.testimonialAuthor}</footer>}
+                </blockquote>
+              )}
+            </article>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <Wave from="var(--bruma)" to="var(--marino)" />
+  <CtaBand />
+</Base>
+
+<style>
+  table { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--linea); }
+  .tag { justify-self: start; }
+</style>

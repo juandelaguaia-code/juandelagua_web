@@ -5,8 +5,12 @@ export const SITE = {
   legalName: 'Juan del Agua Araneda Gattavara',
   url: 'https://juandelagua.com',
   tagline: 'Consultor de IA y marketing para empresas y pymes en Chile',
+  /** Firma de marca */
+  signature: 'IA y marketing con criterio, para que recuperes tu tiempo.',
+  /** Frase corta de la propuesta (hero) */
+  promise: 'Delega tu IA y tu marketing en una sola persona con criterio, y recupera tu tiempo.',
   description:
-    'Consultoría en inteligencia artificial y marketing para empresas y pymes en Chile: automatización de flujos, agentes de IA y estrategia digital medible.',
+    'Agentes de IA, campañas y contenido para pymes y medianas en Chile: no pierdes ninguna consulta y sabes cuánto te cuesta cada cliente. Diagnóstico gratis.',
   locale: 'es_CL',
   region: 'Región de Valparaíso',
   city: 'Viña del Mar',
@@ -19,6 +23,11 @@ export const SITE = {
   privacyEmail: 'juandelagua.ia@gmail.com',
   // RUT del responsable (persona natural o empresa). Si está vacío, no se muestra en las páginas legales.
   rut: '',
+  // Agenda del diagnóstico gratis (Cal.com, 30 min, con formulario previo).
+  // Mientras esté vacío, los botones de "Diagnóstico gratis" llevan a WhatsApp.
+  calUrl: '',
+  // Horario de respuesta comercial
+  hours: 'L–V 9:00–19:00 · sáb 10:00–13:00',
   whatsappNumber: '56984388246',
   whatsappDisplay: '+56 9 8438 8246',
   social: {
@@ -31,10 +40,56 @@ export const SITE = {
 export const waLink = (message = 'Hola Juan, vengo desde su sitio web y me gustaría conversar sobre mi empresa.') =>
   `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(message)}`;
 
+const DIAG_MSG = 'Hola Juan, vengo desde tu sitio web y quiero agendar el diagnóstico gratis de 30 minutos.';
+
+/** Link del botón "Diagnóstico gratis": Cal.com si está configurado; si no, WhatsApp. */
+export const diagnosticoHref = () => SITE.calUrl || waLink(DIAG_MSG);
+
 export const NAV = [
   { href: '/consultor-ia', label: 'Consultoría IA' },
   { href: '/marketing-digital', label: 'Marketing' },
+  { href: '/planes', label: 'Planes' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/comunidad', label: 'Comunidad' },
   { href: '/sobre-mi', label: 'Sobre mí' },
+] as const;
+
+/**
+ * Comunidad (producto endosado: "[nombre] by Juan del Agua").
+ * El nombre es provisional: cámbialo aquí y se actualiza en todo el sitio.
+ */
+export const COMMUNITY = {
+  name: 'Comunidad Corriente',
+  endorsement: 'by Juan del Agua',
+  tagline: 'IA sin programar, con el proceso real en 1 minuto y en español chileno.',
+  description:
+    'Videos, plantillas y comunidad para usar IA sin programar y automatizar mensajes, reservas y contenido, con el proceso real en 1 minuto y en español chileno.',
+  // Link al grupo de WhatsApp de avisos (solo se muestra a miembros activos). Vacío = no se muestra.
+  whatsappGroupUrl: '',
+  pricing: [
+    { when: 'Hasta junio 2027', price: 'Gratis', note: 'Entras gratis mientras armamos la comunidad.' },
+    { when: 'Desde julio 2027 · fundadores', price: '$5.000/mes', note: 'Precio congelado mientras sigas activo.' },
+    { when: 'Desde diciembre 2027 · nuevos', price: '$9.900/mes', note: 'Precio para quienes entren desde esa fecha.' },
+  ],
+  pricingNote: 'Precios en pesos chilenos, IVA incluido.',
+} as const;
+
+/** Valores de marca (Brand Book) */
+export const VALUES = [
+  { name: 'Claridad estratégica', d: 'Antes de implementar, se entiende el problema. Cada decisión tiene un porqué y un plan medible.' },
+  { name: 'Autenticidad y cercanía', d: 'De tú a tú, sin lenguaje corporativo. Se muestra el proceso real, con los errores incluidos.' },
+  { name: 'Pragmatismo realista', d: 'Lo más simple que funcione. Y si no conviene automatizar, se dice.' },
+  { name: 'El buen vivir', d: 'El objetivo no es solo facturar más: es recuperar tiempo para la familia, el deporte, la salud y el ocio.' },
+] as const;
+
+/** Manifiesto (texto literal del Brand Book) */
+export const MANIFESTO = [
+  'Hay un mar de información sobre inteligencia artificial. Todos los días aparece una herramienta nueva, una promesa nueva, un experto nuevo. Con tanto ruido, la mayoría de las personas y empresas se enreda, se cansa o ni siquiera se atreve a partir.',
+  'Yo creo que la tecnología tiene que servir para algo concreto.',
+  'Creo en el criterio por sobre la moda. No todo se automatiza, y decir cuándo no conviene también es parte del trabajo.',
+  'Creo en mostrar el proceso completo, con pantallas reales y los errores incluidos.',
+  'Y creo, sobre todo, que el objetivo no es solo facturar más. Es devolverle al equipo su eficiencia, a la gerencia su tranquilidad y a cada persona el tiempo para lo que importa cuando se apaga el computador: la familia, el deporte, la salud, los amigos, el ocio.',
+  'Por eso hago lo que hago. Para que avances en este mar con calma, acompañado por alguien que conoce la corriente. Y para que, al final del día, te quede tiempo para vivir.',
 ] as const;
 
 /**
@@ -52,7 +107,7 @@ export const CERTIFICATIONS = [
 export const METHOD = [
   { name: 'Escuchar', q: '¿Qué está consumiendo más tiempo?', d: 'Levantamiento de cómo opera la empresa hoy: responsables, canales de entrada de clientes y puntos donde el trabajo se detiene.' },
   { name: 'Detectar', q: '¿Qué conviene automatizar y qué no?', d: 'Se separa lo que vale la pena resolver con IA de lo que conviene ordenar primero o dejar como está. Cuando no conviene automatizar, se dice.' },
-  { name: 'Prototipar', q: 'Una versión acotada primero.', d: 'Se construye una versión pequeña del flujo para validar la idea antes de una inversión mayor.' },
+  { name: 'Prototipar', q: 'Un piloto acotado primero.', d: 'Se construye un piloto pequeño del flujo para validar la idea con casos reales antes de la inversión mayor. Si el piloto no convence, se para ahí.' },
   { name: 'Mostrar', q: 'Validación con casos reales.', d: 'El prototipo se revisa funcionando con datos y situaciones reales de la empresa, junto al equipo.' },
   { name: 'Implementar', q: 'Integración a la operación.', d: 'Se conecta con las herramientas que ya se usan, se documenta y se capacita al equipo. Nada queda como caja negra.' },
   { name: 'Medir', q: '¿Qué cambió en la práctica?', d: 'Se comparan indicadores antes y después: horas, tiempos de respuesta y solicitudes atendidas.' },

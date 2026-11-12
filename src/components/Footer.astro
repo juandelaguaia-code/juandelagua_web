@@ -1,5 +1,5 @@
 ---
-import { SITE, waLink } from '../data/site';
+import { SITE, COMMUNITY, waLink } from '../data/site';
 const year = new Date().getFullYear();
 ---
 
@@ -7,7 +7,7 @@ const year = new Date().getFullYear();
   <div class="container inner">
     <div class="brand">
       <a href="/" class="wordmark">Juan <em>del Agua</em></a>
-      <p class="muted">Consultoría en inteligencia artificial y marketing para empresas y pymes. Base en Viña del Mar, con atención en todo Chile, remota y presencial.</p>
+      <p class="muted">{SITE.signature} Agentes de IA, campañas y contenido para empresas y pymes. Base en Viña del Mar, con atención en todo Chile, remota y presencial.</p>
       <a class="btn btn--agua" href={waLink()} target="_blank" rel="noopener">Escribir por WhatsApp</a>
     </div>
     <nav aria-label="Pie de página" class="cols">
@@ -16,6 +16,15 @@ const year = new Date().getFullYear();
         <ul>
           <li><a href="/consultor-ia">Consultoría IA</a></li>
           <li><a href="/marketing-digital">Marketing</a></li>
+          <li><a href="/planes">Planes y precios</a></li>
+          <li><a href="/casos">Casos</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="col-title">Aprende</p>
+        <ul>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/comunidad">{COMMUNITY.name}</a></li>
         </ul>
       </div>
       <div>

@@ -1,17 +1,37 @@
 # Juan del Agua
 
-> Juan del Agua (Juan del Agua Araneda Gattavara) es consultor en inteligencia artificial y marketing para empresas y pymes en Chile. Base en Viña del Mar, Región de Valparaíso; atiende en todo Chile, remoto y presencial. Certificado por Anthropic (Anthropic Academy) y estudiante de Ingeniería en Marketing Digital en Duoc UC (cursando).
+> Juan del Agua (Juan del Agua Araneda Gattavara) es consultor en inteligencia artificial y marketing para pymes y medianas empresas de servicios en Chile. Base en Viña del Mar, Región de Valparaíso; atiende en todo Chile, remoto y presencial. Certificado por Anthropic (Anthropic Academy) y estudiante de Ingeniería en Marketing Digital en Duoc UC (cursando).
 
-Implementa automatización de flujos de trabajo, agentes de IA para atención y ventas (por ejemplo en WhatsApp), integración de canales y CRM, y adopción de IA en equipos. En marketing trabaja estrategia, campañas en Meta, Google y LinkedIn, contenido, sitios web y SEO. Cada proyecto parte con un diagnóstico y se entrega funcionando, documentado y medido.
+Propuesta: "Delega tu IA y tu marketing en una sola persona con criterio, y recupera tu tiempo." Agentes de IA, campañas y contenido para que los dueños y gerentes de pymes no pierdan ninguna consulta y sepan cuánto les cuesta cada cliente: el agente responde en minutos y cada mes se reporta el costo por contacto. Trabaja por fases, con plan, plazos y documentación, y dice cuándo NO conviene automatizar. Datos protegidos según la Ley 21.719.
 
-Contacto: WhatsApp +56 9 8438 8246 · https://juandelagua.com/contacto
+Firma: "IA y marketing con criterio, para que recuperes tu tiempo."
+
+Contacto: WhatsApp +56 9 8438 8246 · https://juandelagua.com/contacto · respuesta en menos de 2 horas hábiles (L–V 9:00–19:00, sáb 10:00–13:00).
+
+## Oferta y precios (pesos chilenos + IVA)
+
+- Diagnóstico: gratis, 30 minutos, por videollamada o presencial en la Región de Valparaíso. Entrega 3 oportunidades concretas; no incluye informe escrito. Propuesta en 48 horas.
+- Plan Base: $290.000 pago único (auditoría, brandbook básico, 8 plantillas, bio y enlace único, WhatsApp Business, capacitación).
+- Agente Starter: $590.000 instalación + $89.000/mes (agente de IA con el catálogo del cliente en WhatsApp o Instagram que atiende, vende, agenda y deriva a una persona).
+- Gestión de campañas Meta: $120.000 instalación + $190.000/mes (la pauta la paga el cliente directo a Meta).
+- Campaña + agente (oferta estrella): $790.000 instalación + $259.000/mes (por separado serían $279.000/mes).
+- Plan Crecer (cupo limitado): $590.000 + $450.000/mes.
+- Plan Escalar (cupo limitado): $990.000 + $690.000/mes.
+- Consultoría IA por fases: desde $1.500.000 por fase.
+- Mantención web: $40.000/mes.
+
+Condiciones: permanencia mínima de 3 meses; 15% de descuento en la instalación por pronto pago; cuentas, accesos y datos siempre a nombre del cliente; no se garantizan ventas, sí entregas, plazos y reporte mensual.
 
 ## Páginas
 
-- [Inicio](https://juandelagua.com/): resumen de servicios y preguntas frecuentes
-- [Consultoría en IA](https://juandelagua.com/consultor-ia): líneas de trabajo, método de 7 pasos y cómo se contrata
-- [Marketing](https://juandelagua.com/marketing-digital): servicios de estrategia, campañas, contenido y sitios web
-- [Sobre mí](https://juandelagua.com/sobre-mi): trayectoria, valores y certificaciones verificables
+- [Inicio](https://juandelagua.com/): propuesta, oferta estrella Campaña + agente y cómo partir
+- [Planes y precios](https://juandelagua.com/planes): todos los planes, condiciones y calculadora de retorno
+- [Consultoría en IA](https://juandelagua.com/consultor-ia): agentes de IA, automatización, método de 7 pasos
+- [Marketing](https://juandelagua.com/marketing-digital): campañas, contenido, sitios web y SEO
+- [Blog](https://juandelagua.com/blog): IA para pymes, automatización y agentes, marketing y campañas, casos, "Creando mi marca" y buen vivir. RSS: https://juandelagua.com/blog/rss.xml
+- [Casos](https://juandelagua.com/casos): casos publicados con autorización
+- [Comunidad Corriente by Juan del Agua](https://juandelagua.com/comunidad): comunidad para microempresarios e independientes que quieren usar IA sin programar (feed, talleres mensuales, plantillas, cursos). Gratis hasta junio 2027; desde julio 2027 $5.000/mes para fundadores (precio congelado) y desde diciembre 2027 $9.900/mes para nuevos miembros, IVA incluido.
+- [Sobre mí](https://juandelagua.com/sobre-mi): manifiesto, valores y certificaciones verificables
 - [Contacto](https://juandelagua.com/contacto)
 
 ## Certificaciones (Anthropic Academy)

@@ -1,7 +1,7 @@
 # juandelagua.com
 
 Sitio de **Juan del Agua**: consultor de IA y marketing para empresas y pymes en Chile.
-Astro: páginas estáticas + un endpoint Node (`/api/diagnostico`) para el agente de diagnóstico con IA. Docker, pensado para EasyPanel.
+Astro: páginas de marketing pre-generadas (estáticas) + servidor Node para las rutas dinámicas. Docker, pensado para EasyPanel.
 
 ## Trabajar en local
 
@@ -12,15 +12,15 @@ npm run build      # genera dist/
 npm run preview    # sirve el build
 ```
 
-Para probar el agente con IA en local, copia `.env.example` como `.env` y pon tu `ANTHROPIC_API_KEY`.
-Sin clave, el diagnóstico funciona igual con un informe por reglas.
 
 ## Dónde se edita cada cosa
 
 | Qué | Archivo |
 |---|---|
-| WhatsApp, redes, textos base, menú, método (consultoría IA), certificaciones | `src/data/site.ts` |
-| Preguntas frecuentes del inicio | `src/data/faq.ts` |
+| WhatsApp, redes, textos base, menú, método, certificaciones, link de Cal.com (`calUrl`), comunidad (`COMMUNITY`), valores y manifiesto | `src/data/site.ts` |
+| **Precios**, orden de los planes, cupos de lanzamiento (`LAUNCH.left`), condiciones comerciales | `src/data/planes.ts` |
+| Preguntas frecuentes | `src/data/faq.ts` |
+| Casos de clientes | `src/content/casos/*.md` (ver `LEEME.txt`) |
 | Colores, tipografía, botones, tarjetas | `src/styles/global.css` |
 | Cada página | `src/pages/*.astro` (la ruta = el nombre del archivo) |
 | SEO global, schema (JSON-LD), Open Graph | `src/layouts/Base.astro` |
@@ -30,7 +30,7 @@ Sin clave, el diagnóstico funciona igual con un informe por reglas.
 
 ## Páginas
 
-`/` · `/consultor-ia` (incluye el método) · `/marketing-digital` · `/sobre-mi` · `/contacto` · `/privacidad` · `404`
+`/` · `/planes` · `/consultor-ia` (incluye el método) · `/marketing-digital` · `/casos` · `/sobre-mi` · `/contacto` · `/privacidad` · `/cookies` · `/terminos` · `404`
 
 ## SEO incluido
 
@@ -58,7 +58,7 @@ Usa `gh auth login` o una llave SSH; **no pegues un token en la URL del remoto**
 1. En tu proyecto de EasyPanel: **+ Service → App**.
 2. **Source:** GitHub → este repo, rama `main`.
 3. **Build:** tipo **Dockerfile** (ruta `Dockerfile`).
-4. **Environment:** `ANTHROPIC_API_KEY=...` (y opcional `LEAD_WEBHOOK_URL=...` para recibir los leads en n8n/CRM).
+4. **Environment:** las variables de `.env.example` (ver la sección de variables).
 5. **Domains:** agrega `juandelagua.com` y `www.juandelagua.com`, puerto interno **4321**, HTTPS activado.
 6. En tu DNS: registro `A` de `juandelagua.com` (y `www`) apuntando a la IP de tu VPS.
 7. Activa **Auto Deploy** para que cada `git push` publique solo.
@@ -75,6 +75,6 @@ docker run --rm -p 8080:4321 --env-file .env juandelagua-web   # http://localhos
 - Analítica (Plausible en tu VPS o similar): agregar el script en `src/layouts/Base.astro`.
 - Google Search Console: verificar el dominio y enviar `https://juandelagua.com/sitemap-index.xml`.
 - Google Business Profile apuntando al sitio.
-- Casos: agregar la sección cuando haya un caso con permiso y métricas.
-- Leads del diagnóstico: conectar `LEAD_WEBHOOK_URL` a n8n/Supabase para guardarlos.
+- Casos: agregar el primer caso en `src/content/casos/` cuando haya autorización escrita.
+- Cal.com: crear el evento de diagnóstico de 30 min y poner la URL en `SITE.calUrl`.
 - Logo oficial (hoy el header usa el nombre en texto).

@@ -5,16 +5,29 @@ import CtaBand from '../components/CtaBand.astro';
 import Faq from '../components/Faq.astro';
 import Wave from '../components/Wave.astro';
 import WaterCanvas from '../components/WaterCanvas.astro';
-import { CERTIFICATIONS, waLink } from '../data/site';
+import LatestPosts from '../components/LatestPosts.astro';
+import ComboFlow from '../components/ComboFlow.astro';
+import DiagnosticoButton from '../components/DiagnosticoButton.astro';
+import { CERTIFICATIONS, COMMUNITY, SITE } from '../data/site';
+import { PLANES, clp } from '../data/planes';
 import { FAQ_HOME, faqSchema } from '../data/faq';
 import hero from '../assets/img/juan-hero.jpg';
 import retrato from '../assets/img/juan-retrato.jpg';
 
 const dolores = [
-  { t: 'La operación depende de una sola persona', d: 'Respuestas, cotizaciones y seguimiento avanzan solo cuando el dueño o un encargado está disponible.' },
-  { t: 'Herramientas que no se comunican', d: 'CRM, WhatsApp, redes y planillas funcionan por separado, y los datos se traspasan a mano entre ellas.' },
-  { t: 'Consultas que se pierden por demora', d: 'Los mensajes llegan a toda hora y la respuesta tarda. Parte de esas oportunidades termina en la competencia.' },
-  { t: 'Marketing sin resultados claros', d: 'Se publica contenido o se invierte en publicidad sin objetivos definidos ni medición de qué genera clientes.' },
+  { t: '¿Tu chatbot responde pero no vende?', d: 'Contesta cualquier cosa, pero no califica, no agenda y no sabe cuándo pasarle la conversación a una persona.' },
+  { t: 'Consultas que se enfrían', d: 'Los mensajes llegan por WhatsApp e Instagram a toda hora y la respuesta tarda. Parte de esas consultas termina en la competencia.' },
+  { t: 'No sabes cuánto te cuesta cada cliente', d: 'Se invierte en publicidad o contenido sin saber qué campaña trae clientes ni cuánto cuesta cada contacto.' },
+  { t: 'Estás encima de todo', d: 'Respuestas, cotizaciones y seguimiento avanzan solo cuando tú estás disponible.' },
+];
+
+// Escalera de oferta resumida (precios desde src/data/planes.ts)
+const escalera = [
+  { n: 'Gratis', t: 'Diagnóstico de 30 min', d: 'Entiendo tu caso y te llevas 3 oportunidades concretas.', href: '/planes#diagnostico' },
+  { n: 'Entrada', t: 'Plan Base o Agente Starter', d: `Desde ${clp(PLANES.base.setup)} + IVA, pago único.`, href: '/planes#automatizacion' },
+  { n: 'Mensual', t: 'Campañas, agente y contenido', d: `Desde ${clp(PLANES.starter.monthly)}/mes + IVA.`, href: '/planes#contenido' },
+  { n: 'Estrella', t: 'Campaña + agente', d: `${clp(PLANES.combo.monthly)}/mes + IVA.`, href: '/planes#combo' },
+  { n: 'Medianas', t: 'Consultoría IA por fases', d: PLANES.consultoria.setupLabel + ' + IVA.', href: '/planes#consultoria' },
 ];
 
 // Frase del medio: una línea por idea; las palabras con `em` van en acento.
@@ -24,7 +37,7 @@ const statement = [
   [{ t: 'Recupera' }, { t: 'tiempo' }, { t: 'para' }, { t: 'vivir', em: true }, { t: 'mejor.', em: true }],
 ];
 
-const DESC ='Consultoría en inteligencia artificial y marketing para empresas y pymes en Chile: automatización de flujos, agentes de IA y estrategia digital medible.';
+const DESC = SITE.description;
 ---
 
 <Base title="Juan del Agua | Consultoría en IA y marketing en Chile" description={DESC} schema={faqSchema(FAQ_HOME)}>
@@ -36,11 +49,11 @@ const DESC ='Consultoría en inteligencia artificial y marketing para empresas y
     <WaterCanvas class="hero-water" lines={10} opacity={0.7} />
     <div class="container hero-inner">
       <!-- La línea pequeña va dentro del h1 para que el título principal incluya las palabras clave -->
-      <h1 class="rise"><span class="eyebrow hero-kicker">Consultoría en IA y marketing · Empresas y pymes</span><span>Fluye con <em>claridad</em>,</span> <span>recupera tiempo real.</span></h1>
-      <p class="lead rise" style="--d:160ms">IA y marketing para empresas en Chile. Implemento lo que conviene y lo dejo funcionando.</p>
+      <h1 class="rise"><span class="eyebrow hero-kicker">Consultoría en IA y marketing · Empresas y pymes</span><span>Delega tu IA y tu marketing en <em>una sola persona con criterio</em>,</span> <span>y recupera tu tiempo.</span></h1>
+      <p class="lead rise" style="--d:160ms">Para dueños y gerentes de pymes de servicios: no pierdes ninguna consulta de WhatsApp o Instagram y sabes cuánto te cuesta cada cliente, sin estar encima de todo.</p>
       <div class="btn-row rise" style="--d:240ms">
-        <a class="btn btn--agua" href={waLink()} target="_blank" rel="noopener">Conversemos por WhatsApp</a>
-        <a class="btn btn--ghost" href="/consultor-ia">Ver consultoría en IA</a>
+        <DiagnosticoButton />
+        <a class="btn btn--ghost" href="/planes">Ver planes y precios</a>
       </div>
       <ul class="hero-proof rise" style="--d:320ms">
         <li><a href="/sobre-mi#certificaciones">Certificado por <strong>Anthropic</strong></a></li>
@@ -57,7 +70,7 @@ const DESC ='Consultoría en inteligencia artificial y marketing para empresas y
       <div class="section-head">
         <p class="eyebrow" data-reveal>Situaciones frecuentes</p>
         <h2 data-reveal style="--d:80ms">¿Reconoces alguna de <em>estas</em> en tu empresa?</h2>
-        <p class="lead" data-reveal style="--d:160ms">Son las cuatro señales más comunes de que la empresa puede trabajar de forma más simple.</p>
+        <p class="lead" data-reveal style="--d:160ms">No pierdes ninguna consulta y sabes cuánto te cuesta cada cliente. Y también te digo cuándo NO conviene automatizar.</p>
       </div>
       <div class="grid grid-4">
         {dolores.map((p, i) => (
@@ -127,6 +140,63 @@ const DESC ='Consultoría en inteligencia artificial y marketing para empresas y
       </div>
     </div>
   </section>
+  <Wave from="var(--bruma)" to="var(--marino)" />
+
+  <!-- OFERTA ESTRELLA -->
+  <section class="section on-dark combo-sec" id="campana-agente">
+    <WaterCanvas lines={7} opacity={0.35} />
+    <div class="container combo">
+      <div class="combo-text">
+        <p class="eyebrow" data-reveal>Oferta estrella · Campaña + agente</p>
+        <h2 data-reveal style="--d:80ms">Tu campaña trae la consulta; <em>tu agente la responde en minutos</em>.</h2>
+        <p class="lead" data-reveal style="--d:160ms">A diferencia de las agencias que solo publican y de los chatbots que responden pero no venden: campaña, agente y reporte de costo por contacto, en un solo servicio.</p>
+        <p class="price" data-reveal>{clp(PLANES.combo.monthly)}<small>/mes + IVA · por separado <s>{clp(PLANES.combo.compareMonthly)}</s></small></p>
+        <div class="btn-row" data-reveal>
+          <a class="btn btn--agua" href="/planes#combo">Ver qué incluye</a>
+        </div>
+      </div>
+      <ComboFlow />
+    </div>
+  </section>
+  <Wave from="var(--marino)" to="var(--perla)" />
+
+  <!-- ESCALERA -->
+  <section class="section" id="como-partir">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Cómo partir</p>
+        <h2 data-reveal style="--d:80ms">De lo gratis a lo grande, <em>por fases</em>.</h2>
+        <p class="lead" data-reveal style="--d:160ms">Por fases, con plan, plazos y documentación. Precios publicados en pesos + IVA.</p>
+      </div>
+      <div class="grid grid-5">
+        {escalera.map((e, i) => (
+          <a class="card" href={e.href} data-reveal style={`--d:${i * 70}ms`}>
+            <span class="num">{e.n}</span>
+            <h3>{e.t}</h3>
+            <p>{e.d}</p>
+          </a>
+        ))}
+      </div>
+      <p data-reveal style="margin-top:28px"><a class="link-arrow" href="/planes">Ver todos los planes y precios →</a></p>
+    </div>
+  </section>
+
+  <!-- BLOG -->
+  <LatestPosts />
+  <Wave from="var(--perla)" to="var(--bruma)" />
+
+  <!-- COMUNIDAD -->
+  <section class="section bg-bruma" id="comunidad">
+    <div class="container">
+      <a class="card community-band" href="/comunidad" data-reveal>
+        <span class="tag">{COMMUNITY.endorsement}</span>
+        <h3>{COMMUNITY.name}</h3>
+        <p>{COMMUNITY.description}</p>
+        <p><strong>{COMMUNITY.pricing[0].price} {COMMUNITY.pricing[0].when.toLowerCase()}.</strong></p>
+        <span class="link-arrow">Conocer la comunidad →</span>
+      </a>
+    </div>
+  </section>
   <Wave from="var(--bruma)" to="var(--perla)" />
 
   <!-- SOBRE MÍ -->
@@ -163,7 +233,7 @@ const DESC ='Consultoría en inteligencia artificial y marketing para empresas y
   </section>
 
   <Wave from="var(--bruma)" to="var(--marino)" />
-  <CtaBand />
+  <CtaBand title="IA y marketing <em>con criterio</em>, para que recuperes tu tiempo." text="Agenda el diagnóstico gratis de 30 minutos o escríbeme por WhatsApp. Respondo en menos de 2 horas hábiles y, si no es algo en lo que pueda aportar, te lo digo." />
 </Base>
 
 <style>
@@ -240,4 +310,16 @@ const DESC ='Consultoría en inteligencia artificial y marketing para empresas y
   .certs a:hover span { color: var(--corriente-ink); }
 
   .faq-wrap { max-width: 920px; }
+
+  /* OFERTA ESTRELLA */
+  .combo-sec { position: relative; overflow: hidden; }
+  .combo { position: relative; display: grid; gap: 40px; align-items: center; }
+  @media (min-width: 900px) { .combo { grid-template-columns: 1fr 1.1fr; gap: 72px; } }
+  .combo-text { display: grid; gap: 20px; }
+  .combo .price small { color: rgba(245, 243, 236, 0.7); }
+
+  /* ESCALERA */
+  @media (min-width: 760px) and (max-width: 1019px) { .grid-5 { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1020px) { .grid-5 { grid-template-columns: repeat(5, 1fr); } }
+  .grid-5 h3 { font-size: clamp(1.2rem, 1.05rem + 0.5vw, 1.45rem); }
 </style>

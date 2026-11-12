@@ -3,7 +3,7 @@ import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import CtaBand from '../components/CtaBand.astro';
 import Wave from '../components/Wave.astro';
-import { CERTIFICATIONS, SITE } from '../data/site';
+import { CERTIFICATIONS, SITE, VALUES, MANIFESTO } from '../data/site';
 import retrato from '../assets/img/juan-retrato.jpg';
 import c1 from '../assets/img/certificado-1.jpg';
 import c2 from '../assets/img/certificado-2.jpg';
@@ -45,9 +45,17 @@ const profile = {
         <h2>Enfoque de <em>trabajo</em>.</h2>
       </div>
       <div class="col prose-ish" data-reveal style="--d:100ms">
-        <p>La IA ordena lo que pasa dentro de la empresa. El marketing, cómo llegan los clientes. Trabajo ambos frentes, con un proceso transparente: sabes qué se construye, por qué y cómo funciona.</p>
-        <p>Recuperar tiempo para lo que realmente importa.</p>
+        <p>La IA ordena lo que pasa dentro de la empresa. El marketing, cómo llegan los clientes. Trabajo ambos frentes, con un proceso transparente: sabes qué se construye, por qué y cómo funciona, sin depender a ciegas de un proveedor.</p>
+        <p>{SITE.signature}</p>
       </div>
+    </div>
+  </section>
+
+  <section class="section" id="manifiesto">
+    <div class="container prose manifesto">
+      <p class="eyebrow" data-reveal>Manifiesto</p>
+      {MANIFESTO.map((p) => <p data-reveal>{p}</p>)}
+      <p data-reveal><em>— Juan del Agua</em></p>
     </div>
   </section>
 
@@ -55,19 +63,16 @@ const profile = {
     <div class="container">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Lo que me mueve</p>
-        <h2 data-reveal style="--d:80ms">Dos <em>valores</em>.</h2>
+        <h2 data-reveal style="--d:80ms">Cuatro <em>valores</em>.</h2>
       </div>
-      <div class="grid grid-2">
-        <article class="card" data-reveal>
-          <span class="num">01</span>
-          <h3>Transparencia → claridad</h3>
-          <p>Mostrar soluciones que funcionan, no promesas abstractas. Si algo no conviene, se dice; si algo falla, se revisa en conjunto.</p>
-        </article>
-        <article class="card" data-reveal style="--d:100ms">
-          <span class="num">02</span>
-          <h3>Fluir</h3>
-          <p>Que el trabajo fluya sin que todo dependa de una persona, y que ese tiempo recuperado se destine a lo que importa.</p>
-        </article>
+      <div class="grid grid-4">
+        {VALUES.map((v, i) => (
+          <article class="card" data-reveal style={`--d:${i * 90}ms`}>
+            <span class="num">0{i + 1}</span>
+            <h3>{v.name}</h3>
+            <p>{v.d}</p>
+          </article>
+        ))}
       </div>
     </div>
   </section>
@@ -115,4 +120,5 @@ const profile = {
   .cert-name { font-weight: 600; font-size: var(--fs-sm); line-height: 1.35; margin-top: 4px; }
   .cert-verify { font-size: var(--fs-xs); font-weight: 600; color: var(--corriente-ink); }
   .cert:hover .cert-verify { text-decoration: underline; }
+  .manifesto p:not(.eyebrow) { font-size: var(--fs-lg); line-height: 1.6; }
 </style>

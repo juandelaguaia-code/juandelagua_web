@@ -1,0 +1,179 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import PlanCard from '../components/PlanCard.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Faq from '../components/Faq.astro';
+import Wave from '../components/Wave.astro';
+import DiagnosticoButton from '../components/DiagnosticoButton.astro';
+import { waLink } from '../data/site';
+import { PLANES, CONTENIDO_ORDER, AUTOMATIZACION_ORDER, LAUNCH, CONDICIONES, DIAGNOSTICO, RESPUESTA, planServiceSchema, clp } from '../data/planes';
+import { faqSchema, FAQ_PRECIOS } from '../data/faq';
+
+const msg = 'Hola Juan, vengo desde la página de planes de tu sitio y quiero conversar sobre un plan.';
+const description =
+  'Planes y precios de Juan del Agua: agentes de IA, campañas Meta, contenido y consultoría IA por fases, en pesos + IVA. Diagnóstico gratis de 30 minutos.';
+
+const contenido = CONTENIDO_ORDER.map((id) => PLANES[id]);
+const automatizacion = AUTOMATIZACION_ORDER.map((id) => PLANES[id]);
+const all = Object.values(PLANES);
+---
+
+<Base
+  title="Planes y precios: IA y marketing para pymes"
+  description={description}
+  breadcrumbs={[{ name: 'Planes', path: '/planes' }]}
+  waMessage={msg}
+  schema={[...all.map(planServiceSchema), faqSchema(FAQ_PRECIOS)]}
+>
+  <PageHero eyebrow="Planes y precios">
+    <Fragment slot="title">Precios <em>a la vista</em>, sin letra chica.</Fragment>
+    <Fragment slot="lead">
+      <p>No pierdes ninguna consulta y sabes cuánto te cuesta cada cliente. Todos los precios están en pesos chilenos + IVA. Si no sabes por dónde partir, el diagnóstico es gratis.</p>
+    </Fragment>
+    <DiagnosticoButton />
+    <a class="btn btn--ghost" href={waLink(msg)} target="_blank" rel="noopener">Escribir por WhatsApp</a>
+  </PageHero>
+  <Wave from="var(--perla)" to="var(--bruma)" />
+
+  <!-- DIAGNÓSTICO -->
+  <section class="section bg-bruma" id="diagnostico">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Nivel 0 · Gratis</p>
+        <h2 data-reveal style="--d:80ms">Diagnóstico de <em>{DIAGNOSTICO.minutes} minutos</em>.</h2>
+        <p class="lead" data-reveal style="--d:160ms">{DIAGNOSTICO.summary} {DIAGNOSTICO.excludes}</p>
+      </div>
+      <ul class="checklist" data-reveal>
+        <li>{RESPUESTA.reply} ({`L–V 9:00–19:00, sáb 10:00–13:00`}).</li>
+        <li>{RESPUESTA.proposal}.</li>
+        <li>También te digo cuándo NO conviene automatizar.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- AUTOMATIZACIÓN -->
+  <section class="section" id="automatizacion">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Agentes de IA y automatización</p>
+        <h2 data-reveal style="--d:80ms">¿Tu chatbot responde <em>pero no vende</em>?</h2>
+        <p class="lead" data-reveal style="--d:160ms">Tu campaña trae la consulta; tu agente la responde en minutos. Por fases, con plan, plazos y documentación.</p>
+      </div>
+      <div class="grid grid-3">
+        {automatizacion.map((p, i) => <PlanCard plan={p} dark={p.star} delay={i * 90} />)}
+      </div>
+      <p class="launch card" data-reveal>
+        <strong>Precio de lanzamiento: quedan {LAUNCH.left} de {LAUNCH.total} cupos.</strong>
+        Los {LAUNCH.total} primeros clientes de Agente Starter o Campaña + agente que autoricen publicar su caso (con nombre o anónimo) pagan {LAUNCH.discount}% menos en la mensualidad durante {LAUNCH.months} meses.
+      </p>
+    </div>
+  </section>
+  <Wave from="var(--perla)" to="var(--bruma)" />
+
+  <!-- CONTENIDO -->
+  <section class="section bg-bruma" id="contenido">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Marketing y contenido</p>
+        <h2 data-reveal style="--d:80ms">Contenido y campañas <em>medidos desde el primer día</em>.</h2>
+        <p class="lead" data-reveal style="--d:160ms">Crecer y Escalar tienen cupo limitado: son horas reales de trabajo cada mes. Conversemos antes de contratar.</p>
+      </div>
+      <div class="grid grid-3">
+        {contenido.map((p, i) => <PlanCard plan={p} delay={i * 90} />)}
+      </div>
+      <div class="grid grid-2 extra">
+        <PlanCard plan={PLANES.campanas} />
+        <PlanCard plan={PLANES.web} delay={90} />
+      </div>
+    </div>
+  </section>
+
+  <!-- CALCULADORA -->
+  <section class="section" id="calculadora">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Haz la cuenta</p>
+        <h2 data-reveal style="--d:80ms">¿Cuántas ventas necesitas para <em>recuperar la inversión</em>?</h2>
+        <p class="lead" data-reveal style="--d:160ms">Una cuenta simple, no una promesa: te sirve para ver si el plan tiene sentido para tu negocio.</p>
+      </div>
+      <form class="card roi" data-roi data-reveal>
+        <label>Plan
+          <select name="plan">
+            {all.filter((p) => p.monthly != null || p.setup != null).map((p) => (
+              <option value={p.id} data-setup={p.setup ?? 0} data-monthly={p.monthly ?? 0} selected={p.star}>{p.name}</option>
+            ))}
+          </select>
+        </label>
+        <label>Ticket promedio de una venta (CLP)
+          <input type="number" name="ticket" min="1000" step="1000" value="80000" inputmode="numeric" />
+        </label>
+        <label>Margen que te queda por venta (%)
+          <input type="number" name="margin" min="1" max="100" value="40" inputmode="numeric" />
+        </label>
+        <output name="result" aria-live="polite"></output>
+      </form>
+    </div>
+  </section>
+  <Wave from="var(--perla)" to="var(--bruma)" />
+
+  <!-- CONDICIONES -->
+  <section class="section bg-bruma" id="condiciones">
+    <div class="container" style="max-width:920px">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Condiciones</p>
+        <h2 data-reveal style="--d:80ms">Lo que conviene <em>saber antes</em>.</h2>
+      </div>
+      <ul class="checklist" data-reveal>{CONDICIONES.map((c) => <li>{c}</li>)}</ul>
+      <p class="muted" data-reveal style="margin-top:24px">Detalle completo en los <a href="/terminos#condiciones-comerciales">términos y condiciones</a>.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container" style="max-width:920px">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Preguntas frecuentes</p>
+        <h2 data-reveal style="--d:80ms">Sobre <em>precios y contratos</em>.</h2>
+      </div>
+      <div data-reveal style="--d:120ms"><Faq items={FAQ_PRECIOS} /></div>
+    </div>
+  </section>
+
+  <Wave from="var(--perla)" to="var(--marino)" />
+  <CtaBand message={msg} title="¿No sabes qué plan te sirve? <em>Lo vemos en 30 minutos</em>." text={`El diagnóstico es gratis: entiendo tu caso y te llevas 3 oportunidades concretas. ${RESPUESTA.proposal}.`} />
+</Base>
+
+<script>
+  // Calculadora: ventas necesarias para recuperar instalación + primer mes, y ventas por mes para cubrir la mensualidad.
+  const form = document.querySelector<HTMLFormElement>('[data-roi]');
+  const fmt = (n: number) => `$${Math.round(n).toLocaleString('es-CL')}`;
+  const update = () => {
+    if (!form) return;
+    const opt = (form.elements.namedItem('plan') as HTMLSelectElement).selectedOptions[0];
+    const setup = Number(opt.dataset.setup) || 0;
+    const monthly = Number(opt.dataset.monthly) || 0;
+    const ticket = Number((form.elements.namedItem('ticket') as HTMLInputElement).value) || 0;
+    const margin = Number((form.elements.namedItem('margin') as HTMLInputElement).value) || 0;
+    const out = form.elements.namedItem('result') as HTMLOutputElement;
+    const gain = (ticket * margin) / 100;
+    if (gain <= 0) { out.textContent = 'Ingresa un ticket y un margen mayores a cero.'; return; }
+    const first = Math.ceil((setup + monthly) / gain);
+    const perMonth = monthly ? Math.ceil(monthly / gain) : 0;
+    out.textContent =
+      `Cada venta te deja ${fmt(gain)}. Necesitas ${first} venta${first === 1 ? '' : 's'} para recuperar la instalación y el primer mes` +
+      (perMonth ? `, y ${perMonth} venta${perMonth === 1 ? '' : 's'} al mes para cubrir la mensualidad.` : '.') +
+      ' Valores + IVA; no incluye la pauta publicitaria.';
+  };
+  form?.addEventListener('input', update);
+  form?.addEventListener('submit', (e) => e.preventDefault());
+  update();
+</script>
+
+<style>
+  .launch { margin-top: 28px; display: block; }
+  .extra { margin-top: clamp(16px, 2.4vw, 28px); }
+  .roi { max-width: 720px; }
+  .roi label { display: grid; gap: 6px; font-size: var(--fs-sm); font-weight: 600; }
+  .roi input, .roi select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--linea); background: #fff; }
+  .roi output { font-size: var(--fs-lg); }
+</style>
