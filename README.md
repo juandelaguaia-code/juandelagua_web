@@ -59,11 +59,11 @@ npm run preview    # sirve el build
 3. (Opcional) Ejecutar `supabase/seed.sql` para el curso de bienvenida, un evento y un borrador de blog.
 4. **Authentication → URL Configuration:** Site URL `https://juandelagua.com` y Redirect URLs `https://juandelagua.com/auth/callback` (y `http://localhost:4321/auth/callback` para pruebas).
 5. **Authentication → Providers → Email:** confirmar correo obligatorio, contraseña mínima de 8 caracteres y protección contra contraseñas filtradas (si el plan lo permite).
-6. **Plantillas de correo** (Authentication → Email Templates): para que los enlaces funcionen en cualquier dispositivo, usar
-   - Confirmación: `{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=email&next=/comunidad/ingreso`
-   - Recuperación: `{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=recovery`
-   - Enlace mágico: `{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=magiclink`
-   - Cambio de correo: `{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=email_change&next=/cuenta`
+6. **Plantillas de correo** (Authentication → Emails → Templates): para que los enlaces funcionen en cualquier dispositivo y vuelvan a la página de origen (por ejemplo, un recurso), cambiar el link de cada plantilla por:
+   - Confirm signup: `{{ .RedirectTo }}&token_hash={{ .TokenHash }}&type=email`
+   - Reset password: `{{ .RedirectTo }}&token_hash={{ .TokenHash }}&type=recovery`
+   - Magic link: `{{ .RedirectTo }}&token_hash={{ .TokenHash }}&type=magiclink`
+   - Change email address: `{{ .RedirectTo }}&token_hash={{ .TokenHash }}&type=email_change`
 7. **Correo (SMTP propio):** crear cuenta en Resend, verificar el dominio (registros SPF/DKIM en Cloudflare) y cargar el SMTP en Authentication → SMTP Settings, remitente `no-reply@juandelagua.com`.
 8. **Google (opcional):** Authentication → Providers → Google con el Client ID/Secret de Google Cloud.
 9. **Captcha (opcional):** Cloudflare Turnstile → clave secreta en Authentication → Attack Protection; clave pública en `PUBLIC_TURNSTILE_SITE_KEY`.
