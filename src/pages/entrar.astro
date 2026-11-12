@@ -2,7 +2,7 @@
 import App from '../layouts/App.astro';
 import Turnstile from '../components/Turnstile.astro';
 import { isPost, form, safeNext, withMsg, rateLimit, clientIp, errorCode } from '../lib/http';
-import { SITE_URL } from 'astro:env/server';
+import { SITE_URL, AUTH_GOOGLE } from 'astro:env/server';
 
 export const prerender = false;
 
@@ -29,7 +29,10 @@ if (isPost(Astro)) {
     return Astro.redirect(withMsg(back, 'ok', 'enlace_enviado'));
   }
   const { error } = await supabase.auth.signInWithPassword({ email, password: str('password', 200), options: { captchaToken: str('cf-turnstile-response', 4000) || undefined } });
-  if (error) return Astro.redirect(withMsg(back, 'error', errorCode(error)));
+  if (error) {
+    console.error(`[auth] entrar: ${error.status ?? ''} ${error.code ?? ''} ${error.message}`);
+    return Astro.redirect(withMsg(back, 'error', errorCode(error)));
+  }
   return Astro.redirect(next);
 }
 ---
@@ -44,6 +47,6 @@ if (isPost(Astro)) {
     <button class="btn btn--agua" type="submit" name="mode" value="password">Entrar</button>
     <button class="btn btn--ghost" type="submit" name="mode" value="magic" formnovalidate>Enviarme un enlace mágico</button>
   </form>
-  <p style="margin-top:16px"><a class="btn btn--ghost" href={`/auth/google?next=${encodeURIComponent(next)}`}>Entrar con Google</a></p>
+  {AUTH_GOOGLE && <p style="margin-top:16px"><a class="btn btn--ghost" href={`/auth/google?next=${encodeURIComponent(next)}`}>Entrar con Google</a></p>}
   <p class="meta" style="margin-top:24px"><a href="/recuperar">¿Olvidaste tu contraseña?</a> · ¿No tienes cuenta? <a href={`/registro?next=${encodeURIComponent(next)}`}>Créala aquí</a></p>
 </App>

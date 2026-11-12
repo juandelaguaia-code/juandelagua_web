@@ -98,6 +98,7 @@ Se gestionan en `/comunidad/admin/recursos` (archivo de hasta 50 MB en el bucket
 | `PUBLIC_TURNSTILE_SITE_KEY` | Opcional: captcha en registro y recuperación |
 | `INDEXNOW_ENABLED` | Opcional (`true` por defecto) |
 | `COMMUNITY_HOST` | Opcional (`comunidad.juandelagua.com` por defecto) |
+| `AUTH_GOOGLE` | `true` para mostrar "Entrar con Google" (solo después de activar Google en Supabase) |
 
 Se leen al arrancar el contenedor: cambiar una variable solo requiere reiniciar, no reconstruir.
 

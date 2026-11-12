@@ -1,6 +1,6 @@
 ---
 import App from '../../layouts/App.astro';
-import { isPost, form, withMsg, errorCode } from '../../lib/http';
+import { isPost, form, withMsg, errorCode, normalizeUsername } from '../../lib/http';
 import { uploadImage } from '../../lib/upload';
 import { adminClient } from '../../lib/supabase';
 import { MEMBERSHIP_LABEL, ROLE_LABEL, STATUS_LABEL } from '../../lib/types';
@@ -23,7 +23,7 @@ if (isPost(Astro)) {
       .filter((l) => /^https:\/\/\S+$/.test(l.url))
       .map((l) => ({ label: l.label || new URL(l.url).hostname, url: l.url }));
     const update: Record<string, unknown> = {
-      username: str('username', 30),
+      username: normalizeUsername(str('username', 60)),
       full_name: str('full_name', 80),
       bio: str('bio', 500),
       location: str('location', 80),
@@ -105,7 +105,7 @@ const aviso = Astro.url.searchParams.get('aviso');
       <label>Foto <span class="hint">JPG, PNG o WebP, máximo 2 MB.</span><input type="file" name="avatar" accept="image/jpeg,image/png,image/webp" /></label>
     </div>
     {profile.avatar_url && <label class="check"><input type="checkbox" name="remove_avatar" /> Quitar foto</label>}
-    <label>Nombre de usuario <input name="username" value={profile.username} pattern="[a-zA-Z0-9_]{3,30}" required /></label>
+    <label>Nombre de usuario <input name="username" value={profile.username} required minlength="3" maxlength="40" autocapitalize="none" /></label>
     <label>Nombre <input name="full_name" value={profile.full_name} maxlength="80" /></label>
     <label>Bio <textarea name="bio" maxlength="500" rows="3">{profile.bio}</textarea></label>
     <label>Ubicación <input name="location" value={profile.location} maxlength="80" placeholder="Viña del Mar" /></label>

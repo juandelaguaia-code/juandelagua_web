@@ -11,6 +11,11 @@ export async function form(ctx: Ctx) {
   return { fd, str, bool: (k: string) => fd.get(k) === 'on' || fd.get(k) === 'true' || fd.get(k) === '1', int: (k: string) => Number.parseInt(String(fd.get(k) ?? ''), 10) };
 }
 
+/** Normaliza un nombre de usuario: "Juan Araneda" → "juan_araneda" (letras, números y _; máx. 30) */
+export const normalizeUsername = (s: string) =>
+  s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase()
+    .replace(/[\s.-]+/g, '_').replace(/[^a-z0-9_]/g, '').replace(/_+/g, '_').replace(/^_|_$/g, '').slice(0, 30);
+
 /** Solo rutas internas (evita redirecciones abiertas) */
 export const safeNext = (next: string | null | undefined, fallback = '/comunidad/feed') =>
   next && next.startsWith('/') && !next.startsWith('//') && !next.startsWith('/\\') ? next : fallback;

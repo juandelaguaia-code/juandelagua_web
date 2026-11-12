@@ -35,6 +35,8 @@ export default defineConfig({
       SUPABASE_SERVICE_ROLE_KEY: envField.string({ context: 'server', access: 'secret', optional: true }),
       SITE_URL: envField.string({ context: 'server', access: 'public', default: 'https://juandelagua.com' }),
       PUBLIC_TURNSTILE_SITE_KEY: envField.string({ context: 'server', access: 'public', optional: true }),
+      // Muestra "Entrar con Google" solo cuando el proveedor Google está activo en Supabase
+      AUTH_GOOGLE: envField.boolean({ context: 'server', access: 'public', default: false }),
       INDEXNOW_ENABLED: envField.boolean({ context: 'server', access: 'public', default: true }),
     },
   },

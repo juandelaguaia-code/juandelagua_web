@@ -12,6 +12,9 @@ export const GET: APIRoute = async ({ url, locals, redirect }) => {
     provider: 'google',
     options: { redirectTo: `${SITE_URL}/auth/callback?next=${encodeURIComponent(next)}` },
   });
-  if (error || !data.url) return redirect(withMsg('/entrar', 'error', 'desconocido'));
+  if (error || !data.url) {
+    console.error(`[auth] google: ${error?.message ?? 'sin URL'}`);
+    return redirect(withMsg('/entrar', 'error', 'desconocido'));
+  }
   return redirect(data.url);
 };

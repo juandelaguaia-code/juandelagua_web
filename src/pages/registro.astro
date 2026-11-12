@@ -2,8 +2,8 @@
 import App from '../layouts/App.astro';
 import Turnstile from '../components/Turnstile.astro';
 import { COMMUNITY, LEGAL } from '../data/site';
-import { isPost, form, safeNext, withMsg, rateLimit, clientIp, errorCode } from '../lib/http';
-import { SITE_URL } from 'astro:env/server';
+import { isPost, form, safeNext, withMsg, rateLimit, clientIp, errorCode, normalizeUsername } from '../lib/http';
+import { SITE_URL, AUTH_GOOGLE } from 'astro:env/server';
 
 export const prerender = false;
 
@@ -12,17 +12,20 @@ const { supabase, user } = Astro.locals;
 if (user) return Astro.redirect(next);
 
 if (isPost(Astro)) {
-  if (!supabase) return Astro.redirect(withMsg('/registro', 'error', 'no_configurado'));
+  if (!supabase) {
+    console.error('[auth] registro: faltan PUBLIC_SUPABASE_URL / PUBLIC_SUPABASE_ANON_KEY en el entorno');
+    return Astro.redirect(withMsg('/registro', 'error', 'no_configurado'));
+  }
   const { str, bool } = await form(Astro);
   const back = `/registro?next=${encodeURIComponent(next)}`;
   if (!rateLimit(`signup:${clientIp(Astro)}`, 5, 60 * 60_000)) return Astro.redirect(withMsg(back, 'error', 'demasiados'));
   const email = str('email', 200).toLowerCase();
   const password = str('password', 200);
-  const username = str('username', 30);
+  // Se corrige solo: "Juan Araneda" → "juan_araneda". Si queda muy corto, la base genera uno desde el correo.
+  const username = normalizeUsername(str('username', 60));
   if (!/^\S+@\S+\.\S+$/.test(email)) return Astro.redirect(withMsg(back, 'error', 'correo_invalido'));
   if (password.length < 8) return Astro.redirect(withMsg(back, 'error', 'password_corta'));
   if (password !== str('password2', 200)) return Astro.redirect(withMsg(back, 'error', 'password_distinta'));
-  if (username && !/^[a-zA-Z0-9_]{3,30}$/.test(username)) return Astro.redirect(withMsg(back, 'error', 'usuario_invalido'));
   if (!bool('legal')) return Astro.redirect(withMsg(back, 'error', 'consentimiento'));
 
   const { error } = await supabase.auth.signUp({
@@ -33,7 +36,7 @@ if (isPost(Astro)) {
       captchaToken: str('cf-turnstile-response', 4000) || undefined,
       data: {
         full_name: str('full_name', 80),
-        ...(username ? { username } : {}),
+        ...(username.length >= 3 ? { username } : {}),
         terms_version: LEGAL.terms,
         privacy_version: LEGAL.privacy,
         marketing_email: bool('marketing') ? 'true' : 'false',
@@ -41,7 +44,10 @@ if (isPost(Astro)) {
     },
   });
   // Mensaje neutro también si el correo ya existe (Supabase no revela cuentas existentes)
-  if (error) return Astro.redirect(withMsg(back, 'error', errorCode(error)));
+  if (error) {
+    console.error(`[auth] registro: ${error.status ?? ''} ${error.code ?? ''} ${error.message}`);
+    return Astro.redirect(withMsg(back, 'error', errorCode(error)));
+  }
   return Astro.redirect(withMsg('/entrar', 'ok', 'registrado'));
 }
 ---
@@ -51,8 +57,8 @@ if (isPost(Astro)) {
   <p class="lead">Para entrar a {COMMUNITY.name} {COMMUNITY.endorsement}.</p>
   <form method="post" class="form" style="margin-top:24px">
     <label>Nombre <input name="full_name" maxlength="80" autocomplete="name" required /></label>
-    <label>Nombre de usuario <span class="hint">Opcional. Letras, números o guion bajo; se usa para @mencionarte.</span>
-      <input name="username" pattern="[a-zA-Z0-9_]{3,30}" maxlength="30" autocomplete="username" />
+    <label>Nombre de usuario <span class="hint">Opcional. Se usa para @mencionarte; los espacios se cambian por guion bajo.</span>
+      <input name="username" maxlength="40" autocomplete="username" autocapitalize="none" />
     </label>
     <label>Correo <input type="email" name="email" required autocomplete="email" /></label>
     <label>Contraseña <span class="hint">Mínimo 8 caracteres.</span><input type="password" name="password" required minlength="8" autocomplete="new-password" /></label>
@@ -62,6 +68,6 @@ if (isPost(Astro)) {
     <Turnstile />
     <button class="btn btn--agua" type="submit">Crear cuenta</button>
   </form>
-  <p style="margin-top:16px"><a class="btn btn--ghost" href={`/auth/google?next=${encodeURIComponent(next)}`}>Registrarme con Google</a></p>
+  {AUTH_GOOGLE && <p style="margin-top:16px"><a class="btn btn--ghost" href={`/auth/google?next=${encodeURIComponent(next)}`}>Registrarme con Google</a></p>}
   <p class="meta" style="margin-top:24px">¿Ya tienes cuenta? <a href={`/entrar?next=${encodeURIComponent(next)}`}>Entra aquí</a></p>
 </App>
