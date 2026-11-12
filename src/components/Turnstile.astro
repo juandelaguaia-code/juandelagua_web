@@ -1,0 +1,12 @@
+---
+// Captcha de Cloudflare Turnstile. Solo se muestra si PUBLIC_TURNSTILE_SITE_KEY está configurada.
+// La verificación la hace Supabase Auth (Authentication → Attack Protection → Captcha, con la clave secreta).
+import { PUBLIC_TURNSTILE_SITE_KEY } from 'astro:env/server';
+---
+
+{PUBLIC_TURNSTILE_SITE_KEY && (
+  <>
+    <div class="cf-turnstile" data-sitekey={PUBLIC_TURNSTILE_SITE_KEY} data-language="es"></div>
+    <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  </>
+)}

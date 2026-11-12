@@ -1,0 +1,29 @@
+---
+import App from '../layouts/App.astro';
+import { isPost, form, withMsg, errorCode } from '../lib/http';
+
+export const prerender = false;
+
+// Se llega aquí desde el enlace del correo (/auth/callback ya creó la sesión de recuperación)
+const { supabase, user } = Astro.locals;
+if (!user) return Astro.redirect(withMsg('/recuperar', 'error', 'enlace'));
+
+if (isPost(Astro)) {
+  const { str } = await form(Astro);
+  const password = str('password', 200);
+  if (password.length < 8) return Astro.redirect(withMsg('/restablecer', 'error', 'password_corta'));
+  if (password !== str('password2', 200)) return Astro.redirect(withMsg('/restablecer', 'error', 'password_distinta'));
+  const { error } = await supabase!.auth.updateUser({ password });
+  if (error) return Astro.redirect(withMsg('/restablecer', 'error', errorCode(error)));
+  return Astro.redirect(withMsg('/cuenta', 'ok', 'password_cambiada'));
+}
+---
+
+<App title="Nueva contraseña" narrow>
+  <h1>Nueva contraseña</h1>
+  <form method="post" class="form" style="margin-top:24px">
+    <label>Contraseña nueva <span class="hint">Mínimo 8 caracteres.</span><input type="password" name="password" required minlength="8" autocomplete="new-password" /></label>
+    <label>Repite la contraseña <input type="password" name="password2" required minlength="8" autocomplete="new-password" /></label>
+    <button class="btn btn--agua" type="submit">Guardar contraseña</button>
+  </form>
+</App>

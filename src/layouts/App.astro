@@ -1,0 +1,17 @@
+---
+// Layout de páginas de la app (cuentas, comunidad, administración): noindex, contenedor simple.
+import Base from './Base.astro';
+import Flash from '../components/Flash.astro';
+interface Props { title: string; description?: string; narrow?: boolean; index?: boolean }
+const { title, description = 'Área de miembros de juandelagua.com.', narrow = false, index = false } = Astro.props;
+---
+
+<Base title={title} description={description} noindex={!index}>
+  <section class="section section--tight">
+    <div class="container" style={narrow ? 'max-width:640px' : undefined}>
+      <slot name="top" />
+      <Flash />
+      <slot />
+    </div>
+  </section>
+</Base>

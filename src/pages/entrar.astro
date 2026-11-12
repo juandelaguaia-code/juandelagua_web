@@ -1,0 +1,49 @@
+---
+import App from '../layouts/App.astro';
+import Turnstile from '../components/Turnstile.astro';
+import { isPost, form, safeNext, withMsg, rateLimit, clientIp, errorCode } from '../lib/http';
+import { SITE_URL } from 'astro:env/server';
+
+export const prerender = false;
+
+const next = safeNext(Astro.url.searchParams.get('next'));
+const { supabase, user } = Astro.locals;
+if (user) return Astro.redirect(next);
+
+if (isPost(Astro)) {
+  if (!supabase) return Astro.redirect(withMsg('/entrar', 'error', 'no_configurado'));
+  const { str } = await form(Astro);
+  const email = str('email', 200).toLowerCase();
+  const mode = str('mode', 20);
+  const back = `/entrar?next=${encodeURIComponent(next)}`;
+  const ip = clientIp(Astro);
+  if (!rateLimit(`login:${ip}`, 10, 10 * 60_000) || !rateLimit(`login:${email}`, 6, 10 * 60_000)) {
+    return Astro.redirect(withMsg(back, 'error', 'demasiados'));
+  }
+  if (mode === 'magic') {
+    // Enlace mágico: mensaje neutro para no revelar si la cuenta existe
+    await supabase.auth.signInWithOtp({
+      email,
+      options: { shouldCreateUser: false, emailRedirectTo: `${SITE_URL}/auth/callback?next=${encodeURIComponent(next)}`, captchaToken: str('cf-turnstile-response', 4000) || undefined },
+    });
+    return Astro.redirect(withMsg(back, 'ok', 'enlace_enviado'));
+  }
+  const { error } = await supabase.auth.signInWithPassword({ email, password: str('password', 200), options: { captchaToken: str('cf-turnstile-response', 4000) || undefined } });
+  if (error) return Astro.redirect(withMsg(back, 'error', errorCode(error)));
+  return Astro.redirect(next);
+}
+---
+
+<App title="Entrar" narrow>
+  <h1>Entrar</h1>
+  <p class="lead">A tu cuenta de la comunidad.</p>
+  <form method="post" class="form" style="margin-top:24px">
+    <label>Correo <input type="email" name="email" required autocomplete="email" /></label>
+    <label>Contraseña <input type="password" name="password" required autocomplete="current-password" minlength="8" /></label>
+    <Turnstile />
+    <button class="btn btn--agua" type="submit" name="mode" value="password">Entrar</button>
+    <button class="btn btn--ghost" type="submit" name="mode" value="magic" formnovalidate>Enviarme un enlace mágico</button>
+  </form>
+  <p style="margin-top:16px"><a class="btn btn--ghost" href={`/auth/google?next=${encodeURIComponent(next)}`}>Entrar con Google</a></p>
+  <p class="meta" style="margin-top:24px"><a href="/recuperar">¿Olvidaste tu contraseña?</a> · ¿No tienes cuenta? <a href={`/registro?next=${encodeURIComponent(next)}`}>Créala aquí</a></p>
+</App>

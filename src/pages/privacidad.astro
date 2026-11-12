@@ -1,10 +1,10 @@
 ---
 import Base from '../layouts/Base.astro';
-import { SITE } from '../data/site';
+import { SITE, COMMUNITY, LEGAL } from '../data/site';
 
 // Cambia la versión y la fecha cada vez que se modifique el contenido de la política.
-const VERSION = '2.1';
-const UPDATED = '18 de octubre de 2026';
+const VERSION = LEGAL.privacy;
+const UPDATED = '12 de noviembre de 2026';
 ---
 
 <Base title="Política de privacidad" description="Cómo trata Juan del Agua los datos personales de quienes visitan juandelagua.com o lo contactan, y cómo ejercer tus derechos." breadcrumbs={[{ name: 'Privacidad', path: '/privacidad' }]}>
@@ -33,9 +33,22 @@ const UPDATED = '18 de octubre de 2026';
       </ul>
       <h3>b) Cuando me contactas</h3>
       <p>Si escribes por WhatsApp, correo u otro canal, trato los datos que tú mismo entregas: nombre, número o correo, empresa y el contenido de tu mensaje.</p>
+      <p>Si agendas el diagnóstico gratis por Cal.com, se tratan tu nombre, correo, la fecha elegida y las respuestas del formulario previo.</p>
       <h3>c) Si contratas un servicio</h3>
       <p>Los datos necesarios para preparar la propuesta, ejecutar el proyecto y emitir los documentos tributarios. Cuando un proyecto requiere acceder a datos de clientes de tu empresa, ese acceso se limita al mínimo necesario y se rige por las condiciones acordadas por escrito.</p>
-      <p>El sitio no tiene formularios ni cuentas de usuario, no solicita datos sensibles (como salud, biometría o ubicación precisa) y no está dirigido a menores de edad. No se tratan a sabiendas datos de menores de 14 años. Si detectamos que se entregaron sin la autorización de sus padres o representantes, se eliminan.</p>
+      <h3 id="comunidad">d) Si creas una cuenta en {COMMUNITY.name}</h3>
+      <ul>
+        <li><strong>Cuenta:</strong> correo, contraseña (guardada cifrada por el proveedor de autenticación; nunca la vemos), fecha de registro y de último ingreso. Si entras con Google, recibimos tu nombre, correo y foto de perfil de Google.</li>
+        <li><strong>Perfil dentro de la comunidad:</strong> nombre de usuario, nombre, foto, bio, ubicación y links que tú decidas agregar, junto con tu nivel, puntos, fecha de ingreso y actividad. Este perfil <strong>solo lo ven los miembros de la comunidad</strong> que hayan iniciado sesión; no es público en internet ni lo indexan los buscadores.</li>
+        <li><strong>Respuestas de ingreso:</strong> lo que respondas al pedir unirte (por ejemplo, a qué te dedicas), que solo ve el equipo de administración.</li>
+        <li><strong>Contenido que publicas:</strong> publicaciones, comentarios, me gusta, votos en encuestas e imágenes, visibles para los miembros.</li>
+        <li><strong>Progreso y asistencia:</strong> lecciones completadas y confirmación de asistencia a talleres.</li>
+        <li><strong>Notificaciones y preferencias:</strong> avisos dentro del sitio y, si lo activas, un resumen por correo.</li>
+        <li><strong>Consentimientos:</strong> la versión y la fecha en que aceptaste los términos, esta política y las normas, y si aceptaste recibir novedades por correo.</li>
+        <li><strong>Pagos (desde julio de 2027):</strong> si contratas la membresía pagada, el estado de tu suscripción y un identificador del proveedor de pagos. Los datos de tu tarjeta los trata directamente el proveedor de pagos; nunca pasan por este sitio.</li>
+        <li><strong>Seguridad:</strong> para evitar abusos se aplica un límite de intentos de ingreso por dirección IP (solo en memoria, por minutos) y, si está activo, un captcha de Cloudflare Turnstile.</li>
+      </ul>
+      <p>El sitio no solicita datos sensibles (como salud, biometría o ubicación precisa). La comunidad es solo para mayores de 18 años y el sitio no está dirigido a menores de edad. No se tratan a sabiendas datos de menores de 14 años. Si detectamos que se entregaron sin la autorización de sus padres o representantes, se eliminan.</p>
 
       <h2>3. Para qué se usan y con qué base legal</h2>
       <div class="table-wrap">
@@ -47,6 +60,10 @@ const UPDATED = '18 de octubre de 2026';
             <tr><td>Responder consultas y preparar propuestas</td><td>Medidas precontractuales solicitadas por ti</td></tr>
             <tr><td>Ejecutar los servicios contratados</td><td>Ejecución de un contrato</td></tr>
             <tr><td>Emitir boletas o facturas y cumplir obligaciones tributarias</td><td>Obligación legal</td></tr>
+            <tr><td>Crear y mantener tu cuenta de la comunidad, mostrar tu perfil y tu contenido a los miembros, registrar tu progreso y enviarte correos transaccionales (confirmación, recuperación de contraseña, avisos de tu cuenta)</td><td>Ejecución del contrato de uso de la comunidad que aceptas al registrarte</td></tr>
+            <tr><td>Moderar la comunidad y prevenir abusos (reportes, límites de intentos, captcha, registro de acciones de moderación)</td><td>Interés legítimo en mantener un espacio seguro</td></tr>
+            <tr><td>Enviarte el resumen de actividad o novedades por correo</td><td>Tu consentimiento, que puedes retirar en cualquier momento desde tu cuenta</td></tr>
+            <tr><td>Cobrar la membresía pagada (desde julio de 2027)</td><td>Ejecución de un contrato y obligación legal tributaria</td></tr>
           </tbody>
         </table>
       </div>
@@ -58,8 +75,15 @@ const UPDATED = '18 de octubre de 2026';
         <li><strong>Hostinger:</strong> servidor donde se alojan el sitio y las estadísticas.</li>
         <li><strong>Cloudflare:</strong> resolución del dominio (DNS).</li>
         <li><strong>Google (Gmail)</strong> y <strong>Meta (WhatsApp)</strong>: si me escribes por esos canales. Estos servicios tratan tus datos además según sus propias políticas de privacidad.</li>
+        <li><strong>Cal.com:</strong> agenda del diagnóstico gratis, si la usas.</li>
+        <li><strong>Supabase:</strong> base de datos, autenticación y almacenamiento de archivos de las cuentas, la comunidad y el blog. Los datos se alojan en la región de São Paulo, Brasil.</li>
+        <li><strong>Resend:</strong> envío de correos transaccionales (confirmación de cuenta, recuperación de contraseña y notificaciones). Procesa datos en Estados Unidos.</li>
+        <li><strong>Cloudflare (Turnstile):</strong> verificación anti-bots en el registro y la recuperación de contraseña, si está activa.</li>
+        <li><strong>Google (inicio de sesión):</strong> solo si eliges entrar con tu cuenta de Google.</li>
+        <li><strong>Proveedor de pagos</strong> (por definir, desde julio de 2027): cobro de la membresía. Esta política se actualizará con su nombre antes de empezar a cobrar.</li>
       </ul>
-      <p>Algunos de estos proveedores pueden procesar datos fuera de Chile, por ejemplo en Estados Unidos o la Unión Europea. En esos casos se trata de proveedores que ofrecen garantías contractuales de protección de datos.</p>
+      <h3>Transferencia internacional de datos</h3>
+      <p>Los datos de las cuentas de la comunidad se alojan en Brasil (Supabase, región São Paulo) y algunos proveedores procesan datos en Estados Unidos o la Unión Europea (correo transaccional, Cloudflare, Google, Meta). Estas transferencias se hacen a proveedores que ofrecen garantías contractuales de protección de datos y medidas de seguridad, como cifrado en tránsito y en reposo, conforme a lo exigido por la Ley N° 19.628 modificada por la Ley N° 21.719.</p>
 
       <h2>5. Cuánto tiempo se conservan</h2>
       <ul>
@@ -67,12 +91,19 @@ const UPDATED = '18 de octubre de 2026';
         <li><strong>Registros técnicos:</strong> por el tiempo mínimo necesario para la seguridad del sitio.</li>
         <li><strong>Consultas que no terminan en contratación:</strong> hasta 12 meses desde el último contacto.</li>
         <li><strong>Clientes:</strong> mientras dure la relación y, después, por los plazos que exige la ley, por ejemplo los tributarios.</li>
+        <li><strong>Cuentas de la comunidad:</strong> mientras tengas tu cuenta. Si la eliminas, se borran de inmediato tu perfil, me gusta, progreso, notificaciones y consentimientos, y tus publicaciones y comentarios quedan anonimizados como "miembro eliminado". Las copias de respaldo del proveedor se sobrescriben en un máximo de 30 días.</li>
+        <li><strong>Cuentas sin actividad:</strong> si una cuenta no se usa en 24 meses, se te avisará por correo y, si no respondes, se eliminará.</li>
+        <li><strong>Solicitudes de ingreso rechazadas:</strong> hasta 6 meses.</li>
+        <li><strong>Registro de moderación:</strong> hasta 24 meses.</li>
+        <li><strong>Datos de pago:</strong> por los plazos que exige la ley tributaria.</li>
       </ul>
 
       <h2>6. Seguridad</h2>
       <p>Se aplican medidas técnicas y organizativas proporcionales a los datos tratados:</p>
       <ul>
         <li>El sitio funciona solo con conexión cifrada (HTTPS).</li>
+        <li>La sesión se guarda en una cookie protegida (httpOnly) y los permisos de cada cuenta se validan en el servidor y en la base de datos, no solo en la pantalla.</li>
+        <li>Las contraseñas las guarda cifradas el proveedor de autenticación y se exige un mínimo de 8 caracteres.</li>
         <li>Las estadísticas se alojan en un servidor propio, no en plataformas publicitarias.</li>
         <li>Las cuentas de administración (servidor, dominio, correo y repositorio) están protegidas con contraseñas robustas y verificación en dos pasos.</li>
         <li>El acceso a la información está restringido al responsable, que mantiene el deber de confidencialidad incluso después de terminada la relación.</li>
@@ -89,7 +120,8 @@ const UPDATED = '18 de octubre de 2026';
         <li><strong>Portabilidad:</strong> recibir tus datos en un formato estructurado, cuando corresponda.</li>
         <li><strong>Bloqueo:</strong> suspender temporalmente el tratamiento mientras se resuelve una solicitud.</li>
       </ul>
-      <p>Para ejercerlos, escribe a <a href={`mailto:${SITE.privacyEmail}`}>{SITE.privacyEmail}</a> con el asunto "Datos personales", indicando tu nombre, el derecho que quieres ejercer y un medio de contacto. Si es necesario, se te pedirá acreditar tu identidad para proteger tus datos.</p>
+      <p>Si tienes una cuenta en la comunidad, puedes ejercer directamente desde <a href="/cuenta">Mi cuenta</a> los derechos de acceso y portabilidad (botón <strong>Descargar mis datos</strong>, en formato JSON), rectificación (editando tu perfil) y supresión (botón <strong>Eliminar mi cuenta</strong>). También puedes retirar ahí tu consentimiento para recibir correos.</p>
+      <p>Para cualquier otro caso, escribe a <a href={`mailto:${SITE.privacyEmail}`}>{SITE.privacyEmail}</a> con el asunto "Datos personales", indicando tu nombre, el derecho que quieres ejercer y un medio de contacto. Si es necesario, se te pedirá acreditar tu identidad para proteger tus datos.</p>
       <ul>
         <li><strong>Plazo de respuesta:</strong> 30 días corridos desde que se recibe la solicitud, prorrogables por una vez en otros 30 días corridos, con aviso fundado.</li>
         <li><strong>Bloqueo temporal:</strong> se resuelve dentro de 2 días hábiles.</li>

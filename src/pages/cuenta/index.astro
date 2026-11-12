@@ -1,0 +1,164 @@
+---
+import App from '../../layouts/App.astro';
+import { isPost, form, withMsg, errorCode } from '../../lib/http';
+import { uploadImage } from '../../lib/upload';
+import { adminClient } from '../../lib/supabase';
+import { MEMBERSHIP_LABEL, ROLE_LABEL, STATUS_LABEL } from '../../lib/types';
+import { SITE_URL } from 'astro:env/server';
+import { SITE } from '../../data/site';
+
+export const prerender = false;
+
+const { supabase, user, profile } = Astro.locals;
+if (!supabase || !user || !profile) return Astro.redirect('/entrar?next=/cuenta');
+
+if (isPost(Astro)) {
+  const { fd, str, bool } = await form(Astro);
+  const action = str('action', 30);
+  const back = '/cuenta';
+
+  if (action === 'perfil') {
+    const links = [0, 1, 2]
+      .map((i) => ({ label: str(`link_label_${i}`, 40), url: str(`link_url_${i}`, 300) }))
+      .filter((l) => /^https:\/\/\S+$/.test(l.url))
+      .map((l) => ({ label: l.label || new URL(l.url).hostname, url: l.url }));
+    const update: Record<string, unknown> = {
+      username: str('username', 30),
+      full_name: str('full_name', 80),
+      bio: str('bio', 500),
+      location: str('location', 80),
+      links,
+    };
+    const up = await uploadImage(supabase, fd.get('avatar'), { bucket: 'avatars', folder: user.id, maxBytes: 2 * 1024 * 1024 });
+    if (up && 'error' in up) return Astro.redirect(withMsg(back, 'error', 'archivo'));
+    if (up) update.avatar_url = up.url;
+    if (bool('remove_avatar')) update.avatar_url = null;
+    if (!/^[a-zA-Z0-9_]{3,30}$/.test(String(update.username))) return Astro.redirect(withMsg(back, 'error', 'usuario_invalido'));
+    const { error } = await supabase.from('profiles').update(update).eq('id', user.id);
+    return Astro.redirect(withMsg(back, error ? 'error' : 'ok', error ? errorCode(error) : 'perfil'));
+  }
+
+  if (action === 'correo') {
+    const email = str('email', 200).toLowerCase();
+    if (!/^\S+@\S+\.\S+$/.test(email)) return Astro.redirect(withMsg(back, 'error', 'correo_invalido'));
+    const { error } = await supabase.auth.updateUser({ email }, { emailRedirectTo: `${SITE_URL}/auth/callback?next=/cuenta` });
+    return Astro.redirect(withMsg(back, error ? 'error' : 'ok', error ? errorCode(error) : 'correo_cambio'));
+  }
+
+  if (action === 'password') {
+    const password = str('password', 200);
+    if (password.length < 8) return Astro.redirect(withMsg(back, 'error', 'password_corta'));
+    if (password !== str('password2', 200)) return Astro.redirect(withMsg(back, 'error', 'password_distinta'));
+    const { error } = await supabase.auth.updateUser({ password });
+    return Astro.redirect(withMsg(back, error ? 'error' : 'ok', error ? errorCode(error) : 'password_cambiada'));
+  }
+
+  if (action === 'notificaciones') {
+    const digest = ['off', 'daily', 'weekly'].includes(str('email_digest')) ? str('email_digest') : 'weekly';
+    const { error } = await supabase.from('notification_prefs').upsert({
+      user_id: user.id, email_digest: digest, on_reply: bool('on_reply'), on_mention: bool('on_mention'), on_like: bool('on_like'), updated_at: new Date().toISOString(),
+    });
+    // Consentimiento de correos de novedades (se puede retirar en cualquier momento)
+    const { data: mk } = await supabase.from('consents').select('id').eq('kind', 'marketing_email').is('revoked_at', null).limit(1);
+    if (bool('marketing') && !mk?.length) await supabase.from('consents').insert({ user_id: user.id, kind: 'marketing_email', version: 'cuenta' });
+    if (!bool('marketing') && mk?.length) await supabase.from('consents').update({ revoked_at: new Date().toISOString() }).eq('id', mk[0].id);
+    return Astro.redirect(withMsg(back, error ? 'error' : 'ok', error ? errorCode(error) : 'preferencias'));
+  }
+
+  if (action === 'eliminar') {
+    if (str('confirm', 20) !== 'ELIMINAR') return Astro.redirect(withMsg(back, 'error', 'confirmacion'));
+    if (profile.role === 'owner') return Astro.redirect(withMsg(back, 'error', 'permiso'));
+    // Derecho de supresión (Ley 21.719): se borra la cuenta; publicaciones y comentarios quedan como "miembro eliminado"
+    const admin = adminClient();
+    const { data: files } = await admin.storage.from('avatars').list(user.id);
+    if (files?.length) await admin.storage.from('avatars').remove(files.map((f) => `${user.id}/${f.name}`));
+    const { error } = await admin.auth.admin.deleteUser(user.id);
+    if (error) return Astro.redirect(withMsg(back, 'error', 'desconocido'));
+    await supabase.auth.signOut();
+    return Astro.redirect('/?cuenta=eliminada');
+  }
+  return Astro.redirect(back);
+}
+
+const { data: prefs } = await supabase.from('notification_prefs').select('*').eq('user_id', user.id).maybeSingle();
+const { data: marketing } = await supabase.from('consents').select('id').eq('kind', 'marketing_email').is('revoked_at', null).limit(1);
+const links = [...(profile.links ?? []), { label: '', url: '' }, { label: '', url: '' }, { label: '', url: '' }].slice(0, 3);
+const aviso = Astro.url.searchParams.get('aviso');
+---
+
+<App title="Mi cuenta" narrow>
+  <h1>Mi cuenta</h1>
+  {aviso === 'expulsado' && <p class="flash flash--error">Tu cuenta fue suspendida de la comunidad. Si crees que es un error, escribe a {SITE.privacyEmail}.</p>}
+  <p class="meta">
+    @{profile.username} · {ROLE_LABEL[profile.role]} · {STATUS_LABEL[profile.status]} · Membresía {MEMBERSHIP_LABEL[profile.membership]} · Nivel {profile.level} ({profile.points} puntos)
+  </p>
+  <p class="row" style="margin-top:12px">
+    <a class="btn btn--sm" href="/comunidad/feed">Ir a la comunidad</a>
+    <a class="btn btn--ghost btn--sm" href={`/comunidad/u/${profile.username}`}>Ver mi perfil</a>
+  </p>
+
+  <h2 style="margin-top:40px">Perfil</h2>
+  <form method="post" enctype="multipart/form-data" class="form">
+    <input type="hidden" name="action" value="perfil" />
+    <div class="row">
+      {profile.avatar_url ? <img class="avatar avatar--lg" src={profile.avatar_url} alt="" /> : <span class="avatar avatar--lg">{profile.username.slice(0, 1).toUpperCase()}</span>}
+      <label>Foto <span class="hint">JPG, PNG o WebP, máximo 2 MB.</span><input type="file" name="avatar" accept="image/jpeg,image/png,image/webp" /></label>
+    </div>
+    {profile.avatar_url && <label class="check"><input type="checkbox" name="remove_avatar" /> Quitar foto</label>}
+    <label>Nombre de usuario <input name="username" value={profile.username} pattern="[a-zA-Z0-9_]{3,30}" required /></label>
+    <label>Nombre <input name="full_name" value={profile.full_name} maxlength="80" /></label>
+    <label>Bio <textarea name="bio" maxlength="500" rows="3">{profile.bio}</textarea></label>
+    <label>Ubicación <input name="location" value={profile.location} maxlength="80" placeholder="Viña del Mar" /></label>
+    {links.map((l, i) => (
+      <div class="row">
+        <label style="flex:1">Link {i + 1} <input name={`link_label_${i}`} value={l.label} placeholder="Instagram" maxlength="40" /></label>
+        <label style="flex:2">URL <input type="url" name={`link_url_${i}`} value={l.url} placeholder="https://" /></label>
+      </div>
+    ))}
+    <button class="btn btn--agua" type="submit">Guardar perfil</button>
+  </form>
+
+  <h2 style="margin-top:40px">Correo</h2>
+  <form method="post" class="form">
+    <input type="hidden" name="action" value="correo" />
+    <label>Correo actual: {user.email} <input type="email" name="email" placeholder="correo nuevo" required /></label>
+    <button class="btn btn--ghost" type="submit">Cambiar correo</button>
+  </form>
+
+  <h2 style="margin-top:40px">Contraseña</h2>
+  <form method="post" class="form">
+    <input type="hidden" name="action" value="password" />
+    <label>Contraseña nueva <input type="password" name="password" minlength="8" required autocomplete="new-password" /></label>
+    <label>Repite la contraseña <input type="password" name="password2" minlength="8" required autocomplete="new-password" /></label>
+    <button class="btn btn--ghost" type="submit">Cambiar contraseña</button>
+  </form>
+
+  <h2 style="margin-top:40px">Notificaciones</h2>
+  <form method="post" class="form">
+    <input type="hidden" name="action" value="notificaciones" />
+    <label class="check"><input type="checkbox" name="on_reply" checked={prefs?.on_reply ?? true} /> Respuestas y comentarios a lo mío</label>
+    <label class="check"><input type="checkbox" name="on_mention" checked={prefs?.on_mention ?? true} /> Menciones (@{profile.username})</label>
+    <label class="check"><input type="checkbox" name="on_like" checked={prefs?.on_like ?? true} /> Me gusta</label>
+    <label>Resumen por correo
+      <select name="email_digest">
+        {[['off', 'Desactivado'], ['daily', 'Diario'], ['weekly', 'Semanal']].map(([v, l]) => <option value={v} selected={(prefs?.email_digest ?? 'weekly') === v}>{l}</option>)}
+      </select>
+    </label>
+    <label class="check"><input type="checkbox" name="marketing" checked={!!marketing?.length} /> Recibir novedades de la comunidad y del blog por correo</label>
+    <button class="btn btn--ghost" type="submit">Guardar preferencias</button>
+  </form>
+
+  <h2 style="margin-top:40px">Mis datos</h2>
+  <p>Puedes descargar una copia de tus datos (perfil, publicaciones, comentarios, progreso, consentimientos) en formato JSON.</p>
+  <p style="margin-top:12px"><a class="btn btn--ghost" href="/cuenta/exportar">Descargar mis datos</a></p>
+
+  <h2 style="margin-top:40px">Eliminar mi cuenta</h2>
+  <p>Se borran tu cuenta, tu perfil, tus me gusta, tu progreso y tus consentimientos. Tus publicaciones y comentarios quedan como "miembro eliminado". No se puede deshacer.</p>
+  <form method="post" class="form" style="margin-top:12px">
+    <input type="hidden" name="action" value="eliminar" />
+    <label>Escribe ELIMINAR para confirmar <input name="confirm" required autocomplete="off" /></label>
+    <button class="btn btn--ghost" type="submit">Eliminar mi cuenta</button>
+  </form>
+
+  <form method="post" action="/salir" style="margin-top:40px"><button class="btn" type="submit">Cerrar sesión</button></form>
+</App>

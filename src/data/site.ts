@@ -37,6 +37,9 @@ export const SITE = {
   },
 } as const;
 
+/** Versiones vigentes de los documentos legales (se registran con cada consentimiento) */
+export const LEGAL = { terms: '2.0', privacy: '2.2', rules: '1.0' } as const;
+
 export const waLink = (message = 'Hola Juan, vengo desde su sitio web y me gustaría conversar sobre mi empresa.') =>
   `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(message)}`;
 

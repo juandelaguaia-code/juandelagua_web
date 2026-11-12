@@ -19,7 +19,7 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
       </ul>
     </nav>
     <SocialLinks class="social-desktop" />
-    <a class="account-link" href="/entrar" data-account hidden>Mi cuenta</a>
+    <a class="account-link" href="/comunidad/feed" data-account hidden><span class="avatar avatar--sm" data-account-avatar aria-hidden="true"></span><span data-account-label>Mi cuenta</span></a>
     <a class="btn btn--agua btn--sm cta-desktop" href={diagnosticoHref()} target="_blank" rel="noopener">Diagnóstico gratis</a>
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-movil" data-menu-toggle>
       <span class="sr-only">Abrir menú</span>
@@ -99,6 +99,24 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
 </style>
 
 <script>
+  // Si hay sesión (cookie de pista jda_s, sin datos), muestra el avatar y las notificaciones sin leer.
+  // Las páginas estáticas no conocen al usuario: lo pregunta a /api/sesion solo cuando hay sesión.
+  if (/(?:^|;\s*)jda_s=1/.test(document.cookie)) {
+    fetch('/api/sesion', { credentials: 'same-origin' }).then((r) => (r.ok ? r.json() : null)).then((s) => {
+      const link = document.querySelector<HTMLAnchorElement>('[data-account]');
+      if (!s?.user || !link) return;
+      const av = link.querySelector<HTMLElement>('[data-account-avatar]')!;
+      if (s.user.avatar_url) {
+        const img = document.createElement('img');
+        img.src = s.user.avatar_url; img.alt = ''; img.className = 'avatar avatar--sm';
+        av.replaceWith(img);
+      } else av.textContent = (s.user.username || '?').slice(0, 1).toUpperCase();
+      link.querySelector('[data-account-label]')!.textContent = s.unread ? `${s.unread} nuevas` : 'Mi cuenta';
+      if (s.unread) link.href = '/comunidad/notificaciones';
+      link.hidden = false;
+    }).catch(() => {});
+  }
+
   const header = document.querySelector<HTMLElement>('[data-header]');
   const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
   const menu = document.querySelector<HTMLElement>('[data-menu]');

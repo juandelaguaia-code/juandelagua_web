@@ -1,0 +1,36 @@
+---
+import App from '../layouts/App.astro';
+import Turnstile from '../components/Turnstile.astro';
+import { isPost, form, withMsg, rateLimit, clientIp } from '../lib/http';
+import { SITE_URL } from 'astro:env/server';
+
+export const prerender = false;
+
+const { supabase } = Astro.locals;
+
+if (isPost(Astro)) {
+  if (!supabase) return Astro.redirect(withMsg('/recuperar', 'error', 'no_configurado'));
+  const { str } = await form(Astro);
+  const email = str('email', 200).toLowerCase();
+  if (!rateLimit(`reset:${clientIp(Astro)}`, 5, 60 * 60_000) || !rateLimit(`reset:${email}`, 3, 60 * 60_000)) {
+    return Astro.redirect(withMsg('/recuperar', 'error', 'demasiados'));
+  }
+  // El enlace es de un solo uso y expira (configurable en Supabase Auth). Mensaje neutro siempre.
+  await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${SITE_URL}/auth/callback?next=/restablecer`,
+    captchaToken: str('cf-turnstile-response', 4000) || undefined,
+  });
+  return Astro.redirect(withMsg('/recuperar', 'ok', 'enlace_enviado'));
+}
+---
+
+<App title="Recuperar contraseña" narrow>
+  <h1>Recuperar contraseña</h1>
+  <p class="lead">Escribe tu correo y te enviaremos un enlace para crear una contraseña nueva.</p>
+  <form method="post" class="form" style="margin-top:24px">
+    <label>Correo <input type="email" name="email" required autocomplete="email" /></label>
+    <Turnstile />
+    <button class="btn btn--agua" type="submit">Enviar enlace</button>
+  </form>
+  <p class="meta" style="margin-top:24px"><a href="/entrar">Volver a entrar</a></p>
+</App>

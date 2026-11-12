@@ -2,18 +2,18 @@
 import Base from '../layouts/Base.astro';
 import { SITE } from '../data/site';
 
-const VERSION = '1.1';
-const UPDATED = '18 de octubre de 2026';
+const VERSION = '2.0';
+const UPDATED = '12 de noviembre de 2026';
 ---
 
-<Base title="Política de cookies" description="juandelagua.com no usa cookies: ni propias ni de terceros. Así se miden las visitas sin rastrearte." breadcrumbs={[{ name: 'Cookies', path: '/cookies' }]}>
+<Base title="Política de cookies" description="juandelagua.com solo usa cookies estrictamente necesarias para mantener la sesión de tu cuenta. No usa cookies de analítica ni de publicidad." breadcrumbs={[{ name: 'Cookies', path: '/cookies' }]}>
   <section class="section">
     <div class="container prose">
       <p class="eyebrow">Legal</p>
       <h1>Política de cookies</h1>
       <p class="muted">Versión {VERSION} · Última actualización: {UPDATED}.</p>
 
-      <p class="highlight"><strong>En resumen: este sitio no usa cookies.</strong> Ni propias ni de terceros, ni de publicidad ni de seguimiento. Por eso no verás un aviso pidiéndote que las aceptes.</p>
+      <p class="highlight"><strong>En resumen: si solo visitas el sitio, no se usan cookies.</strong> Si inicias sesión en tu cuenta de la comunidad, se usan únicamente cookies estrictamente necesarias para mantener tu sesión. No hay cookies de analítica, de publicidad ni de seguimiento, por eso no verás un aviso pidiéndote que las aceptes.</p>
 
       <h2>1. Qué son las cookies</h2>
       <p>Las cookies son pequeños archivos que un sitio web guarda en tu navegador para recordar información sobre ti o sobre tu visita. Algunas son necesarias para que un sitio funcione. Otras sirven para medir visitas, mostrar publicidad o seguirte de un sitio a otro, y estas requieren tu consentimiento previo.</p>
@@ -23,14 +23,26 @@ const UPDATED = '18 de octubre de 2026';
         <table>
           <thead><tr><th>Tipo</th><th>¿Se usa?</th></tr></thead>
           <tbody>
-            <tr><td>Cookies técnicas o necesarias</td><td>No</td></tr>
+            <tr><td>Cookies técnicas o necesarias</td><td>Solo si inicias sesión (ver tabla siguiente)</td></tr>
             <tr><td>Cookies de analítica</td><td>No</td></tr>
             <tr><td>Cookies de publicidad o redes sociales</td><td>No</td></tr>
             <tr><td>Almacenamiento local del navegador (localStorage)</td><td>Solo si tú lo pides con el botón del punto 3, para recordar que no quieres que se cuenten tus visitas</td></tr>
-            <tr><td>Contenido incrustado de terceros (videos, mapas, formularios)</td><td>No</td></tr>
+            <tr><td>Contenido incrustado de terceros (videos)</td><td>Solo dentro de la comunidad, cuando una publicación o lección incluye un video de YouTube (modo de privacidad mejorada), Vimeo o Loom</td></tr>
           </tbody>
         </table>
       </div>
+      <h3 id="sesion">Cookies de sesión (estrictamente necesarias)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Nombre</th><th>Para qué sirve</th><th>Duración</th></tr></thead>
+          <tbody>
+            <tr><td><code>sb-…-auth-token</code></td><td>Mantiene tu sesión iniciada de forma segura (httpOnly: no la puede leer ningún script). La crea el sistema de autenticación (Supabase).</td><td>Mientras tu sesión esté activa; se borra al cerrar sesión</td></tr>
+            <tr><td><code>sb-…-auth-token-code-verifier</code></td><td>Protege el inicio de sesión con Google o con enlaces del correo.</td><td>Minutos</td></tr>
+            <tr><td><code>jda_s</code></td><td>Indica a las páginas públicas que hay una sesión iniciada para mostrar "Mi cuenta". No contiene datos personales.</td><td>30 días o hasta cerrar sesión</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Al ser estrictamente necesarias para un servicio que tú pides (tu cuenta), estas cookies no requieren consentimiento previo. Si las bloqueas, no podrás iniciar sesión.</p>
 
       <h2>3. Cómo se miden las visitas sin cookies</h2>
       <p>Las estadísticas del sitio se obtienen con <strong>Plausible Analytics</strong>, una herramienta de código abierto instalada en un servidor propio. Funciona sin cookies y sin guardar direcciones IP: solo cuenta visitas de forma agregada, como cuántas personas vieron cada página o desde qué país llegaron. No permite identificarte ni seguirte entre sitios, y esa información no se comparte con plataformas de publicidad. El detalle está en la <a href="/privacidad">política de privacidad</a>.</p>

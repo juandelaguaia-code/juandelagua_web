@@ -1,0 +1,7 @@
+---
+import { flash } from '../lib/http';
+interface Props { message?: { kind: 'ok' | 'error'; text: string } | null }
+const msg = Astro.props.message ?? flash(Astro.url);
+---
+
+{msg && <p class:list={['flash', `flash--${msg.kind}`]} role={msg.kind === 'error' ? 'alert' : 'status'}>{msg.text}</p>}
