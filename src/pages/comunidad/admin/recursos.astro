@@ -1,0 +1,60 @@
+---
+import Community from '../../../layouts/Community.astro';
+import AdminNav from '../../../components/community/AdminNav.astro';
+import { hasRole } from '../../../lib/types';
+import { COMMUNITY } from '../../../data/site';
+
+export const prerender = false;
+
+if (!hasRole(Astro.locals.profile, 'admin')) return Astro.redirect('/comunidad/admin');
+const supabase = Astro.locals.supabase!;
+const { data: rows } = await supabase.from('resources').select('id, slug, title, description_md, cover_url, file_name, published, download_count, created_at').order('created_at', { ascending: false });
+const resources = await Promise.all((rows ?? []).map(async (r) => {
+  const { data } = await supabase.rpc('resource_admin_links', { p_id: r.id });
+  return { ...r, external_url: (data as any[])?.[0]?.external_url ?? '' };
+}));
+const { data: downloads } = await supabase.from('resource_downloads').select('resource_id');
+const people = (id: number) => (downloads ?? []).filter((d) => d.resource_id === id).length;
+const back = '/comunidad/admin/recursos';
+const blank = { id: '', slug: '', title: '', description_md: '', cover_url: null, file_name: null, published: false, download_count: 0, external_url: '' };
+---
+
+<Community title="Recursos" tab="admin">
+  <AdminNav current="recursos" />
+  <p class="meta" style="margin-bottom:16px">
+    Sube aquí lo que regalas en los reels ("comenta SKILL y te lo mando"). La palabra clave es el link: <strong>{COMMUNITY.url.replace('https://', '')}/recursos/skill</strong>.
+    La ficha es pública; para descargar hay que crear una cuenta y confirmar el correo. Archivos de hasta 50 MB (PDF, ZIP, Markdown, Word, Excel, imágenes…), o un link externo.
+  </p>
+  <div class="stack">
+    {[blank, ...resources].map((r: any) => (
+      <details class="card" open={!r.id}>
+        <summary>
+          {r.id ? <>{r.title} · <code>/recursos/{r.slug}</code> · {r.published ? 'Publicado' : 'Borrador'} · {r.download_count} descargas, {people(r.id)} personas</> : '+ Nuevo recurso'}
+        </summary>
+        {r.id && <p class="row" style="margin-top:10px"><input readonly value={`${COMMUNITY.url}/recursos/${r.slug}`} style="flex:1;padding:8px;border:1px solid var(--linea);border-radius:8px" onclick="this.select()" aria-label="Link para compartir" /> <a href={`/comunidad/recursos/${r.slug}`} target="_blank">Ver ↗</a></p>}
+        <form method="post" action="/api/comunidad/admin" enctype="multipart/form-data" class="form form-wide" style="margin-top:12px">
+          <input type="hidden" name="action" value="resource.save" /><input type="hidden" name="id" value={r.id} /><input type="hidden" name="back" value={back} />
+          <div class="row">
+            <label style="flex:1">Palabra clave (link) <span class="hint">Ej.: skill, prompts, guia-whatsapp</span><input name="slug" value={r.slug} required pattern="[a-zA-Z0-9-]{2,60}" /></label>
+            <label style="flex:2">Título <input name="title" value={r.title} required maxlength="160" /></label>
+          </div>
+          <label>Descripción (Markdown) <span class="hint">Qué es, para qué sirve y cómo usarlo.</span><textarea name="description_md" rows="5">{r.description_md}</textarea></label>
+          <div class="row">
+            <label style="flex:1">Archivo {r.file_name && <span class="hint">Actual: {r.file_name} (sube otro para reemplazarlo)</span>}<input type="file" name="file" /></label>
+            <label style="flex:1">o link externo <input type="url" name="external_url" value={r.external_url} placeholder="https://" /></label>
+            <label style="flex:1">Portada (opcional) <input type="file" name="cover" accept="image/jpeg,image/png,image/webp" /></label>
+          </div>
+          {r.file_name && <label class="check"><input type="checkbox" name="remove_file" value="1" /> Quitar el archivo</label>}
+          <label class="check"><input type="checkbox" name="published" checked={r.published} /> Publicado</label>
+          <button class="btn btn--agua btn--sm" type="submit" style="justify-self:start">{r.id ? 'Guardar' : 'Crear recurso'}</button>
+        </form>
+        {r.id && (
+          <form method="post" action="/api/comunidad/admin" onsubmit="return confirm('¿Eliminar el recurso?')">
+            <input type="hidden" name="action" value="resource.delete" /><input type="hidden" name="id" value={r.id} /><input type="hidden" name="back" value={back} />
+            <button class="btn--link" type="submit">Eliminar</button>
+          </form>
+        )}
+      </details>
+    ))}
+  </div>
+</Community>

@@ -37,6 +37,11 @@ const { plan: p, dark = false, delay = 0 } = Astro.props;
 
 <style>
   .plan .tag { justify-self: start; }
+  /* Tarjeta destacada sobre fondo Marino (la clase .card trae fondo claro por defecto) */
+  .plan.on-dark { background: var(--marino); color: var(--perla); border-color: transparent; }
+  .plan.on-dark .checklist li, .plan.on-dark strong { color: rgba(245, 243, 236, 0.9); }
+  .plan.on-dark .price small, .plan.on-dark .plan-compare { color: rgba(245, 243, 236, 0.7); }
+  .plan.on-dark .checklist--no li::before { background: rgba(245, 243, 236, 0.6); }
   .plan-prices { display: grid; gap: 12px; }
   .plan-prices dt { font-size: var(--fs-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
   .plan-prices .price { font-size: clamp(1.6rem, 1.3rem + 1vw, 2.2rem); }

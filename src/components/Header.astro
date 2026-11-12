@@ -1,14 +1,16 @@
 ---
-import { NAV, waLink, diagnosticoHref } from '../data/site';
+import { NAV, SITE, waLink, diagnosticoHref } from '../data/site';
 import { cleanPath } from '../data/path';
 import SocialLinks from './SocialLinks.astro';
 const path = cleanPath(Astro.url.pathname);
+// En comunidad.juandelagua.com, "Inicio" lleva al sitio principal (los demás enlaces redirigen solos)
+const home = Astro.locals.community ? SITE.url : '/';
 const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
 ---
 
 <header class="site-header" data-header>
   <div class="container bar">
-    <a href="/" class="wordmark" aria-label="Juan del Agua, inicio">
+    <a href={home} class="wordmark" aria-label="Juan del Agua, inicio">
       Juan <em>del Agua</em>
     </a>
     <nav class="nav-desktop" aria-label="Principal">
@@ -32,7 +34,7 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
 <div class="menu-movil" id="menu-movil" data-menu hidden>
   <nav aria-label="Principal móvil" class="container">
     <ul>
-      <li><a href="/">Inicio</a></li>
+      <li><a href={home}>Inicio</a></li>
       {NAV.map((item) => (
         <li><a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a></li>
       ))}

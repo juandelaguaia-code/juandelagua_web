@@ -132,6 +132,41 @@ export const POST: APIRoute = async (ctx) => {
       return done(error);
     }
 
+    // ---------- recursos gratis ----------
+    case 'resource.save': {
+      const slug = slugify(str('slug', 60)).slice(0, 60);
+      if (slug.length < 2) return ctx.redirect(withMsg(back, 'error', 'desconocido'));
+      const values: Record<string, unknown> = {
+        slug, title: str('title', 160), description_md: str('description_md', 10000),
+        external_url: /^https:\/\//.test(str('external_url', 1000)) ? str('external_url', 1000) : null,
+        published: bool('published'),
+      };
+      const cover = await uploadImage(supabase, fd.get('cover'), { bucket: 'media', folder: 'admin/recursos', maxBytes: 5 * 1024 * 1024 });
+      if (cover && 'error' in cover) return ctx.redirect(withMsg(back, 'error', 'archivo'));
+      if (cover) values.cover_url = cover.url;
+      // Archivo descargable: bucket privado "recursos", carpeta gratis/<slug>/
+      const file = fd.get('file');
+      if (file instanceof File && file.size > 0) {
+        if (file.size > 50 * 1024 * 1024) return ctx.redirect(withMsg(back, 'error', 'archivo'));
+        const name = file.name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9._-]+/g, '-').slice(-100) || 'archivo';
+        const path = `gratis/${slug}/${Date.now()}-${name}`;
+        const { error: upErr } = await supabase.storage.from('recursos').upload(path, file, { contentType: file.type || 'application/octet-stream', upsert: false });
+        if (upErr) return ctx.redirect(withMsg(back, 'error', 'archivo'));
+        values.file_path = path;
+        values.file_name = name.replace(/^\d+-/, '');
+      }
+      if (str('remove_file')) { values.file_path = null; values.file_name = null; }
+      const id = int('id');
+      const res = Number.isInteger(id)
+        ? await supabase.from('resources').update(values).eq('id', id).select('id').single()
+        : await supabase.from('resources').insert(values).select('id').single();
+      return done(res.error);
+    }
+    case 'resource.delete': {
+      const { error } = await supabase.from('resources').delete().eq('id', int('id'));
+      return done(error);
+    }
+
     // ---------- eventos ----------
     case 'event.save': {
       const startsAt = chileLocalToIso(str('starts_at', 20));

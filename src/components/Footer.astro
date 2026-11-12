@@ -1,12 +1,13 @@
 ---
 import { SITE, COMMUNITY, waLink } from '../data/site';
 const year = new Date().getFullYear();
+const home = Astro.locals.community ? SITE.url : '/';
 ---
 
 <footer class="site-footer on-dark">
   <div class="container inner">
     <div class="brand">
-      <a href="/" class="wordmark">Juan <em>del Agua</em></a>
+      <a href={home} class="wordmark">Juan <em>del Agua</em></a>
       <p class="muted">{SITE.signature} Agentes de IA, campañas y contenido para empresas y pymes. Base en Viña del Mar, con atención en todo Chile, remota y presencial.</p>
       <a class="btn btn--agua" href={waLink()} target="_blank" rel="noopener">Escribir por WhatsApp</a>
     </div>
@@ -24,7 +25,8 @@ const year = new Date().getFullYear();
         <p class="col-title">Aprende</p>
         <ul>
           <li><a href="/blog">Blog</a></li>
-          <li><a href="/comunidad">{COMMUNITY.name}</a></li>
+          <li><a href={COMMUNITY.url}>{COMMUNITY.name}</a></li>
+          <li><a href={`${COMMUNITY.url}/recursos`}>Recursos gratis</a></li>
         </ul>
       </div>
       <div>

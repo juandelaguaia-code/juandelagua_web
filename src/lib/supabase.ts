@@ -14,7 +14,11 @@ export const supabaseConfigured = () => Boolean(PUBLIC_SUPABASE_URL && PUBLIC_SU
 /** Cookie NO httpOnly que solo indica "hay sesión" para que las páginas estáticas muestren "Mi cuenta". No contiene datos. */
 export const SESSION_HINT = 'jda_s';
 
-export function createSupabase(ctx: { request: Request; cookies: AstroCookies }): SupabaseClient {
+/** Dominio de las cookies: compartido entre juandelagua.com y comunidad.juandelagua.com */
+export const cookieDomain = (hostname: string) => (hostname === 'juandelagua.com' || hostname.endsWith('.juandelagua.com') ? '.juandelagua.com' : undefined);
+
+export function createSupabase(ctx: { request: Request; cookies: AstroCookies; url: URL }): SupabaseClient {
+  const domain = cookieDomain(ctx.url.hostname);
   if (!supabaseConfigured()) throw new Error('Supabase no está configurado (PUBLIC_SUPABASE_URL / PUBLIC_SUPABASE_ANON_KEY)');
   return createServerClient(PUBLIC_SUPABASE_URL!, PUBLIC_SUPABASE_ANON_KEY!, {
     cookies: {
@@ -23,7 +27,7 @@ export function createSupabase(ctx: { request: Request; cookies: AstroCookies })
       },
       setAll(list) {
         for (const { name, value, options } of list) {
-          ctx.cookies.set(name, value, { ...options, path: '/', httpOnly: true, secure: import.meta.env.PROD, sameSite: 'lax' });
+          ctx.cookies.set(name, value, { ...options, path: '/', domain, httpOnly: true, secure: import.meta.env.PROD, sameSite: 'lax' });
         }
       },
     },

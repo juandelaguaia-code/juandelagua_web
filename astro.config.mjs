@@ -15,7 +15,8 @@ export default defineConfig({
   // Las páginas de marketing se pre-generan (estáticas). Blog, comunidad, cuentas y /api/*
   // corren en el servidor Node: cada una declara `export const prerender = false`.
   output: 'static',
-  adapter: node({ mode: 'standalone' }),
+  // deploy/server.mjs arranca este servidor y agrega el subdominio de la comunidad. Límite de subida: 60 MB.
+  adapter: node({ mode: 'standalone', bodySizeLimit: 60 * 1024 * 1024 }),
   security: {
     // Protección CSRF: rechaza formularios POST de otro origen
     checkOrigin: true,
@@ -23,6 +24,7 @@ export default defineConfig({
     allowedDomains: [
       { hostname: 'juandelagua.com', protocol: 'https' },
       { hostname: 'www.juandelagua.com', protocol: 'https' },
+      { hostname: 'comunidad.juandelagua.com', protocol: 'https' },
     ],
   },
   // Variables de entorno leídas en tiempo de ejecución (EasyPanel → Environment). Ver .env.example.

@@ -6,6 +6,12 @@ import Wave from '../../components/Wave.astro';
 import Faq from '../../components/Faq.astro';
 import { COMMUNITY, SITE } from '../../data/site';
 import { faqSchema, type FaqItem } from '../../data/faq';
+import { canRead } from '../../lib/types';
+
+// Se sirve en comunidad.juandelagua.com/ (deploy/server.mjs). En el servidor para saber si ya eres miembro.
+export const prerender = false;
+const member = canRead(Astro.locals.profile);
+const logged = !!Astro.locals.user;
 
 const description = `${COMMUNITY.name} ${COMMUNITY.endorsement}: ${COMMUNITY.description}`.slice(0, 160);
 
@@ -37,13 +43,13 @@ const faq: FaqItem[] = [
 <Base
   title={`${COMMUNITY.name}: comunidad para usar IA sin programar`}
   description={description}
-  breadcrumbs={[{ name: COMMUNITY.name, path: '/comunidad' }]}
+  canonicalUrl={COMMUNITY.url}
   schema={[
     {
       '@context': 'https://schema.org',
       '@type': 'Organization',
       name: `${COMMUNITY.name} ${COMMUNITY.endorsement}`,
-      url: `${SITE.url}/comunidad`,
+      url: COMMUNITY.url,
       description: COMMUNITY.description,
       parentOrganization: { '@id': `${SITE.url}/#negocio` },
       founder: { '@id': `${SITE.url}/#juan` },
@@ -54,8 +60,11 @@ const faq: FaqItem[] = [
   <PageHero eyebrow={COMMUNITY.endorsement}>
     <Fragment slot="title">{COMMUNITY.name}: <em>IA sin programar</em>.</Fragment>
     <Fragment slot="lead"><p>{COMMUNITY.description} Para microempresarios e independientes que quieren automatizar sin enredarse.</p></Fragment>
-    <a class="btn btn--agua" href="/registro?next=/comunidad/ingreso">Unirme gratis</a>
-    <a class="btn btn--ghost" href="/entrar?next=/comunidad/feed">Ya soy miembro</a>
+    {member ? <a class="btn btn--agua" href="/comunidad/feed">Entrar a la comunidad</a>
+      : logged ? <a class="btn btn--agua" href="/comunidad/ingreso">Completar mi ingreso</a>
+      : <a class="btn btn--agua" href="/registro?next=/comunidad/ingreso">Unirme gratis</a>}
+    {!logged && <a class="btn btn--ghost" href="/entrar?next=/comunidad/feed">Ya soy miembro</a>}
+    <a class="btn btn--ghost" href="/comunidad/recursos">Recursos gratis</a>
   </PageHero>
   <Wave from="var(--perla)" to="var(--bruma)" />
 

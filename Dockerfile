@@ -13,10 +13,11 @@ ENV NODE_ENV=production HOST=0.0.0.0 PORT=4321
 COPY --from=build /app/package.json ./
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
-COPY deploy/indexnow.mjs deploy/blog-worker.mjs ./deploy/
+COPY deploy/indexnow.mjs deploy/blog-worker.mjs deploy/server.mjs ./deploy/
 USER node
 EXPOSE 4321
 HEALTHCHECK --interval=30s --timeout=3s CMD wget -qO- http://127.0.0.1:4321/ >/dev/null || exit 1
 # En segundo plano: IndexNow avisa a Bing cuando esta versión ya está en línea (deploy/indexnow.mjs)
-# y blog-worker avisa los artículos programados cuando llega su hora (deploy/blog-worker.mjs)
-CMD ["sh", "-c", "node ./deploy/indexnow.mjs & node ./deploy/blog-worker.mjs & exec node ./dist/server/entry.mjs"]
+# y blog-worker avisa los artículos programados cuando llega su hora (deploy/blog-worker.mjs).
+# deploy/server.mjs atiende juandelagua.com y comunidad.juandelagua.com desde el mismo contenedor.
+CMD ["sh", "-c", "node ./deploy/indexnow.mjs & node ./deploy/blog-worker.mjs & exec node ./deploy/server.mjs"]

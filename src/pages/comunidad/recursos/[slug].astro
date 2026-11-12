@@ -1,0 +1,67 @@
+---
+// Ficha pública de un recurso: comunidad.juandelagua.com/recursos/<palabra-clave>
+// Para descargar hay que tener cuenta con el correo confirmado (se valida otra vez en la base de datos).
+import Base from '../../../layouts/Base.astro';
+import Flash from '../../../components/Flash.astro';
+import { COMMUNITY } from '../../../data/site';
+import { renderMarkdown, plainText } from '../../../lib/markdown';
+import { canRead } from '../../../lib/types';
+
+export const prerender = false;
+
+const slug = (Astro.params.slug ?? '').toLowerCase();
+const supabase = Astro.locals.supabase;
+if (!supabase) return new Response(null, { status: 404 });
+const { data: r } = await supabase.from('resources').select('id, slug, title, description_md, cover_url, file_name, published').eq('slug', slug).maybeSingle();
+if (!r) return new Response(null, { status: 404 });
+
+const { user, profile } = Astro.locals;
+const here = `/comunidad/recursos/${r.slug}`;
+const verified = !!user?.email_confirmed_at;
+const member = canRead(profile);
+---
+
+<Base
+  title={`${r.title} (gratis) · ${COMMUNITY.name}`}
+  description={plainText(r.description_md, 155) || `Descarga gratis "${r.title}" uniéndote a ${COMMUNITY.name}.`}
+  image={r.cover_url ?? '/og.jpg'}
+  canonicalUrl={`${COMMUNITY.url}/recursos/${r.slug}`}
+  noindex={!r.published}
+>
+  <section class="section">
+    <div class="container prose">
+      <p class="eyebrow"><a href="/comunidad/recursos">Recursos gratis</a> · {COMMUNITY.name}</p>
+      {!r.published && <p class="flash flash--error">Borrador: solo tú lo ves.</p>}
+      <h1>{r.title}</h1>
+      {r.cover_url && <img src={r.cover_url} alt="" style="border-radius:var(--radius-lg);margin:24px 0;width:100%" />}
+      <div class="md" set:html={renderMarkdown(r.description_md, { ugc: false, mentions: false })} />
+
+      <div class="card" style="margin-top:32px">
+        <Flash />
+        {!user ? (
+          <>
+            <h2>Descárgalo gratis</h2>
+            <p>Este recurso es para los miembros de {COMMUNITY.name}. Crea tu cuenta gratis (toma un minuto) y vuelves aquí a descargarlo.</p>
+            <div class="row">
+              <a class="btn btn--agua" href={`/registro?next=${encodeURIComponent(here)}`}>Unirme gratis y descargar</a>
+              <a class="btn btn--ghost" href={`/entrar?next=${encodeURIComponent(here)}`}>Ya tengo cuenta</a>
+            </div>
+          </>
+        ) : !verified ? (
+          <>
+            <h2>Confirma tu correo</h2>
+            <p>Te enviamos un enlace a <strong>{user.email}</strong>. Ábrelo y vuelve a esta página para descargar.</p>
+          </>
+        ) : (
+          <>
+            <h2>¡Listo! Ya puedes descargarlo</h2>
+            <a class="btn btn--agua" href={`/api/recursos/${r.slug}`}>Descargar{r.file_name ? ` ${r.file_name}` : ''}</a>
+            {member
+              ? <p class="meta">¿Dudas sobre cómo usarlo? Pregunta en la <a href="/comunidad/feed">comunidad</a>.</p>
+              : <p class="meta">¿Te unes a la comunidad para preguntar y ver los talleres? <a href="/comunidad/ingreso">Completa tu ingreso aquí</a>.</p>}
+          </>
+        )}
+      </div>
+    </div>
+  </section>
+</Base>

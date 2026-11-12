@@ -6,7 +6,7 @@ import Avatar from '../components/community/Avatar.astro';
 import { COMMUNITY } from '../data/site';
 import { hasRole, canWrite } from '../lib/types';
 
-interface Props { title: string; tab?: 'feed' | 'cursos' | 'calendario' | 'miembros' | 'ranking' | 'admin' | 'none' }
+interface Props { title: string; tab?: 'feed' | 'cursos' | 'calendario' | 'miembros' | 'ranking' | 'recursos' | 'admin' | 'none' }
 const { title, tab = 'none' } = Astro.props;
 const { profile, supabase } = Astro.locals;
 
@@ -21,6 +21,7 @@ const tabs = [
   { id: 'calendario', href: '/comunidad/calendario', label: 'Calendario' },
   { id: 'miembros', href: '/comunidad/miembros', label: 'Miembros' },
   { id: 'ranking', href: '/comunidad/ranking', label: 'Ranking' },
+  { id: 'recursos', href: '/comunidad/recursos', label: 'Recursos' },
   ...(hasRole(profile, 'moderator') ? [{ id: 'admin', href: '/comunidad/admin', label: 'Administración' }] : []),
 ];
 ---

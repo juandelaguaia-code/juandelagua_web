@@ -83,8 +83,8 @@ export const PLANES = {
 
 export type PlanId = keyof typeof PLANES;
 
-/** Orden con ancla: en contenido, Escalar primero. En automatización, la estrella al medio. */
-export const CONTENIDO_ORDER: PlanId[] = ['escalar', 'crecer', 'base'];
+/** Orden de las tarjetas: en contenido, de menor a mayor. En automatización, la estrella al medio. */
+export const CONTENIDO_ORDER: PlanId[] = ['base', 'crecer', 'escalar'];
 export const AUTOMATIZACION_ORDER: PlanId[] = ['starter', 'combo', 'consultoria'];
 
 /** Precio de lanzamiento: 3 primeros clientes de Agente Starter o Campaña + agente. Edita `left` cuando se ocupe un cupo. */

@@ -70,6 +70,23 @@ npm run preview    # sirve el build
 10. **Owner:** regístrate en `/registro`, confirma el correo y ejecuta `node --env-file=.env scripts/crear-owner.mjs tu-correo`.
 11. **Tipos (opcional):** `npx supabase gen types typescript --project-id <ref> > src/lib/database.types.ts`.
 
+### Comunidad en comunidad.juandelagua.com
+
+El mismo contenedor atiende los dos dominios (`deploy/server.mjs`):
+
+- `comunidad.juandelagua.com/` es la página de la comunidad; `/feed`, `/cursos`, `/recursos/skill`, etc. se sirven desde las rutas internas `/comunidad/*`.
+- En `juandelagua.com`, cualquier `/comunidad/...` redirige al subdominio.
+- Las cuentas (`/entrar`, `/registro`, `/cuenta`) funcionan en ambos y la sesión se comparte (cookies con dominio `.juandelagua.com`).
+- En local (`npm run dev`) la comunidad sigue en `http://localhost:4321/comunidad`.
+
+Para activarlo: en EasyPanel → tu app → **Domains**, agrega `comunidad.juandelagua.com` (puerto 4321, HTTPS), y en Cloudflare un registro `A` (o `CNAME`) `comunidad` hacia el VPS. En Supabase → Authentication → URL Configuration agrega también `https://comunidad.juandelagua.com/**` a las Redirect URLs.
+
+### Recursos gratis (lead magnets de los reels)
+
+"Comenta SKILL y te lo mando" → envías `comunidad.juandelagua.com/recursos/skill`.
+La ficha es pública; para descargar hay que crear una cuenta y confirmar el correo (se valida en la base con `resource_access`).
+Se gestionan en `/comunidad/admin/recursos` (archivo de hasta 50 MB en el bucket privado `recursos` o un link externo) y cada descarga queda registrada.
+
 ### Variables de entorno (EasyPanel → Environment)
 
 | Variable | Para qué |
@@ -80,6 +97,7 @@ npm run preview    # sirve el build
 | `SITE_URL` | `https://juandelagua.com` (enlaces de los correos) |
 | `PUBLIC_TURNSTILE_SITE_KEY` | Opcional: captcha en registro y recuperación |
 | `INDEXNOW_ENABLED` | Opcional (`true` por defecto) |
+| `COMMUNITY_HOST` | Opcional (`comunidad.juandelagua.com` por defecto) |
 
 Se leen al arrancar el contenedor: cambiar una variable solo requiere reiniciar, no reconstruir.
 

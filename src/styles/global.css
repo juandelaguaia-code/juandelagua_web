@@ -291,4 +291,5 @@ p { text-wrap: pretty; }
 .data-table th, .data-table td { text-align: left; vertical-align: top; padding: 10px 8px; border-bottom: 1px solid var(--linea); }
 .progress { height: 8px; border-radius: 99px; background: var(--bruma); overflow: hidden; }
 .progress > span { display: block; height: 100%; background: var(--corriente); }
+.account-link[hidden] { display: none; }
 .account-link { font-size: var(--fs-sm); font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }

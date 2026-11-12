@@ -1,0 +1,43 @@
+---
+// Recursos gratis (público). En comunidad.juandelagua.com/recursos
+import Base from '../../../layouts/Base.astro';
+import PageHero from '../../../components/PageHero.astro';
+import Wave from '../../../components/Wave.astro';
+import { COMMUNITY } from '../../../data/site';
+import { plainText } from '../../../lib/markdown';
+
+export const prerender = false;
+
+const supabase = Astro.locals.supabase;
+const { data: resources } = supabase
+  ? await supabase.from('resources').select('slug, title, description_md, cover_url').eq('published', true).order('created_at', { ascending: false })
+  : { data: [] as any[] };
+---
+
+<Base
+  title={`Recursos gratis: plantillas y skills de IA · ${COMMUNITY.name}`}
+  description="Plantillas, skills y guías de IA para tu negocio, gratis para los miembros de la comunidad. Únete y descárgalas."
+  canonicalUrl={`${COMMUNITY.url}/recursos`}
+>
+  <PageHero eyebrow={`${COMMUNITY.name} ${COMMUNITY.endorsement}`}>
+    <Fragment slot="title">Recursos <em>gratis</em>.</Fragment>
+    <Fragment slot="lead"><p>Las plantillas, skills y guías que muestro en los reels. Son gratis: solo tienes que unirte a la comunidad para descargarlas.</p></Fragment>
+  </PageHero>
+  <Wave from="var(--perla)" to="var(--bruma)" />
+  <section class="section bg-bruma">
+    <div class="container">
+      <div class="grid grid-3">
+        {(resources ?? []).map((r) => (
+          <a class="card" href={`/comunidad/recursos/${r.slug}`}>
+            {r.cover_url && <img src={r.cover_url} alt="" loading="lazy" style="border-radius:12px;aspect-ratio:16/9;object-fit:cover;width:100%" />}
+            <span class="tag" style="justify-self:start">{r.slug.toUpperCase()}</span>
+            <h3>{r.title}</h3>
+            <p>{plainText(r.description_md, 140)}</p>
+            <span class="link-arrow">Ver recurso →</span>
+          </a>
+        ))}
+      </div>
+      {!resources?.length && <p class="lead">Pronto vas a encontrar aquí los recursos de los reels.</p>}
+    </div>
+  </section>
+</Base>

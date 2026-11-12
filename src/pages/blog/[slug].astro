@@ -71,7 +71,7 @@ const crumbs = [{ name: 'Blog', path: '/blog' }, ...(cat ? [{ name: cat.name, pa
             <span class="tag">{COMMUNITY.endorsement}</span>
             <h2>¿Quieres hacerlo con compañía?</h2>
             <p>{COMMUNITY.description} {COMMUNITY.pricing[0].price} {COMMUNITY.pricing[0].when.toLowerCase()}.</p>
-            <a class="btn btn--agua" href="/comunidad">Conocer {COMMUNITY.name}</a>
+            <a class="btn btn--agua" href={COMMUNITY.url}>Conocer {COMMUNITY.name}</a>
           </>
         ) : (
           <>

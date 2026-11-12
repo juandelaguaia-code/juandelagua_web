@@ -53,7 +53,7 @@ export const NAV = [
   { href: '/marketing-digital', label: 'Marketing' },
   { href: '/planes', label: 'Planes' },
   { href: '/blog', label: 'Blog' },
-  { href: '/comunidad', label: 'Comunidad' },
+  { href: 'https://comunidad.juandelagua.com', label: 'Comunidad' },
   { href: '/sobre-mi', label: 'Sobre mí' },
 ] as const;
 
@@ -64,6 +64,8 @@ export const NAV = [
 export const COMMUNITY = {
   name: 'Comunidad Corriente',
   endorsement: 'by Juan del Agua',
+  // La comunidad vive en su propio subdominio (mismo servidor, ver deploy/server.mjs)
+  url: 'https://comunidad.juandelagua.com',
   tagline: 'IA sin programar, con el proceso real en 1 minuto y en español chileno.',
   description:
     'Videos, plantillas y comunidad para usar IA sin programar y automatizar mensajes, reservas y contenido, con el proceso real en 1 minuto y en español chileno.',
