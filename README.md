@@ -54,7 +54,7 @@ npm run preview    # sirve el build
 
 ### Puesta en marcha (una vez)
 
-1. **Crear el proyecto** en Supabase (región recomendada: São Paulo, la que declara la política de privacidad).
+1. **Proyecto Supabase:** ya creado (`ncxfhcxhfatlkqizmass`, región us-west-2 / Oregón, la que declara la política de privacidad) y con las migraciones y el seed aplicados. Si algún día se cambia de región, actualizar `/privacidad`.
 2. **Aplicar las migraciones**: en el SQL Editor, pegar y ejecutar cada archivo de `supabase/migrations/` en orden. O con la CLI: `npx supabase link --project-ref <ref>` y `npx supabase db push`.
 3. (Opcional) Ejecutar `supabase/seed.sql` para el curso de bienvenida, un evento y un borrador de blog.
 4. **Authentication → URL Configuration:** Site URL `https://juandelagua.com` y Redirect URLs `https://juandelagua.com/auth/callback` (y `http://localhost:4321/auth/callback` para pruebas).
