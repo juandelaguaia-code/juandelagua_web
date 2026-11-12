@@ -27,17 +27,18 @@ export default defineConfig({
       { hostname: 'comunidad.juandelagua.com', protocol: 'https' },
     ],
   },
-  // Variables de entorno leídas en tiempo de ejecución (EasyPanel → Environment). Ver .env.example.
+  // Variables de entorno leídas al ARRANCAR el contenedor (EasyPanel → Environment). Ver .env.example.
+  // Todas son 'secret' a propósito: en Astro las 'public' se fijan al construir la imagen y en Docker quedarían vacías.
   env: {
     schema: {
-      PUBLIC_SUPABASE_URL: envField.string({ context: 'server', access: 'public', optional: true }),
-      PUBLIC_SUPABASE_ANON_KEY: envField.string({ context: 'server', access: 'public', optional: true }),
+      PUBLIC_SUPABASE_URL: envField.string({ context: 'server', access: 'secret', optional: true }),
+      PUBLIC_SUPABASE_ANON_KEY: envField.string({ context: 'server', access: 'secret', optional: true }),
       SUPABASE_SERVICE_ROLE_KEY: envField.string({ context: 'server', access: 'secret', optional: true }),
-      SITE_URL: envField.string({ context: 'server', access: 'public', default: 'https://juandelagua.com' }),
-      PUBLIC_TURNSTILE_SITE_KEY: envField.string({ context: 'server', access: 'public', optional: true }),
+      SITE_URL: envField.string({ context: 'server', access: 'secret', default: 'https://juandelagua.com' }),
+      PUBLIC_TURNSTILE_SITE_KEY: envField.string({ context: 'server', access: 'secret', optional: true }),
       // Muestra "Entrar con Google" solo cuando el proveedor Google está activo en Supabase
-      AUTH_GOOGLE: envField.boolean({ context: 'server', access: 'public', default: false }),
-      INDEXNOW_ENABLED: envField.boolean({ context: 'server', access: 'public', default: true }),
+      AUTH_GOOGLE: envField.boolean({ context: 'server', access: 'secret', default: false }),
+      INDEXNOW_ENABLED: envField.boolean({ context: 'server', access: 'secret', default: true }),
     },
   },
   integrations: [
