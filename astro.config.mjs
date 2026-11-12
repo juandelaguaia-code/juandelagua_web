@@ -38,6 +38,8 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
+      // El sitemap del blog se genera en el servidor desde la base de datos
+      customSitemaps: ['https://juandelagua.com/sitemap-blog.xml'],
       filter: (page) => !PRIVATE.some((p) => new URL(page).pathname.startsWith(p)),
       i18n: { defaultLocale: 'es', locales: { es: 'es-CL' } },
     }),

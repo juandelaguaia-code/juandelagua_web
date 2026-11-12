@@ -1,0 +1,23 @@
+---
+import BlogListPage from '../../../components/blog/BlogListPage.astro';
+import { listPosts, listCategories, seriesName, BLOG_CACHE } from '../../../lib/blog';
+
+export const prerender = false;
+
+const serie = Astro.params.serie ?? '';
+if (!/^[a-z0-9-]{2,60}$/.test(serie)) return new Response(null, { status: 404 });
+const page = Math.max(1, Number.parseInt(Astro.url.searchParams.get('pagina') ?? '1', 10) || 1);
+const [{ posts, total }, categories] = await Promise.all([listPosts({ page, series: serie }), listCategories()]);
+if (total === 0 && page === 1 && !['claude-en-1-minuto', 'marketing-en-1-minuto', 'creando-mi-marca'].includes(serie)) return new Response(null, { status: 404 });
+const name = seriesName(serie);
+Astro.response.headers.set('Cache-Control', BLOG_CACHE);
+---
+
+<BlogListPage
+  title={`Serie ${name}`}
+  heading={`Serie <em>${name}</em>`}
+  lead={`Todos los artículos de la serie "${name}", del más reciente al más antiguo.`}
+  description={`Serie "${name}" del blog de Juan del Agua: IA y marketing explicados con el proceso real, en español de Chile.`}
+  path={`/blog/serie/${serie}`} posts={posts} total={total} page={page} categories={categories} current={`s:${serie}`}
+  breadcrumbs={[{ name: 'Blog', path: '/blog' }, { name, path: `/blog/serie/${serie}` }]}
+/>

@@ -1,0 +1,39 @@
+---
+import App from '../../../layouts/App.astro';
+import { formatDate } from '../../../lib/blog';
+
+export const prerender = false;
+
+const { supabase } = Astro.locals;
+const { data: posts } = await supabase!
+  .from('blog_posts')
+  .select('id, slug, title, status, published_at, updated_at, blog_categories(name)')
+  .order('updated_at', { ascending: false })
+  .limit(200);
+const now = Date.now();
+const estado = (p: { status: string; published_at: string | null }) =>
+  p.status === 'draft' ? 'Borrador' : p.published_at && +new Date(p.published_at) > now ? `Programado · ${formatDate(p.published_at)}` : `Publicado · ${formatDate(p.published_at)}`;
+---
+
+<App title="Administrar blog">
+  <p class="row meta"><a href="/admin/blog">Blog</a> · <a href="/comunidad/admin">Comunidad</a> · <a href="/blog" target="_blank">Ver blog ↗</a></p>
+  <div class="row" style="justify-content:space-between;margin:12px 0 24px">
+    <h1>Blog</h1>
+    <a class="btn btn--agua" href="/admin/blog/nuevo">Nuevo artículo</a>
+  </div>
+  <p class="meta">Ritmo planificado: 1 artículo semanal, lunes 09:00 (hora de Chile). Un artículo programado aparece solo a su hora, entra al sitemap y se avisa a IndexNow.</p>
+  <table class="data-table" style="margin-top:16px">
+    <thead><tr><th>Título</th><th>Categoría</th><th>Estado</th><th></th></tr></thead>
+    <tbody>
+      {(posts ?? []).map((p: any) => (
+        <tr>
+          <td><a href={`/admin/blog/${p.id}`}>{p.title}</a><br /><span class="meta">/blog/{p.slug}</span></td>
+          <td>{p.blog_categories?.name ?? '—'}</td>
+          <td>{estado(p)}</td>
+          <td>{p.status !== 'draft' && <a href={`/blog/${p.slug}`} target="_blank">Ver ↗</a>}</td>
+        </tr>
+      ))}
+      {!posts?.length && <tr><td colspan="4">Aún no hay artículos.</td></tr>}
+    </tbody>
+  </table>
+</App>

@@ -1,0 +1,148 @@
+---
+import App from '../../../layouts/App.astro';
+import { isPost, form, withMsg, errorCode } from '../../../lib/http';
+import { uploadImage } from '../../../lib/upload';
+import { renderMarkdown } from '../../../lib/markdown';
+import { pingIndexNow, blogPaths } from '../../../lib/indexnow';
+import { chileLocalToIso, isoToChileLocal, nextMondayNine, slugify } from '../../../lib/time';
+import { SERIES, type BlogPost } from '../../../lib/blog';
+
+export const prerender = false;
+
+const supabase = Astro.locals.supabase!;
+const user = Astro.locals.user!;
+const id = Astro.params.id === 'nuevo' ? null : Number(Astro.params.id);
+if (Astro.params.id !== 'nuevo' && !Number.isInteger(id)) return Astro.redirect('/admin/blog');
+
+const { data: categories } = await supabase.from('blog_categories').select('id, slug, name').order('id');
+let post: Partial<BlogPost> = { status: 'draft', tags: [], published_at: chileLocalToIso(nextMondayNine()) };
+if (id) {
+  const { data } = await supabase.from('blog_posts').select('*').eq('id', id).maybeSingle();
+  if (!data) return Astro.redirect('/admin/blog');
+  post = data;
+}
+
+let preview: string | null = null;
+let error: string | null = null;
+
+if (isPost(Astro)) {
+  const { fd, str } = await form(Astro);
+  const action = str('action', 20);
+
+  if (action === 'eliminar' && id) {
+    await supabase.from('blog_posts').delete().eq('id', id);
+    return Astro.redirect(withMsg('/admin/blog', 'ok', 'eliminado'));
+  }
+
+  const title = str('title', 160);
+  const status = (['draft', 'scheduled', 'published'].includes(str('status')) ? str('status') : 'draft') as BlogPost['status'];
+  let publishedAt = chileLocalToIso(str('published_at', 20));
+  if (status === 'published' && (!publishedAt || +new Date(publishedAt) > Date.now())) publishedAt = new Date().toISOString();
+  const values: Partial<BlogPost> = {
+    title,
+    slug: slugify(str('slug', 120) || title),
+    excerpt: str('excerpt', 400),
+    body_md: str('body_md', 200000),
+    cover_url: str('cover_url', 500) || null,
+    cover_alt: str('cover_alt', 300) || null,
+    category_id: Number(str('category_id')) || null,
+    tags: str('tags', 500).split(',').map((t) => t.trim()).filter(Boolean).slice(0, 12),
+    series: str('series', 60) || null,
+    status,
+    published_at: status === 'draft' ? publishedAt : publishedAt,
+    seo_title: str('seo_title', 70) || null,
+    seo_description: str('seo_description', 170) || null,
+    canonical_url: str('canonical_url', 500) || null,
+  };
+  if (str('remove_cover')) { values.cover_url = null; values.cover_alt = null; }
+  const up = await uploadImage(supabase, fd.get('cover'), { bucket: 'media', folder: 'admin/blog', maxBytes: 5 * 1024 * 1024 });
+  if (up && 'error' in up) error = 'La portada debe ser JPG, PNG o WebP de máximo 5 MB.';
+  else if (up) values.cover_url = up.url;
+
+  if (action === 'preview') {
+    post = { ...post, ...values };
+    preview = renderMarkdown(values.body_md ?? '', { ugc: false, mentions: false });
+  } else if (!error) {
+    if (values.cover_url && !values.cover_alt) error = 'La portada necesita un texto alternativo (alt).';
+    else if (status !== 'draft' && !values.published_at) error = 'Indica la fecha de publicación.';
+    else {
+      const res = id
+        ? await supabase.from('blog_posts').update(values).eq('id', id).select('id, slug, status, published_at, series, indexnow_notified_at, blog_categories(slug)').single()
+        : await supabase.from('blog_posts').insert({ ...values, author_id: user.id }).select('id, slug, status, published_at, series, indexnow_notified_at, blog_categories(slug)').single();
+      if (res.error) {
+        error = res.error.message.includes('blog_posts_slug_key') ? 'Ya existe un artículo con ese slug.' : `No se pudo guardar (${errorCode(res.error)}).`;
+        post = { ...post, ...values };
+      } else {
+        const saved = res.data as any;
+        // Si ya está en línea, se avisa a IndexNow ahora. Los programados los avisa deploy/blog-worker.mjs a su hora.
+        if (saved.status !== 'draft' && +new Date(saved.published_at) <= Date.now() && !saved.indexnow_notified_at) {
+          if (await pingIndexNow(blogPaths(saved.slug, saved.blog_categories?.slug, saved.series))) {
+            await supabase.from('blog_posts').update({ indexnow_notified_at: new Date().toISOString() }).eq('id', saved.id);
+          }
+        }
+        return Astro.redirect(withMsg(`/admin/blog/${saved.id}`, 'ok', 'guardado'));
+      }
+    }
+    if (error) post = { ...post, ...values };
+  }
+}
+const isLive = post.status !== 'draft' && post.published_at && +new Date(post.published_at) <= Date.now();
+---
+
+<App title={id ? 'Editar artículo' : 'Nuevo artículo'}>
+  <p class="row meta"><a href="/admin/blog">← Volver al blog</a>{isLive && <a href={`/blog/${post.slug}`} target="_blank">Ver publicado ↗</a>}</p>
+  <h1 style="margin:12px 0 24px">{id ? 'Editar artículo' : 'Nuevo artículo'}</h1>
+  {error && <p class="flash flash--error" role="alert">{error}</p>}
+  <form method="post" enctype="multipart/form-data" class="form form-wide">
+    <label>Título <input name="title" value={post.title} required maxlength="160" /></label>
+    <label>Slug <span class="hint">Se arma solo desde el título si lo dejas vacío. Cambiarlo después rompe los links.</span><input name="slug" value={post.slug} maxlength="120" /></label>
+    <label>Resumen <span class="hint">Aparece en el listado y como descripción si no completas la SEO.</span><textarea name="excerpt" rows="2" maxlength="400">{post.excerpt}</textarea></label>
+    <label>Contenido (Markdown) <textarea name="body_md" rows="22" style="font-family:ui-monospace,monospace">{post.body_md}</textarea></label>
+    <div class="row">
+      <label style="flex:1">Categoría
+        <select name="category_id"><option value="">—</option>{(categories ?? []).map((c) => <option value={c.id} selected={c.id === post.category_id}>{c.name}</option>)}</select>
+      </label>
+      <label style="flex:1">Serie
+        <select name="series"><option value="">—</option>{Object.entries(SERIES).map(([v, n]) => <option value={v} selected={v === post.series}>{n}</option>)}</select>
+      </label>
+      <label style="flex:1">Etiquetas <span class="hint">Separadas por coma</span><input name="tags" value={(post.tags ?? []).join(', ')} /></label>
+    </div>
+    <fieldset class="card">
+      <legend>Portada</legend>
+      {post.cover_url && <img src={post.cover_url} alt={post.cover_alt ?? ''} style="max-width:320px;border-radius:12px" />}
+      <input type="hidden" name="cover_url" value={post.cover_url ?? ''} />
+      <label>Subir imagen <span class="hint">JPG, PNG o WebP, máx. 5 MB, idealmente 1200×630.</span><input type="file" name="cover" accept="image/jpeg,image/png,image/webp" /></label>
+      <label>Texto alternativo (obligatorio si hay portada) <input name="cover_alt" value={post.cover_alt ?? ''} maxlength="300" /></label>
+      {post.cover_url && <label class="check"><input type="checkbox" name="remove_cover" value="1" /> Quitar portada</label>}
+    </fieldset>
+    <fieldset class="card">
+      <legend>Publicación</legend>
+      <label>Estado
+        <select name="status">
+          <option value="draft" selected={post.status === 'draft'}>Borrador</option>
+          <option value="scheduled" selected={post.status === 'scheduled'}>Programado (se publica solo a la hora indicada)</option>
+          <option value="published" selected={post.status === 'published'}>Publicado ahora</option>
+        </select>
+      </label>
+      <label>Fecha y hora de publicación (hora de Chile) <input type="datetime-local" name="published_at" value={isoToChileLocal(post.published_at)} /></label>
+    </fieldset>
+    <details class="card">
+      <summary>SEO (opcional)</summary>
+      <label>Título SEO <span class="hint">Máx. 70 caracteres</span><input name="seo_title" value={post.seo_title ?? ''} maxlength="70" /></label>
+      <label>Descripción SEO <span class="hint">Máx. 170 caracteres</span><textarea name="seo_description" rows="2" maxlength="170">{post.seo_description ?? ''}</textarea></label>
+      <label>URL canónica <span class="hint">Solo si el artículo se publicó antes en otro sitio</span><input type="url" name="canonical_url" value={post.canonical_url ?? ''} /></label>
+    </details>
+    <div class="row">
+      <button class="btn btn--agua" type="submit" name="action" value="guardar">Guardar</button>
+      <button class="btn btn--ghost" type="submit" name="action" value="preview">Vista previa</button>
+      {id && <button class="btn btn--ghost" type="submit" name="action" value="eliminar" formnovalidate onclick="return confirm('¿Eliminar este artículo? No se puede deshacer.')">Eliminar</button>}
+    </div>
+  </form>
+  {preview !== null && (
+    <section class="card" style="margin-top:32px">
+      <p class="eyebrow">Vista previa (sin guardar)</p>
+      <h1>{post.title}</h1>
+      <div class="md prose" set:html={preview} />
+    </section>
+  )}
+</App>

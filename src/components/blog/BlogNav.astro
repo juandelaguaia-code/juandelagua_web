@@ -1,0 +1,16 @@
+---
+import { SERIES, type BlogCategory } from '../../lib/blog';
+interface Props { categories: BlogCategory[]; current?: string }
+const { categories, current } = Astro.props;
+---
+
+<nav aria-label="Categorías del blog">
+  <ul class="app-tabs">
+    <li><a href="/blog" aria-current={!current ? 'page' : undefined}>Todo</a></li>
+    {categories.map((c) => <li><a href={`/blog/categoria/${c.slug}`} aria-current={current === `c:${c.slug}` ? 'page' : undefined}>{c.name}</a></li>)}
+  </ul>
+  <p class="row meta">Series:
+    {Object.entries(SERIES).map(([slug, name]) => <a href={`/blog/serie/${slug}`} aria-current={current === `s:${slug}` ? 'page' : undefined}>{name}</a>)}
+    · <a href="/blog/rss.xml">RSS</a>
+  </p>
+</nav>

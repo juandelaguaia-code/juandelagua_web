@@ -1,0 +1,19 @@
+---
+import BlogListPage from '../../components/blog/BlogListPage.astro';
+import { listPosts, listCategories, BLOG_CACHE } from '../../lib/blog';
+
+export const prerender = false;
+
+const page = Math.max(1, Number.parseInt(Astro.url.searchParams.get('pagina') ?? '1', 10) || 1);
+const [{ posts, total }, categories] = await Promise.all([listPosts({ page }), listCategories()]);
+Astro.response.headers.set('Cache-Control', BLOG_CACHE);
+---
+
+<BlogListPage
+  title="Blog: IA, automatización y marketing para pymes"
+  heading="El proceso real, <em>con errores incluidos</em>."
+  lead="IA para pymes, agentes, campañas medidas y el proceso de construir una marca. Un artículo nuevo cada lunes."
+  description="Blog de Juan del Agua: IA para pymes, automatización y agentes, marketing y campañas, casos y el proceso real de crear una marca. Nuevo artículo cada lunes."
+  path="/blog" posts={posts} total={total} page={page} categories={categories}
+  breadcrumbs={[{ name: 'Blog', path: '/blog' }]}
+/>

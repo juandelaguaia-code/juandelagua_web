@@ -1,0 +1,105 @@
+---
+import Base from '../../layouts/Base.astro';
+import Wave from '../../components/Wave.astro';
+import PostList from '../../components/blog/PostList.astro';
+import DiagnosticoButton from '../../components/DiagnosticoButton.astro';
+import { getPost, relatedPosts, formatDate, seriesName, BLOG_CACHE } from '../../lib/blog';
+import { renderMarkdown, plainText } from '../../lib/markdown';
+import { COMMUNITY, SITE } from '../../data/site';
+
+export const prerender = false;
+
+const post = await getPost(Astro.params.slug ?? '');
+if (!post) return new Response(null, { status: 404 });
+const related = await relatedPosts(post);
+const cat = post.blog_categories;
+const html = renderMarkdown(post.body_md, { ugc: false, mentions: false });
+const url = `${SITE.url}/blog/${post.slug}`;
+const description = post.seo_description || post.excerpt || plainText(post.body_md, 155);
+Astro.response.headers.set('Cache-Control', BLOG_CACHE);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.title,
+  description,
+  url,
+  mainEntityOfPage: url,
+  datePublished: post.published_at,
+  dateModified: post.updated_at,
+  inLanguage: 'es-CL',
+  timeRequired: `PT${post.reading_minutes}M`,
+  ...(post.cover_url ? { image: post.cover_url } : { image: `${SITE.url}/og.jpg` }),
+  ...(cat ? { articleSection: cat.name } : {}),
+  ...(post.tags?.length ? { keywords: post.tags.join(', ') } : {}),
+  author: { '@id': `${SITE.url}/#juan` },
+  publisher: { '@id': `${SITE.url}/#negocio` },
+};
+const crumbs = [{ name: 'Blog', path: '/blog' }, ...(cat ? [{ name: cat.name, path: `/blog/categoria/${cat.slug}` }] : []), { name: post.title, path: `/blog/${post.slug}` }];
+---
+
+<Base
+  title={post.seo_title || post.title}
+  description={description}
+  image={post.cover_url ?? '/og.jpg'}
+  imageAlt={post.cover_alt ?? post.title}
+  ogType="article"
+  canonicalUrl={post.canonical_url ?? undefined}
+  breadcrumbs={crumbs}
+  schema={schema}
+>
+  <Fragment slot="head">
+    <meta property="article:published_time" content={post.published_at} />
+    <meta property="article:modified_time" content={post.updated_at} />
+    {cat && <meta property="article:section" content={cat.name} />}
+    <link rel="alternate" type="application/rss+xml" title="Blog de Juan del Agua" href="/blog/rss.xml" />
+  </Fragment>
+  <article class="section">
+    <div class="container prose">
+      <p class="eyebrow">
+        <a href="/blog">Blog</a>{cat && <> · <a href={`/blog/categoria/${cat.slug}`}>{cat.name}</a></>}{post.series && <> · <a href={`/blog/serie/${post.series}`}>{seriesName(post.series)}</a></>}
+      </p>
+      <h1>{post.title}</h1>
+      <p class="meta">Por <a href="/sobre-mi">Juan del Agua</a> · <time datetime={post.published_at}>{formatDate(post.published_at)}</time> · {post.reading_minutes} min de lectura</p>
+      {post.cover_url && <img class="cover" src={post.cover_url} alt={post.cover_alt ?? ''} width="1200" height="630" fetchpriority="high" />}
+      <div class="md" set:html={html} />
+      {post.tags?.length > 0 && <p class="meta">Etiquetas: {post.tags.join(' · ')}</p>}
+
+      <aside class="card cta">
+        {cat?.cta === 'comunidad' ? (
+          <>
+            <span class="tag">{COMMUNITY.endorsement}</span>
+            <h2>¿Quieres hacerlo con compañía?</h2>
+            <p>{COMMUNITY.description} {COMMUNITY.pricing[0].price} {COMMUNITY.pricing[0].when.toLowerCase()}.</p>
+            <a class="btn btn--agua" href="/comunidad">Conocer {COMMUNITY.name}</a>
+          </>
+        ) : (
+          <>
+            <h2>¿Lo vemos para tu empresa?</h2>
+            <p>En el diagnóstico gratis de 30 minutos entiendo tu caso y te llevas 3 oportunidades concretas. Y si no conviene automatizar, te lo digo.</p>
+            <DiagnosticoButton />
+          </>
+        )}
+      </aside>
+    </div>
+  </article>
+  {related.length > 0 && (
+    <>
+      <Wave from="var(--perla)" to="var(--bruma)" />
+      <section class="section bg-bruma">
+        <div class="container">
+          <h2 style="margin-bottom:32px">Sigue leyendo</h2>
+          <PostList posts={related} />
+        </div>
+      </section>
+    </>
+  )}
+</Base>
+
+<style>
+  .cover { border-radius: var(--radius-lg); margin: 24px 0; width: 100%; height: auto; }
+  .md { font-size: var(--fs-base); margin-top: 24px; }
+  .cta { margin-top: 48px; }
+  .cta .tag { justify-self: start; }
+  .cta :global(.btn) { justify-self: start; }
+</style>

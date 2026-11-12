@@ -1,4 +1,10 @@
 User-agent: *
 Allow: /
+Disallow: /comunidad/
+Disallow: /admin
+Disallow: /cuenta
+Disallow: /api/
+Disallow: /auth/
 
 Sitemap: https://juandelagua.com/sitemap-index.xml
+Sitemap: https://juandelagua.com/sitemap-blog.xml

@@ -1,0 +1,24 @@
+---
+import { formatDate, seriesName, type BlogPost } from '../../lib/blog';
+interface Props { posts: BlogPost[]; empty?: string }
+const { posts, empty = 'Todavía no hay artículos publicados aquí. El primero sale pronto: uno nuevo cada lunes.' } = Astro.props;
+---
+
+{posts.length === 0 ? <p class="lead">{empty}</p> : (
+  <div class="grid grid-3">
+    {posts.map((p) => (
+      <a class="card post-card" href={`/blog/${p.slug}`}>
+        {p.cover_url && <img src={p.cover_url} alt={p.cover_alt ?? ''} loading="lazy" width="640" height="360" />}
+        <span class="meta">{p.blog_categories?.name}{p.series && ` · ${seriesName(p.series)}`}</span>
+        <h3>{p.title}</h3>
+        {p.excerpt && <p>{p.excerpt}</p>}
+        <span class="meta">{formatDate(p.published_at)} · {p.reading_minutes} min de lectura</span>
+      </a>
+    ))}
+  </div>
+)}
+
+<style>
+  .post-card img { border-radius: 12px; aspect-ratio: 16 / 9; object-fit: cover; width: 100%; }
+  .post-card h3 { font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem); }
+</style>

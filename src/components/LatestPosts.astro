@@ -1,5 +1,6 @@
 ---
-// Últimos artículos del blog (se completa en la fase de blog).
+// Últimos 3 artículos del blog. El inicio es estático, así que se cargan al abrir la página
+// (si no hay artículos o falla la carga, queda el enlace al blog).
 ---
 
 <section class="section" id="blog">
@@ -7,7 +8,43 @@
     <div class="section-head">
       <p class="eyebrow" data-reveal>Blog</p>
       <h2 data-reveal style="--d:80ms">El proceso real, <em>con errores incluidos</em>.</h2>
+      <p class="lead" data-reveal style="--d:160ms">IA para pymes, agentes, campañas y el proceso de construir una marca. Un artículo nuevo cada lunes.</p>
     </div>
-    <a class="link-arrow" href="/blog">Ir al blog →</a>
+    <div class="grid grid-3" data-latest-posts></div>
+    <p style="margin-top:28px"><a class="link-arrow" href="/blog">Ir al blog →</a></p>
   </div>
 </section>
+
+<template id="post-card-tpl">
+  <a class="card post-card" href="">
+    <img alt="" loading="lazy" width="640" height="360" hidden />
+    <span class="meta" data-cat></span>
+    <h3></h3>
+    <p data-excerpt></p>
+    <span class="meta" data-date></span>
+  </a>
+</template>
+
+<script>
+  const box = document.querySelector<HTMLElement>('[data-latest-posts]');
+  const tpl = document.querySelector<HTMLTemplateElement>('#post-card-tpl');
+  if (box && tpl) {
+    fetch('/api/blog/ultimos').then((r) => (r.ok ? r.json() : [])).then((posts: any[]) => {
+      for (const p of posts) {
+        const el = tpl.content.firstElementChild!.cloneNode(true) as HTMLAnchorElement;
+        el.href = `/blog/${p.slug}`;
+        el.querySelector('h3')!.textContent = p.title;
+        el.querySelector('[data-cat]')!.textContent = p.category;
+        el.querySelector('[data-excerpt]')!.textContent = p.excerpt;
+        el.querySelector('[data-date]')!.textContent = `${p.date} · ${p.minutes} min de lectura`;
+        if (p.cover_url) { const img = el.querySelector('img')!; img.src = p.cover_url; img.alt = p.cover_alt ?? ''; img.hidden = false; }
+        box.append(el);
+      }
+    }).catch(() => {});
+  }
+</script>
+
+<style>
+  .post-card img { border-radius: 12px; aspect-ratio: 16 / 9; object-fit: cover; width: 100%; }
+  .post-card h3 { font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem); }
+</style>

@@ -1,0 +1,22 @@
+---
+import BlogListPage from '../../../components/blog/BlogListPage.astro';
+import { listPosts, listCategories, BLOG_CACHE } from '../../../lib/blog';
+
+export const prerender = false;
+
+const categories = await listCategories();
+const cat = categories.find((c) => c.slug === Astro.params.slug);
+if (!cat) return new Response(null, { status: 404 });
+const page = Math.max(1, Number.parseInt(Astro.url.searchParams.get('pagina') ?? '1', 10) || 1);
+const { posts, total } = await listPosts({ page, categoryId: cat.id });
+Astro.response.headers.set('Cache-Control', BLOG_CACHE);
+---
+
+<BlogListPage
+  title={`${cat.name}: artículos del blog`}
+  heading={cat.name}
+  lead={cat.description}
+  description={`${cat.description} Artículos de Juan del Agua sobre ${cat.name.toLowerCase()}.`.slice(0, 160)}
+  path={`/blog/categoria/${cat.slug}`} posts={posts} total={total} page={page} categories={categories} current={`c:${cat.slug}`}
+  breadcrumbs={[{ name: 'Blog', path: '/blog' }, { name: cat.name, path: `/blog/categoria/${cat.slug}` }]}
+/>

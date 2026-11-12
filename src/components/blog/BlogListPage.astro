@@ -1,0 +1,48 @@
+---
+// Página de listado del blog (índice, categoría o serie)
+import Base from '../../layouts/Base.astro';
+import PageHero from '../PageHero.astro';
+import Wave from '../Wave.astro';
+import BlogNav from './BlogNav.astro';
+import PostList from './PostList.astro';
+import { PAGE_SIZE, type BlogCategory, type BlogPost } from '../../lib/blog';
+interface Props {
+  title: string; heading: string; lead: string; description: string; path: string;
+  posts: BlogPost[]; total: number; page: number; categories: BlogCategory[]; current?: string;
+  breadcrumbs: { name: string; path: string }[];
+}
+const { title, heading, lead, description, path, posts, total, page, categories, current, breadcrumbs } = Astro.props;
+const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+const pageUrl = (n: number) => (n === 1 ? path : `${path}?pagina=${n}`);
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: `${heading} · Blog de Juan del Agua`,
+  url: `https://juandelagua.com${path}`,
+  inLanguage: 'es-CL',
+  publisher: { '@id': 'https://juandelagua.com/#negocio' },
+  blogPost: posts.map((p) => ({ '@type': 'BlogPosting', headline: p.title, url: `https://juandelagua.com/blog/${p.slug}`, datePublished: p.published_at })),
+};
+---
+
+<Base title={page > 1 ? `${title} (página ${page})` : title} description={description} breadcrumbs={breadcrumbs} schema={schema}>
+  <link slot="head" rel="alternate" type="application/rss+xml" title="Blog de Juan del Agua" href="/blog/rss.xml" />
+  <PageHero eyebrow="Blog">
+    <Fragment slot="title" set:html={heading} />
+    <Fragment slot="lead"><p>{lead}</p></Fragment>
+  </PageHero>
+  <Wave from="var(--perla)" to="var(--bruma)" />
+  <section class="section bg-bruma">
+    <div class="container">
+      <BlogNav categories={categories} current={current} />
+      <PostList posts={posts} />
+      {pages > 1 && (
+        <nav class="pager" aria-label="Paginación">
+          {page > 1 ? <a class="link-arrow" href={pageUrl(page - 1)} rel="prev">← Más recientes</a> : <span></span>}
+          <span class="meta">Página {page} de {pages}</span>
+          {page < pages ? <a class="link-arrow" href={pageUrl(page + 1)} rel="next">Anteriores →</a> : <span></span>}
+        </nav>
+      )}
+    </div>
+  </section>
+</Base>
