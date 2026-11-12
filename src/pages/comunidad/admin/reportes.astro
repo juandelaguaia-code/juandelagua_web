@@ -1,0 +1,41 @@
+---
+import Community from '../../../layouts/Community.astro';
+import AdminNav from '../../../components/community/AdminNav.astro';
+import { authorsById, displayName, timeAgo } from '../../../lib/community';
+
+export const prerender = false;
+
+const supabase = Astro.locals.supabase!;
+const { data: reports } = await supabase.from('reports').select('*').eq('status', 'open').order('created_at');
+const commentIds = (reports ?? []).filter((r) => r.target_type === 'comment').map((r) => Number(r.target_id));
+const { data: comments } = commentIds.length ? await supabase.from('comments').select('id, post_id').in('id', commentIds) : { data: [] as any[] };
+const postOf = new Map((comments ?? []).map((c: any) => [c.id, c.post_id]));
+const people = await authorsById(supabase, (reports ?? []).flatMap((r) => [r.reporter_id, r.target_type === 'profile' ? r.target_id : null]));
+const link = (r: any) =>
+  r.target_type === 'post' ? `/comunidad/p/${r.target_id}` :
+  r.target_type === 'comment' ? `/comunidad/p/${postOf.get(Number(r.target_id)) ?? ''}#c${r.target_id}` :
+  `/comunidad/u/${people.get(r.target_id)?.username ?? ''}`;
+---
+
+<Community title="Reportes" tab="admin">
+  <AdminNav current="reportes" />
+  <p class="meta" style="margin-bottom:16px">Revisa el contenido reportado: desde la publicación puedes editarla, borrarla o cerrarla; desde "Miembros y roles" puedes silenciar o expulsar.</p>
+  <div class="stack">
+    {(reports ?? []).map((r) => (
+      <article class="card">
+        <p><strong>{r.target_type === 'post' ? 'Publicación' : r.target_type === 'comment' ? 'Comentario' : 'Perfil'}</strong> · <a href={link(r)} target="_blank">Ver ↗</a></p>
+        <p>{r.reason}</p>
+        <p class="meta">Reportado por {displayName(people.get(r.reporter_id))} · {timeAgo(r.created_at)}</p>
+        <div class="row">
+          {[['resolved', 'Resuelto'], ['dismissed', 'Descartar']].map(([s, l]) => (
+            <form method="post" action="/api/comunidad/admin" class="inline-form">
+              <input type="hidden" name="action" value="report.resolve" /><input type="hidden" name="id" value={r.id} /><input type="hidden" name="status" value={s} /><input type="hidden" name="back" value="/comunidad/admin/reportes" />
+              <button class="btn btn--sm btn--ghost" type="submit">{l}</button>
+            </form>
+          ))}
+        </div>
+      </article>
+    ))}
+    {!reports?.length && <p class="lead">No hay reportes abiertos.</p>}
+  </div>
+</Community>

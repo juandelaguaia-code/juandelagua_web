@@ -1,0 +1,52 @@
+---
+import Community from '../../../../layouts/Community.astro';
+
+export const prerender = false;
+
+const supabase = Astro.locals.supabase!;
+const profile = Astro.locals.profile!;
+const { data: course } = await supabase.from('courses').select('*').eq('slug', Astro.params.curso ?? '').maybeSingle();
+if (!course) return new Response(null, { status: 404 });
+const [{ data: canAccess }, { data: outline }, { data: done }] = await Promise.all([
+  supabase.rpc('can_access_course', { p_course: course.id }),
+  supabase.rpc('course_outline', { p_course: course.id }),
+  supabase.from('lesson_progress').select('lesson_id').eq('user_id', profile.id),
+]);
+const doneSet = new Set((done ?? []).map((d: any) => d.lesson_id));
+const modules = new Map<number, { title: string; lessons: { id: number; slug: string; title: string }[] }>();
+for (const r of (outline ?? []) as any[]) {
+  if (!modules.has(r.module_id)) modules.set(r.module_id, { title: r.module_title, lessons: [] });
+  if (r.lesson_id) modules.get(r.module_id)!.lessons.push({ id: r.lesson_id, slug: r.lesson_slug, title: r.lesson_title });
+}
+const all = [...modules.values()].flatMap((m) => m.lessons);
+const n = all.filter((l) => doneSet.has(l.id)).length;
+const pct = all.length ? Math.round((n / all.length) * 100) : 0;
+const firstPending = all.find((l) => !doneSet.has(l.id)) ?? all[0];
+const lock = course.access === 'level' ? `Este curso se desbloquea al llegar al nivel ${course.unlock_level}. Hoy estás en el nivel ${profile.level}: cada me gusta que recibes en tus publicaciones y comentarios suma un punto.` :
+  course.access === 'paid' ? 'Este curso es para miembros con membresía fundador o pagada.' : 'Este curso tiene acceso privado.';
+---
+
+<Community title={course.title} tab="cursos">
+  <p class="meta"><a href="/comunidad/cursos">← Cursos</a></p>
+  <h1 style="font-size:var(--fs-2xl);margin:12px 0">{course.title}</h1>
+  <p class="lead">{course.description}</p>
+  {canAccess ? (
+    <div style="margin:20px 0">
+      <div class="progress"><span style={`width:${pct}%`}></span></div>
+      <p class="meta">{pct}% completado · {n} de {all.length} lecciones</p>
+      {firstPending && <p style="margin-top:12px"><a class="btn btn--agua" href={`/comunidad/cursos/${course.slug}/${firstPending.slug}`}>{n ? 'Continuar' : 'Empezar'}</a></p>}
+    </div>
+  ) : <p class="flash flash--error" style="margin:20px 0">🔒 {lock}</p>}
+  <div class="stack">
+    {[...modules.values()].map((m) => (
+      <section class="card">
+        <h2 style="font-size:var(--fs-lg)">{m.title}</h2>
+        <ol class="checklist">
+          {m.lessons.map((l) => (
+            <li>{canAccess ? <a href={`/comunidad/cursos/${course.slug}/${l.slug}`}>{l.title}</a> : l.title}{doneSet.has(l.id) && ' ✔'}</li>
+          ))}
+        </ol>
+      </section>
+    ))}
+  </div>
+</Community>

@@ -1,0 +1,76 @@
+---
+import Community from '../../../layouts/Community.astro';
+import Avatar from '../../../components/community/Avatar.astro';
+import { displayName, isOnline, levelNames, timeAgo } from '../../../lib/community';
+import { plainText } from '../../../lib/markdown';
+import { ROLE_LABEL, MEMBERSHIP_LABEL, STATUS_LABEL, hasRole } from '../../../lib/types';
+
+export const prerender = false;
+
+const supabase = Astro.locals.supabase!;
+const me = Astro.locals.profile!;
+const { data: user } = await supabase.from('profiles').select('id, username, full_name, avatar_url, bio, location, links, role, status, membership, level, points, last_seen_at, created_at').eq('username', Astro.params.usuario ?? '').maybeSingle();
+if (!user) return new Response(null, { status: 404 });
+const [{ data: posts }, { data: comments }, levels, { data: progress }] = await Promise.all([
+  supabase.from('posts').select('id, title, created_at, like_count, comment_count').eq('author_id', user.id).is('deleted_at', null).order('created_at', { ascending: false }).limit(10),
+  supabase.from('comments').select('id, post_id, body_md, created_at').eq('author_id', user.id).is('deleted_at', null).order('created_at', { ascending: false }).limit(10),
+  levelNames(supabase),
+  user.id === me.id ? supabase.from('lesson_progress').select('lesson_id').eq('user_id', user.id) : Promise.resolve({ data: null }),
+]);
+// Cursos completados: cursos accesibles donde todas las lecciones publicadas están completas (visible para la propia persona)
+let completed: string[] = [];
+if (progress) {
+  const done = new Set(progress.map((p: any) => p.lesson_id));
+  const { data: courses } = await supabase.from('courses').select('title, modules(lessons(id, published))');
+  completed = (courses ?? []).filter((c: any) => {
+    const ls = c.modules.flatMap((m: any) => m.lessons).filter((l: any) => l.published);
+    return ls.length > 0 && ls.every((l: any) => done.has(l.id));
+  }).map((c: any) => c.title);
+}
+const staff = hasRole(me, 'moderator');
+---
+
+<Community title={displayName(user)} tab="miembros">
+  <section class="card">
+    <div class="row">
+      <Avatar user={user} size="lg" />
+      <div>
+        <h1 style="font-size:var(--fs-xl)">{displayName(user)}</h1>
+        <p class="meta">@{user.username}{isOnline(user.last_seen_at) && ' · 🟢 en línea'} · {ROLE_LABEL[user.role as keyof typeof ROLE_LABEL]}{staff && ` · ${STATUS_LABEL[user.status as keyof typeof STATUS_LABEL]} · ${MEMBERSHIP_LABEL[user.membership as keyof typeof MEMBERSHIP_LABEL]}`}</p>
+        <p><strong>Nivel {user.level} · {levels.find((l) => l.level === user.level)?.name}</strong> · {user.points} puntos</p>
+      </div>
+    </div>
+    {user.bio && <p>{user.bio}</p>}
+    <p class="meta">{user.location && `📍 ${user.location} · `}Miembro desde {new Date(user.created_at).toLocaleDateString('es-CL', { month: 'long', year: 'numeric', timeZone: 'America/Santiago' })}</p>
+    {(user.links ?? []).length > 0 && <p class="row">{(user.links as any[]).map((l) => <a href={l.url} rel="nofollow ugc noopener" target="_blank">{l.label}</a>)}</p>}
+    <div class="row">
+      {user.id === me.id && <a class="btn btn--ghost btn--sm" href="/cuenta">Editar perfil</a>}
+      {staff && user.id !== me.id && <a class="btn btn--ghost btn--sm" href={`/comunidad/admin/miembros?q=${user.username}`}>Gestionar</a>}
+      {user.id !== me.id && (
+        <form method="post" action="/api/comunidad/accion" class="inline-form">
+          <input type="hidden" name="action" value="report" /><input type="hidden" name="type" value="profile" /><input type="hidden" name="id" value={user.id} /><input type="hidden" name="reason" value="Reportado desde el perfil" /><input type="hidden" name="back" value={`/comunidad/u/${user.username}`} />
+          <button class="btn--link" type="submit">Reportar perfil</button>
+        </form>
+      )}
+    </div>
+  </section>
+
+  {completed.length > 0 && <p style="margin-top:16px">🎓 Cursos completados: {completed.join(' · ')}</p>}
+
+  <div class="grid grid-2" style="margin-top:24px">
+    <section>
+      <h2 style="font-size:var(--fs-lg);margin-bottom:12px">Publicaciones</h2>
+      <ul class="stack" style="list-style:none;padding:0">
+        {(posts ?? []).map((p) => <li><a href={`/comunidad/p/${p.id}`}>{p.title}</a><br /><span class="meta">{timeAgo(p.created_at)} · 💙 {p.like_count} · 💬 {p.comment_count}</span></li>)}
+        {!posts?.length && <li class="meta">Sin publicaciones todavía.</li>}
+      </ul>
+    </section>
+    <section>
+      <h2 style="font-size:var(--fs-lg);margin-bottom:12px">Comentarios</h2>
+      <ul class="stack" style="list-style:none;padding:0">
+        {(comments ?? []).map((c) => <li><a href={`/comunidad/p/${c.post_id}#c${c.id}`}>{plainText(c.body_md, 100)}</a><br /><span class="meta">{timeAgo(c.created_at)}</span></li>)}
+        {!comments?.length && <li class="meta">Sin comentarios todavía.</li>}
+      </ul>
+    </section>
+  </div>
+</Community>

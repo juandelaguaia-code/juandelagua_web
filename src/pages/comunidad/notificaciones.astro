@@ -1,0 +1,44 @@
+---
+import Community from '../../layouts/Community.astro';
+import Avatar from '../../components/community/Avatar.astro';
+import { authorsById, displayName, timeAgo, NOTIFICATION_TEXT, notificationLink } from '../../lib/community';
+
+export const prerender = false;
+
+const supabase = Astro.locals.supabase!;
+const { data: items } = await supabase.from('notifications').select('id, type, payload, read_at, created_at').order('created_at', { ascending: false }).limit(50);
+const actors = await authorsById(supabase, (items ?? []).map((n: any) => n.payload?.actor_id ?? null));
+---
+
+<Community title="Notificaciones">
+  <div class="row" style="justify-content:space-between;margin-bottom:16px">
+    <h1 style="font-size:var(--fs-xl)">Notificaciones</h1>
+    <form method="post" action="/api/comunidad/accion">
+      <input type="hidden" name="action" value="notifications.read" /><input type="hidden" name="back" value="/comunidad/notificaciones" />
+      <button class="btn btn--ghost btn--sm" type="submit">Marcar todas como leídas</button>
+    </form>
+  </div>
+  <ul class="stack" style="list-style:none;padding:0">
+    {(items ?? []).map((n: any) => {
+      const actor = n.payload?.actor_id ? actors.get(n.payload.actor_id) : null;
+      const text = (NOTIFICATION_TEXT[n.type] ?? NOTIFICATION_TEXT.system)(n.payload ?? {});
+      return (
+        <li class="card" style={`padding:14px;${n.read_at ? 'opacity:.7' : ''}`}>
+          <div class="row">
+            {actor && <Avatar user={actor} size="sm" />}
+            <a href={notificationLink(n.type, n.payload ?? {})} style="flex:1">{actor && <strong>{displayName(actor)} </strong>}{text}</a>
+            <span class="meta">{timeAgo(n.created_at)}</span>
+            {!n.read_at && (
+              <form method="post" action="/api/comunidad/accion" class="inline-form">
+                <input type="hidden" name="action" value="notifications.read" /><input type="hidden" name="id" value={n.id} /><input type="hidden" name="back" value="/comunidad/notificaciones" />
+                <button class="btn--link" type="submit">Leída</button>
+              </form>
+            )}
+          </div>
+        </li>
+      );
+    })}
+    {!items?.length && <li class="meta">No tienes notificaciones.</li>}
+  </ul>
+  <p class="meta" style="margin-top:16px">Elige qué avisos recibir y el resumen por correo en <a href="/cuenta">tus ajustes</a>.</p>
+</Community>

@@ -1,0 +1,38 @@
+---
+import Community from '../../../layouts/Community.astro';
+import AdminNav from '../../../components/community/AdminNav.astro';
+import Avatar from '../../../components/community/Avatar.astro';
+import { authorsById, displayName, timeAgo } from '../../../lib/community';
+
+export const prerender = false;
+
+const supabase = Astro.locals.supabase!;
+const { data: requests } = await supabase.from('join_requests').select('id, user_id, answers, status, created_at').eq('status', 'pending').order('created_at');
+const { data: settings } = await supabase.from('community_settings').select('join_questions').eq('id', 1).single();
+const labels = new Map(((settings?.join_questions ?? []) as any[]).map((q) => [q.id, q.label]));
+const users = await authorsById(supabase, (requests ?? []).map((r) => r.user_id));
+---
+
+<Community title="Solicitudes" tab="admin">
+  <AdminNav current="solicitudes" />
+  <div class="stack">
+    {(requests ?? []).map((r) => {
+      const u = users.get(r.user_id);
+      return (
+        <article class="card">
+          <div class="row"><Avatar user={u} /> <strong>{displayName(u)}</strong> <span class="meta">@{u?.username} · {timeAgo(r.created_at)}</span></div>
+          <dl>{Object.entries(r.answers ?? {}).map(([k, v]) => <><dt class="meta">{labels.get(k) ?? k}</dt><dd>{String(v) || '—'}</dd></>)}</dl>
+          <div class="row">
+            {['approve', 'reject'].map((d) => (
+              <form method="post" action="/api/comunidad/admin" class="inline-form">
+                <input type="hidden" name="action" value="join.review" /><input type="hidden" name="id" value={r.id} /><input type="hidden" name="decision" value={d} /><input type="hidden" name="back" value="/comunidad/admin/solicitudes" />
+                <button class:list={['btn', 'btn--sm', { 'btn--agua': d === 'approve', 'btn--ghost': d === 'reject' }]} type="submit">{d === 'approve' ? 'Aprobar' : 'Rechazar'}</button>
+              </form>
+            ))}
+          </div>
+        </article>
+      );
+    })}
+    {!requests?.length && <p class="lead">No hay solicitudes pendientes.</p>}
+  </div>
+</Community>

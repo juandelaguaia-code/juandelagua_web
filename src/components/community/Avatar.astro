@@ -1,0 +1,9 @@
+---
+interface Props { user: { username: string; avatar_url: string | null } | null | undefined; size?: 'sm' | 'md' | 'lg' }
+const { user, size = 'md' } = Astro.props;
+const cls = ['avatar', size === 'sm' && 'avatar--sm', size === 'lg' && 'avatar--lg'];
+---
+
+{user?.avatar_url
+  ? <img class:list={cls} src={user.avatar_url} alt="" loading="lazy" />
+  : <span class:list={cls} aria-hidden="true">{(user?.username ?? '?').slice(0, 1).toUpperCase()}</span>}

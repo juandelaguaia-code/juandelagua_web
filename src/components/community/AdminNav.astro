@@ -1,0 +1,21 @@
+---
+import { hasRole } from '../../lib/types';
+interface Props { current: string }
+const { current } = Astro.props;
+const profile = Astro.locals.profile;
+const admin = hasRole(profile, 'admin');
+const items = [
+  { id: 'inicio', href: '/comunidad/admin', label: 'Resumen', show: true },
+  { id: 'solicitudes', href: '/comunidad/admin/solicitudes', label: 'Solicitudes', show: true },
+  { id: 'reportes', href: '/comunidad/admin/reportes', label: 'Reportes', show: true },
+  { id: 'miembros', href: '/comunidad/admin/miembros', label: 'Miembros y roles', show: true },
+  { id: 'cursos', href: '/comunidad/admin/cursos', label: 'Cursos', show: admin },
+  { id: 'eventos', href: '/comunidad/admin/eventos', label: 'Eventos', show: admin },
+  { id: 'ajustes', href: '/comunidad/admin/ajustes', label: 'Ajustes', show: admin },
+  { id: 'blog', href: '/admin/blog', label: 'Blog', show: admin },
+];
+---
+
+<p class="row" style="margin-bottom:20px">
+  {items.filter((i) => i.show).map((i) => <a class:list={['btn', 'btn--sm', { 'btn--ghost': i.id !== current }]} href={i.href}>{i.label}</a>)}
+</p>

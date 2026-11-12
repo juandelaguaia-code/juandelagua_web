@@ -1,0 +1,46 @@
+---
+import Community from '../../../layouts/Community.astro';
+
+export const prerender = false;
+
+const supabase = Astro.locals.supabase!;
+const profile = Astro.locals.profile!;
+const { data: courses } = await supabase.from('courses').select('id, slug, title, description, cover_url, access, unlock_level, published').order('position');
+const ids = (courses ?? []).map((c) => c.id);
+// Progreso: lecciones completadas / total por curso (solo cursos accesibles)
+const access = new Map<number, boolean>();
+await Promise.all(ids.map(async (id) => access.set(id, !!(await supabase.rpc('can_access_course', { p_course: id })).data)));
+const { data: outlineRows } = ids.length ? await supabase.from('modules').select('course_id, lessons(id, published)').in('course_id', ids) : { data: [] as any[] };
+const { data: done } = await supabase.from('lesson_progress').select('lesson_id').eq('user_id', profile.id);
+const doneSet = new Set((done ?? []).map((d) => d.lesson_id));
+const progress = (courseId: number) => {
+  const lessons = (outlineRows ?? []).filter((m: any) => m.course_id === courseId).flatMap((m: any) => m.lessons ?? []).filter((l: any) => l.published);
+  const n = lessons.filter((l: any) => doneSet.has(l.id)).length;
+  return { n, total: lessons.length, pct: lessons.length ? Math.round((n / lessons.length) * 100) : 0 };
+};
+const lockText = (c: any) =>
+  c.access === 'level' ? `Se desbloquea en el nivel ${c.unlock_level}` : c.access === 'paid' ? 'Solo membresía pagada o fundador' : c.access === 'private' ? 'Acceso privado' : '';
+---
+
+<Community title="Cursos" tab="cursos">
+  <div class="grid grid-3">
+    {(courses ?? []).map((c) => {
+      const open = access.get(c.id);
+      const p = progress(c.id);
+      return (
+        <a class="card" href={`/comunidad/cursos/${c.slug}`}>
+          {c.cover_url && <img src={c.cover_url} alt="" loading="lazy" style="border-radius:12px;aspect-ratio:16/9;object-fit:cover;width:100%" />}
+          <h3>{c.title}{!c.published && ' (borrador)'}</h3>
+          <p>{c.description}</p>
+          {open ? (
+            <>
+              <div class="progress" role="progressbar" aria-valuenow={p.pct} aria-valuemin="0" aria-valuemax="100"><span style={`width:${p.pct}%`}></span></div>
+              <span class="meta">{p.pct}% · {p.n} de {p.total} lecciones</span>
+            </>
+          ) : <span class="tag">🔒 {lockText(c)}</span>}
+        </a>
+      );
+    })}
+  </div>
+  {!courses?.length && <p class="lead">Los primeros cursos vienen en camino.</p>}
+</Community>

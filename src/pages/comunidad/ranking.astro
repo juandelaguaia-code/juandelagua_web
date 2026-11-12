@@ -1,0 +1,57 @@
+---
+import Community from '../../layouts/Community.astro';
+import Avatar from '../../components/community/Avatar.astro';
+import { displayName } from '../../lib/community';
+
+export const prerender = false;
+
+const supabase = Astro.locals.supabase!;
+const profile = Astro.locals.profile!;
+const [{ data: week }, { data: month }, { data: ever }, { data: dist }] = await Promise.all([
+  supabase.rpc('leaderboard', { p_days: 7, p_limit: 10 }),
+  supabase.rpc('leaderboard', { p_days: 30, p_limit: 10 }),
+  supabase.rpc('leaderboard', { p_days: null, p_limit: 10 }),
+  supabase.rpc('level_distribution'),
+]);
+const total = ((dist ?? []) as any[]).reduce((s, l) => s + Number(l.members), 0) || 1;
+const nextLevel = ((dist ?? []) as any[]).find((l) => l.level === profile.level + 1);
+const boards = [
+  { t: 'Últimos 7 días', rows: week },
+  { t: 'Últimos 30 días', rows: month },
+  { t: 'De siempre', rows: ever },
+];
+---
+
+<Community title="Ranking" tab="ranking">
+  <section class="card" style="margin-bottom:24px">
+    <div class="row"><Avatar user={profile} size="lg" /><div>
+      <h2 style="font-size:var(--fs-xl)">Nivel {profile.level}</h2>
+      <p>{profile.points} puntos{nextLevel && ` · te faltan ${Math.max(0, nextLevel.min_points - profile.points)} para el nivel ${nextLevel.level} (${nextLevel.name})`}</p>
+      <p class="meta">1 me gusta recibido = 1 punto. Los niveles desbloquean cursos.</p>
+    </div></div>
+  </section>
+
+  <h2 style="font-size:var(--fs-xl);margin-bottom:12px">Niveles</h2>
+  <div class="grid grid-3" style="margin-bottom:32px">
+    {((dist ?? []) as any[]).map((l) => (
+      <div class="card" style="padding:16px">
+        <strong>Nivel {l.level} · {l.name}</strong>
+        <span class="meta">Desde {l.min_points.toLocaleString('es-CL')} puntos · {Math.round((Number(l.members) / total) * 100)}% de los miembros ({l.members})</span>
+      </div>
+    ))}
+  </div>
+
+  <div class="grid grid-3">
+    {boards.map((b) => (
+      <section class="card">
+        <h2 style="font-size:var(--fs-lg)">{b.t}</h2>
+        <ol class="stack" style="gap:10px;padding-left:1.2em">
+          {((b.rows ?? []) as any[]).map((r) => (
+            <li><a class="row" href={`/comunidad/u/${r.username}`} style="text-decoration:none;gap:8px"><Avatar user={r} size="sm" /> {displayName(r)} <span class="meta">+{r.points}</span></a></li>
+          ))}
+        </ol>
+        {!(b.rows ?? []).length && <p class="meta">Aún no hay puntos en este período.</p>}
+      </section>
+    ))}
+  </div>
+</Community>

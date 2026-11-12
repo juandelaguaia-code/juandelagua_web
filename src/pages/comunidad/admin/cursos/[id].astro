@@ -1,0 +1,127 @@
+---
+import Community from '../../../../layouts/Community.astro';
+import AdminNav from '../../../../components/community/AdminNav.astro';
+import { hasRole } from '../../../../lib/types';
+import { displayName } from '../../../../lib/community';
+
+export const prerender = false;
+
+if (!hasRole(Astro.locals.profile, 'admin')) return Astro.redirect('/comunidad/admin');
+const supabase = Astro.locals.supabase!;
+const id = Number(Astro.params.id);
+const { data: course } = await supabase.from('courses').select('*').eq('id', id).maybeSingle();
+if (!course) return Astro.redirect('/comunidad/admin/cursos');
+const [{ data: modules }, { data: grants }] = await Promise.all([
+  supabase.from('modules').select('id, title, position, lessons(id, slug, title, body_md, video_url, resources, position, published)').eq('course_id', id).order('position'),
+  supabase.from('course_grants').select('user_id, profiles(username, full_name, avatar_url, level, id)').eq('course_id', id),
+]);
+const back = `/comunidad/admin/cursos/${id}`;
+const resText = (r: any[]) => (r ?? []).map((x) => `${x.label} | ${x.path ? `recursos:${x.path}` : x.url}`).join('\n');
+const lessonForm = (moduleId: number, l?: any) => ({ moduleId, l: l ?? { id: '', slug: '', title: '', body_md: '', video_url: '', resources: [], position: 0, published: false } });
+---
+
+<Community title={`Curso: ${course.title}`} tab="admin">
+  <AdminNav current="cursos" />
+  <p class="meta"><a href="/comunidad/admin/cursos">← Cursos</a> · <a href={`/comunidad/cursos/${course.slug}`} target="_blank">Ver como miembro ↗</a></p>
+
+  <form method="post" action="/api/comunidad/admin" enctype="multipart/form-data" class="form form-wide card" style="margin:12px 0 32px">
+    <input type="hidden" name="action" value="course.save" /><input type="hidden" name="id" value={course.id} /><input type="hidden" name="back" value={back} />
+    <div class="row">
+      <label style="flex:2">Título <input name="title" value={course.title} required /></label>
+      <label style="flex:1">Slug <input name="slug" value={course.slug} /></label>
+      <label style="width:90px">Orden <input type="number" name="position" value={course.position} /></label>
+    </div>
+    <label>Descripción <textarea name="description" rows="3">{course.description}</textarea></label>
+    <div class="row">
+      <label style="flex:1">Acceso
+        <select name="access">
+          {[['open', 'Abierto a todos los miembros'], ['level', 'Se desbloquea en un nivel'], ['paid', 'Solo plan pagado o fundador'], ['private', 'Privado (asignado a mano)']].map(([v, l]) => <option value={v} selected={course.access === v}>{l}</option>)}
+        </select>
+      </label>
+      <label style="width:140px">Nivel requerido <input type="number" name="unlock_level" value={course.unlock_level} min="1" max="9" /></label>
+      <label style="flex:1">Portada <input type="file" name="cover" accept="image/jpeg,image/png,image/webp" /></label>
+    </div>
+    <label class="check"><input type="checkbox" name="published" checked={course.published} /> Publicado</label>
+    <div class="row">
+      <button class="btn btn--agua" type="submit">Guardar curso</button>
+    </div>
+  </form>
+
+  <h2 style="font-size:var(--fs-lg)">Módulos y lecciones</h2>
+  <p class="meta">Recursos: una línea por recurso, "Nombre | https://…" para un link o "Nombre | recursos:carpeta/archivo.pdf" para un archivo privado subido al bucket <code>recursos</code> de Supabase.</p>
+  <div class="stack" style="margin-top:12px">
+    {(modules ?? []).map((m: any) => (
+      <section class="card">
+        <form method="post" action="/api/comunidad/admin" class="row form form-wide" style="align-items:end">
+          <input type="hidden" name="action" value="module.save" /><input type="hidden" name="id" value={m.id} /><input type="hidden" name="course_id" value={id} /><input type="hidden" name="back" value={back} />
+          <label style="flex:2">Módulo <input name="title" value={m.title} required /></label>
+          <label style="width:90px">Orden <input type="number" name="position" value={m.position} /></label>
+          <button class="btn btn--sm" type="submit">Guardar módulo</button>
+        </form>
+        {[...(m.lessons ?? []).sort((a: any, b: any) => a.position - b.position), null].map((l: any) => {
+          const { l: x } = lessonForm(m.id, l);
+          return (
+            <details style="border-top:1px solid var(--linea);padding-top:10px">
+              <summary>{x.id ? `${x.position}. ${x.title}${x.published ? '' : ' (borrador)'}` : '+ Nueva lección'}</summary>
+              <form method="post" action="/api/comunidad/admin" class="form form-wide" style="margin-top:10px">
+                <input type="hidden" name="action" value="lesson.save" /><input type="hidden" name="id" value={x.id} /><input type="hidden" name="module_id" value={m.id} /><input type="hidden" name="back" value={back} />
+                <div class="row">
+                  <label style="flex:2">Título <input name="title" value={x.title} required /></label>
+                  <label style="flex:1">Slug <input name="slug" value={x.slug} /></label>
+                  <label style="width:90px">Orden <input type="number" name="position" value={x.position} /></label>
+                </div>
+                <label>Video (YouTube, Vimeo o Loom) <input type="url" name="video_url" value={x.video_url ?? ''} /></label>
+                <label>Contenido (Markdown) <textarea name="body_md" rows="8">{x.body_md}</textarea></label>
+                <label>Recursos <textarea name="resources" rows="3" style="min-height:0">{resText(x.resources)}</textarea></label>
+                <label class="check"><input type="checkbox" name="published" checked={x.published} /> Publicada</label>
+                <button class="btn btn--sm btn--agua" type="submit" style="justify-self:start">Guardar lección</button>
+              </form>
+              {x.id && (
+                <form method="post" action="/api/comunidad/admin" onsubmit="return confirm('¿Eliminar la lección?')">
+                  <input type="hidden" name="action" value="lesson.delete" /><input type="hidden" name="id" value={x.id} /><input type="hidden" name="back" value={back} />
+                  <button class="btn--link" type="submit">Eliminar lección</button>
+                </form>
+              )}
+            </details>
+          );
+        })}
+        <form method="post" action="/api/comunidad/admin" onsubmit="return confirm('¿Eliminar el módulo y sus lecciones?')">
+          <input type="hidden" name="action" value="module.delete" /><input type="hidden" name="id" value={m.id} /><input type="hidden" name="back" value={back} />
+          <button class="btn--link" type="submit">Eliminar módulo</button>
+        </form>
+      </section>
+    ))}
+    <form method="post" action="/api/comunidad/admin" class="row form form-wide card" style="align-items:end">
+      <input type="hidden" name="action" value="module.save" /><input type="hidden" name="course_id" value={id} /><input type="hidden" name="back" value={back} />
+      <label style="flex:2">Nuevo módulo <input name="title" required /></label>
+      <label style="width:90px">Orden <input type="number" name="position" value={(modules ?? []).length} /></label>
+      <button class="btn btn--sm" type="submit">Agregar módulo</button>
+    </form>
+  </div>
+
+  {course.access === 'private' && (
+    <section style="margin-top:32px">
+      <h2 style="font-size:var(--fs-lg)">Acceso privado</h2>
+      <ul class="checklist" style="margin:12px 0">
+        {(grants ?? []).map((g: any) => (
+          <li>{displayName(g.profiles)} (@{g.profiles?.username})
+            <form method="post" action="/api/comunidad/admin" class="inline-form">
+              <input type="hidden" name="action" value="grant.remove" /><input type="hidden" name="course_id" value={id} /><input type="hidden" name="user_id" value={g.user_id} /><input type="hidden" name="back" value={back} />
+              <button class="btn--link" type="submit">Quitar</button>
+            </form>
+          </li>
+        ))}
+      </ul>
+      <form method="post" action="/api/comunidad/admin" class="row form">
+        <input type="hidden" name="action" value="grant.add" /><input type="hidden" name="course_id" value={id} /><input type="hidden" name="back" value={back} />
+        <input name="username" placeholder="usuario" required aria-label="Usuario" />
+        <button class="btn btn--sm" type="submit">Dar acceso</button>
+      </form>
+    </section>
+  )}
+
+  <form method="post" action="/api/comunidad/admin" style="margin-top:40px" onsubmit="return confirm('¿Eliminar el curso completo? No se puede deshacer.')">
+    <input type="hidden" name="action" value="course.delete" /><input type="hidden" name="id" value={course.id} /><input type="hidden" name="back" value="/comunidad/admin/cursos" />
+    <button class="btn btn--ghost btn--sm" type="submit">Eliminar curso</button>
+  </form>
+</Community>

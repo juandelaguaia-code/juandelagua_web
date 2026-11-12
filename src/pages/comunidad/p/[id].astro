@@ -1,0 +1,186 @@
+---
+import Community from '../../../layouts/Community.astro';
+import Avatar from '../../../components/community/Avatar.astro';
+import LikeButton from '../../../components/community/LikeButton.astro';
+import { authorsById, displayName, myLikes, timeAgo } from '../../../lib/community';
+import { renderMarkdown, videoEmbed } from '../../../lib/markdown';
+import { canWrite, hasRole } from '../../../lib/types';
+
+export const prerender = false;
+
+const supabase = Astro.locals.supabase!;
+const profile = Astro.locals.profile!;
+const id = Number(Astro.params.id);
+const { data: post } = Number.isInteger(id) ? await supabase.from('posts').select('*').eq('id', id).maybeSingle() : { data: null };
+if (!post || (post.deleted_at && !hasRole(profile, 'moderator'))) return new Response(null, { status: 404 });
+
+const [{ data: comments }, { data: categories }, { data: votes }] = await Promise.all([
+  supabase.from('comments').select('id, author_id, parent_id, body_md, like_count, created_at, edited_at').eq('post_id', id).is('deleted_at', null).order('created_at'),
+  supabase.from('categories').select('id, name, emoji, admins_only_post').order('position'),
+  post.poll ? supabase.from('poll_votes').select('user_id, option_index').eq('post_id', id) : Promise.resolve({ data: [] as any[] }),
+]);
+const authors = await authorsById(supabase, [post.author_id, ...(comments ?? []).map((c) => c.author_id)]);
+const likedPost = await myLikes(supabase, profile.id, 'post', [id]);
+const likedComments = await myLikes(supabase, profile.id, 'comment', (comments ?? []).map((c) => c.id));
+const roots = (comments ?? []).filter((c) => !c.parent_id);
+const replies = (pid: number) => (comments ?? []).filter((c) => c.parent_id === pid);
+const author = post.author_id ? authors.get(post.author_id) : null;
+const cat = (categories ?? []).find((c) => c.id === post.category_id);
+const staff = hasRole(profile, 'moderator');
+const writable = canWrite(profile);
+const mine = post.author_id === profile.id;
+const back = `/comunidad/p/${id}`;
+const embed = videoEmbed(post.media?.video);
+const options: string[] = post.poll?.options ?? [];
+const myVote = (votes ?? []).find((v) => v.user_id === profile.id)?.option_index;
+const totalVotes = (votes ?? []).length;
+const editing = Astro.url.searchParams.get('editar') === '1' && (mine || staff);
+---
+
+<Community title={post.title} tab="feed">
+  <p class="meta"><a href="/comunidad/feed">← Volver al feed</a></p>
+  <article class="card" style="margin-top:12px">
+    {post.deleted_at && <p class="flash flash--error">Publicación eliminada (solo la ve el equipo de moderación).</p>}
+    <div class="row">
+      <Avatar user={author} />
+      <div>
+        {author ? <a href={`/comunidad/u/${author.username}`}><strong>{displayName(author)}</strong></a> : <strong>Miembro eliminado</strong>}
+        <div class="meta">{author && `Nivel ${author.level} · `}{timeAgo(post.created_at)}{post.edited_at && ' · editada'} · {cat?.emoji} {cat?.name}{post.pinned && ' · 📌 Fijada'}{post.locked && ' · 🔒 Cerrada'}</div>
+      </div>
+    </div>
+
+    {editing ? (
+      <form method="post" action="/api/comunidad/accion" class="form form-wide">
+        <input type="hidden" name="action" value="post.edit" /><input type="hidden" name="id" value={id} /><input type="hidden" name="back" value={back} />
+        <label>Título <input name="title" value={post.title} required maxlength="160" /></label>
+        <label>Texto <textarea name="body_md" rows="10">{post.body_md}</textarea></label>
+        <label>Categoría <select name="category_id">{(categories ?? []).filter((c) => !c.admins_only_post || hasRole(profile, 'admin') || c.id === post.category_id).map((c) => <option value={c.id} selected={c.id === post.category_id}>{c.emoji} {c.name}</option>)}</select></label>
+        <div class="row"><button class="btn btn--agua" type="submit">Guardar</button><a href={back}>Cancelar</a></div>
+      </form>
+    ) : (
+      <>
+        <h1 style="font-size:var(--fs-xl)">{post.title}</h1>
+        <div class="md" set:html={renderMarkdown(post.body_md)} />
+      </>
+    )}
+    {post.media?.image && <img src={post.media.image} alt="" style="border-radius:12px" />}
+    {embed && <div class="video"><iframe src={embed} title="Video" loading="lazy" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe></div>}
+    {post.media?.link && <p><a href={post.media.link} rel="nofollow ugc noopener" target="_blank">🔗 {post.media.link}</a></p>}
+
+    {options.length > 0 && (
+      <div class="stack" style="gap:8px">
+        {options.map((o, i) => {
+          const n = (votes ?? []).filter((v) => v.option_index === i).length;
+          const pct = totalVotes ? Math.round((n / totalVotes) * 100) : 0;
+          return (
+            <form method="post" action="/api/comunidad/accion">
+              <input type="hidden" name="action" value="poll.vote" /><input type="hidden" name="id" value={id} /><input type="hidden" name="option" value={i} /><input type="hidden" name="back" value={back} />
+              <button class="btn btn--ghost btn--sm" type="submit" disabled={!writable} style="width:100%;justify-content:space-between">
+                <span>{myVote === i ? '✔ ' : ''}{o}</span><span>{pct}% ({n})</span>
+              </button>
+            </form>
+          );
+        })}
+        <p class="meta">{totalVotes} voto{totalVotes === 1 ? '' : 's'}</p>
+      </div>
+    )}
+
+    <div class="row meta">
+      <LikeButton type="post" id={id} count={post.like_count} liked={likedPost.has(id)} back={back} disabled={!writable || mine} />
+      <span>💬 {post.comment_count}</span>
+      {(mine || staff) && !editing && <a href={`${back}?editar=1`}>Editar</a>}
+      {(mine || staff) && !post.deleted_at && (
+        <form method="post" action="/api/comunidad/accion" class="inline-form" onsubmit="return confirm('¿Eliminar esta publicación?')">
+          <input type="hidden" name="action" value="post.delete" /><input type="hidden" name="id" value={id} /><input type="hidden" name="back" value={back} />
+          <button class="btn--link" type="submit">Eliminar</button>
+        </form>
+      )}
+      {staff && (
+        <>
+          <form method="post" action="/api/comunidad/accion" class="inline-form">
+            <input type="hidden" name="action" value="post.pin" /><input type="hidden" name="id" value={id} /><input type="hidden" name="value" value={post.pinned ? 'false' : 'true'} /><input type="hidden" name="back" value={back} />
+            <button class="btn--link" type="submit">{post.pinned ? 'Desfijar' : 'Fijar'}</button>
+          </form>
+          <form method="post" action="/api/comunidad/accion" class="inline-form">
+            <input type="hidden" name="action" value="post.lock" /><input type="hidden" name="id" value={id} /><input type="hidden" name="value" value={post.locked ? 'false' : 'true'} /><input type="hidden" name="back" value={back} />
+            <button class="btn--link" type="submit">{post.locked ? 'Abrir comentarios' : 'Cerrar comentarios'}</button>
+          </form>
+        </>
+      )}
+      {!mine && (
+        <details class="inline-form">
+          <summary class="btn--link">Reportar</summary>
+          <form method="post" action="/api/comunidad/accion" class="form">
+            <input type="hidden" name="action" value="report" /><input type="hidden" name="type" value="post" /><input type="hidden" name="id" value={id} /><input type="hidden" name="back" value={back} />
+            <label>Motivo <textarea name="reason" rows="2" required minlength="3" maxlength="1000" style="min-height:0"></textarea></label>
+            <button class="btn btn--sm" type="submit">Enviar reporte</button>
+          </form>
+        </details>
+      )}
+    </div>
+  </article>
+
+  <section id="comentarios" style="margin-top:32px">
+    <h2 style="font-size:var(--fs-xl);margin-bottom:16px">Comentarios</h2>
+    {writable && (!post.locked || staff) && (
+      <form method="post" action="/api/comunidad/accion" class="form form-wide" style="margin-bottom:24px">
+        <input type="hidden" name="action" value="comment.create" /><input type="hidden" name="post_id" value={id} /><input type="hidden" name="back" value={back} />
+        <label><span class="sr-only">Tu comentario</span><textarea name="body_md" rows="3" required maxlength="5000" placeholder="Escribe un comentario… (puedes mencionar con @usuario)" style="min-height:0"></textarea></label>
+        <button class="btn btn--agua btn--sm" type="submit" style="justify-self:start">Comentar</button>
+      </form>
+    )}
+    {post.locked && <p class="meta">Los comentarios están cerrados.</p>}
+    <div class="stack">
+      {roots.map((c) => (
+        <div>
+          {[c, ...replies(c.id)].map((x) => {
+            const a = x.author_id ? authors.get(x.author_id) : null;
+            const own = x.author_id === profile.id;
+            return (
+              <div class="card" id={`c${x.id}`} style={x.parent_id ? 'margin:8px 0 0 clamp(16px,5vw,48px);padding:16px' : 'padding:16px'}>
+                <div class="row"><Avatar user={a} size="sm" /> {a ? <a href={`/comunidad/u/${a.username}`}><strong>{displayName(a)}</strong></a> : <strong>Miembro eliminado</strong>} <span class="meta">{timeAgo(x.created_at)}{x.edited_at && ' · editado'}</span></div>
+                <div class="md" set:html={renderMarkdown(x.body_md)} />
+                <div class="row meta">
+                  <LikeButton type="comment" id={x.id} count={x.like_count} liked={likedComments.has(x.id)} back={`${back}#c${x.id}`} disabled={!writable || own} />
+                  {writable && (!post.locked || staff) && (
+                    <details class="inline-form">
+                      <summary class="btn--link">Responder</summary>
+                      <form method="post" action="/api/comunidad/accion" class="form form-wide">
+                        <input type="hidden" name="action" value="comment.create" /><input type="hidden" name="post_id" value={id} /><input type="hidden" name="parent_id" value={c.id} /><input type="hidden" name="back" value={back} />
+                        <textarea name="body_md" rows="2" required maxlength="5000" style="min-height:0">{a && x.parent_id ? `@${a.username} ` : ''}</textarea>
+                        <button class="btn btn--sm" type="submit" style="justify-self:start">Responder</button>
+                      </form>
+                    </details>
+                  )}
+                  {own && (
+                    <details class="inline-form">
+                      <summary class="btn--link">Editar</summary>
+                      <form method="post" action="/api/comunidad/accion" class="form form-wide">
+                        <input type="hidden" name="action" value="comment.edit" /><input type="hidden" name="id" value={x.id} /><input type="hidden" name="back" value={`${back}#c${x.id}`} />
+                        <textarea name="body_md" rows="2" required maxlength="5000" style="min-height:0">{x.body_md}</textarea>
+                        <button class="btn btn--sm" type="submit" style="justify-self:start">Guardar</button>
+                      </form>
+                    </details>
+                  )}
+                  {(own || staff) && (
+                    <form method="post" action="/api/comunidad/accion" class="inline-form" onsubmit="return confirm('¿Eliminar este comentario?')">
+                      <input type="hidden" name="action" value="comment.delete" /><input type="hidden" name="id" value={x.id} /><input type="hidden" name="back" value={back} />
+                      <button class="btn--link" type="submit">Eliminar</button>
+                    </form>
+                  )}
+                  {!own && (
+                    <form method="post" action="/api/comunidad/accion" class="inline-form">
+                      <input type="hidden" name="action" value="report" /><input type="hidden" name="type" value="comment" /><input type="hidden" name="id" value={x.id} /><input type="hidden" name="reason" value="Reportado desde el comentario" /><input type="hidden" name="back" value={back} />
+                      <button class="btn--link" type="submit">Reportar</button>
+                    </form>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ))}
+      {roots.length === 0 && <p class="meta">Aún no hay comentarios.</p>}
+    </div>
+  </section>
+</Community>

@@ -1,0 +1,58 @@
+---
+import Community from '../../../../layouts/Community.astro';
+import { renderMarkdown, videoEmbed } from '../../../../lib/markdown';
+import { adminClient } from '../../../../lib/supabase';
+
+export const prerender = false;
+
+const supabase = Astro.locals.supabase!;
+const profile = Astro.locals.profile!;
+const { data: course } = await supabase.from('courses').select('id, slug, title').eq('slug', Astro.params.curso ?? '').maybeSingle();
+if (!course) return new Response(null, { status: 404 });
+const { data: outline } = await supabase.rpc('course_outline', { p_course: course.id });
+const lessonsOrder = ((outline ?? []) as any[]).filter((r) => r.lesson_id);
+const idx = lessonsOrder.findIndex((r) => r.lesson_slug === Astro.params.leccion);
+if (idx < 0) return new Response(null, { status: 404 });
+// La RLS solo entrega la lección si el curso es accesible para este usuario
+const { data: lesson } = await supabase.from('lessons').select('*').eq('id', lessonsOrder[idx].lesson_id).maybeSingle();
+if (!lesson) return Astro.redirect(`/comunidad/cursos/${course.slug}`);
+const { data: progress } = await supabase.from('lesson_progress').select('lesson_id').eq('user_id', profile.id).eq('lesson_id', lesson.id).maybeSingle();
+
+// Recursos: links externos o archivos privados del bucket "recursos" (URL firmada por 1 hora, solo si ya pasó la RLS)
+const resources = await Promise.all(((lesson.resources ?? []) as { label: string; url?: string; path?: string }[]).map(async (r) => {
+  if (r.path) {
+    try {
+      const { data } = await adminClient().storage.from('recursos').createSignedUrl(r.path, 3600, { download: true });
+      return { label: r.label, url: data?.signedUrl ?? null };
+    } catch { return { label: r.label, url: null }; }
+  }
+  return { label: r.label, url: r.url ?? null };
+}));
+const prev = lessonsOrder[idx - 1];
+const next = lessonsOrder[idx + 1];
+const embed = videoEmbed(lesson.video_url);
+const back = `/comunidad/cursos/${course.slug}/${lesson.slug}`;
+---
+
+<Community title={`${lesson.title} · ${course.title}`} tab="cursos">
+  <p class="meta"><a href={`/comunidad/cursos/${course.slug}`}>← {course.title}</a> · Lección {idx + 1} de {lessonsOrder.length}</p>
+  <h1 style="font-size:var(--fs-2xl);margin:12px 0 20px">{lesson.title}</h1>
+  {embed && <div class="video" style="margin-bottom:24px"><iframe src={embed} title={lesson.title} loading="lazy" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe></div>}
+  <div class="md prose" set:html={renderMarkdown(lesson.body_md, { ugc: false, mentions: false })} />
+  {resources.length > 0 && (
+    <section class="card" style="margin-top:24px">
+      <h2 style="font-size:var(--fs-lg)">Recursos</h2>
+      <ul class="checklist">{resources.map((r) => <li>{r.url ? <a href={r.url} target="_blank" rel="noopener">{r.label}</a> : r.label}</li>)}</ul>
+    </section>
+  )}
+  <div class="row" style="margin-top:32px;justify-content:space-between">
+    {prev ? <a class="link-arrow" href={`/comunidad/cursos/${course.slug}/${prev.lesson_slug}`}>← {prev.lesson_title}</a> : <span></span>}
+    <form method="post" action="/api/comunidad/accion">
+      <input type="hidden" name="action" value={progress ? 'lesson.uncomplete' : 'lesson.complete'} />
+      <input type="hidden" name="id" value={lesson.id} />
+      <input type="hidden" name="back" value={!progress && next ? `/comunidad/cursos/${course.slug}/${next.lesson_slug}` : back} />
+      <button class:list={['btn', { 'btn--agua': !progress, 'btn--ghost': progress }]} type="submit">{progress ? '✔ Completada (desmarcar)' : 'Marcar como completada'}</button>
+    </form>
+    {next ? <a class="link-arrow" href={`/comunidad/cursos/${course.slug}/${next.lesson_slug}`}>{next.lesson_title} →</a> : <span></span>}
+  </div>
+</Community>

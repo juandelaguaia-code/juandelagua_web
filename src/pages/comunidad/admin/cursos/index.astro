@@ -1,0 +1,34 @@
+---
+import Community from '../../../../layouts/Community.astro';
+import AdminNav from '../../../../components/community/AdminNav.astro';
+import { hasRole } from '../../../../lib/types';
+
+export const prerender = false;
+
+if (!hasRole(Astro.locals.profile, 'admin')) return Astro.redirect('/comunidad/admin');
+const { data: courses } = await Astro.locals.supabase!.from('courses').select('id, slug, title, access, unlock_level, published, position').order('position');
+const ACCESS: Record<string, string> = { open: 'Abierto', level: 'Por nivel', paid: 'Pagado/fundador', private: 'Privado' };
+---
+
+<Community title="Cursos" tab="admin">
+  <AdminNav current="cursos" />
+  <table class="data-table">
+    <thead><tr><th>Curso</th><th>Acceso</th><th>Estado</th></tr></thead>
+    <tbody>
+      {(courses ?? []).map((c) => (
+        <tr>
+          <td><a href={`/comunidad/admin/cursos/${c.id}`}>{c.title}</a><br /><span class="meta">/comunidad/cursos/{c.slug}</span></td>
+          <td>{ACCESS[c.access]}{c.access === 'level' && ` (nivel ${c.unlock_level})`}</td>
+          <td>{c.published ? 'Publicado' : 'Borrador'}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  <h2 style="font-size:var(--fs-lg);margin-top:32px">Nuevo curso</h2>
+  <form method="post" action="/api/comunidad/admin" class="form card" style="margin-top:12px">
+    <input type="hidden" name="action" value="course.save" /><input type="hidden" name="back" value="/comunidad/admin/cursos" />
+    <label>Título <input name="title" required maxlength="160" /></label>
+    <label>Descripción <textarea name="description" rows="3"></textarea></label>
+    <button class="btn btn--agua" type="submit" style="justify-self:start">Crear curso</button>
+  </form>
+</Community>

@@ -1,0 +1,56 @@
+---
+import Community from '../../layouts/Community.astro';
+import Avatar from '../../components/community/Avatar.astro';
+import { displayName, isOnline, levelNames } from '../../lib/community';
+import { ROLE_LABEL, hasRole, type Profile } from '../../lib/types';
+
+export const prerender = false;
+
+const supabase = Astro.locals.supabase!;
+const profile = Astro.locals.profile!;
+const sp = Astro.url.searchParams;
+const qText = (sp.get('q') ?? '').slice(0, 60).replace(/[%,()]/g, '');
+const level = Number(sp.get('nivel')) || 0;
+const role = sp.get('rol') ?? '';
+const filter = sp.get('filtro') ?? '';
+const page = Math.max(1, Number(sp.get('pagina')) || 1);
+const PAGE = 30;
+
+let q = supabase.from('profiles').select('id, username, full_name, avatar_url, bio, location, role, level, points, last_seen_at, created_at', { count: 'exact' }).in('status', ['active', 'suspended']);
+if (qText) q = q.or(`username.ilike.%${qText}%,full_name.ilike.%${qText}%`);
+if (level) q = q.eq('level', level);
+if (['owner', 'admin', 'moderator', 'member'].includes(role)) q = q.eq('role', role);
+if (filter === 'en-linea') q = q.gte('last_seen_at', new Date(Date.now() - 10 * 60_000).toISOString());
+if (filter === 'nuevos') q = q.gte('created_at', new Date(Date.now() - 30 * 86400_000).toISOString());
+const { data: members, count } = await q.order(filter === 'nuevos' ? 'created_at' : 'points', { ascending: false }).range((page - 1) * PAGE, page * PAGE - 1);
+const levels = await levelNames(supabase);
+const levelName = (n: number) => levels.find((l) => l.level === n)?.name ?? '';
+const staff = hasRole(profile, 'moderator');
+const { count: pending } = staff ? await supabase.from('join_requests').select('id', { count: 'exact', head: true }).eq('status', 'pending') : { count: 0 };
+const link = (n: number) => { const u = new URLSearchParams(sp); u.set('pagina', String(n)); return `?${u}`; };
+---
+
+<Community title="Miembros" tab="miembros">
+  {staff && <p style="margin-bottom:16px"><a class="btn btn--ghost btn--sm" href="/comunidad/admin/solicitudes">Pendientes ({pending ?? 0})</a></p>}
+  <form method="get" class="row form form-wide" style="margin-bottom:24px;align-items:end">
+    <label style="flex:2">Buscar <input name="q" value={qText} placeholder="Nombre o usuario" /></label>
+    <label style="flex:1">Nivel <select name="nivel"><option value="">Todos</option>{levels.map((l) => <option value={l.level} selected={l.level === level}>{l.level} · {l.name}</option>)}</select></label>
+    <label style="flex:1">Rol <select name="rol"><option value="">Todos</option>{Object.entries(ROLE_LABEL).map(([v, n]) => <option value={v} selected={v === role}>{n}</option>)}</select></label>
+    <label style="flex:1">Mostrar <select name="filtro"><option value="">Todos</option><option value="en-linea" selected={filter === 'en-linea'}>En línea</option><option value="nuevos" selected={filter === 'nuevos'}>Nuevos (30 días)</option></select></label>
+    <button class="btn btn--sm" type="submit">Filtrar</button>
+  </form>
+  <p class="meta" style="margin-bottom:12px">{count ?? 0} miembros</p>
+  <div class="grid grid-3">
+    {(members ?? []).map((m: any) => (
+      <a class="card" href={`/comunidad/u/${m.username}`} style="padding:20px">
+        <div class="row"><Avatar user={m} /> <div><strong>{displayName(m)}</strong><div class="meta">@{m.username}{isOnline(m.last_seen_at) && ' · 🟢 en línea'}</div></div></div>
+        {m.bio && <p>{m.bio.slice(0, 140)}</p>}
+        <span class="meta">Nivel {m.level} · {levelName(m.level)}{m.role !== 'member' && ` · ${ROLE_LABEL[m.role as Profile['role']]}`}</span>
+      </a>
+    ))}
+  </div>
+  <nav class="pager">
+    {page > 1 ? <a class="link-arrow" href={link(page - 1)}>← Anteriores</a> : <span></span>}
+    {(count ?? 0) > page * PAGE ? <a class="link-arrow" href={link(page + 1)}>Más →</a> : <span></span>}
+  </nav>
+</Community>

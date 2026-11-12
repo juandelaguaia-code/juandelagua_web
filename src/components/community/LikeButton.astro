@@ -1,0 +1,12 @@
+---
+interface Props { type: 'post' | 'comment'; id: number; count: number; liked: boolean; back: string; disabled?: boolean }
+const { type, id, count, liked, back, disabled = false } = Astro.props;
+---
+
+<form method="post" action="/api/comunidad/accion" class="inline-form">
+  <input type="hidden" name="action" value={liked ? 'unlike' : 'like'} />
+  <input type="hidden" name="type" value={type} />
+  <input type="hidden" name="id" value={id} />
+  <input type="hidden" name="back" value={back} />
+  <button class="btn--link" type="submit" disabled={disabled} aria-pressed={liked}>{liked ? '💙' : '🤍'} {count}</button>
+</form>

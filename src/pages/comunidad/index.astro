@@ -1,0 +1,104 @@
+---
+// Página pública de ingreso a la comunidad (equivale al "About" de Skool). Indexable.
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import Wave from '../../components/Wave.astro';
+import Faq from '../../components/Faq.astro';
+import { COMMUNITY, SITE } from '../../data/site';
+import { faqSchema, type FaqItem } from '../../data/faq';
+
+const description = `${COMMUNITY.name} ${COMMUNITY.endorsement}: ${COMMUNITY.description}`.slice(0, 160);
+
+const incluye = [
+  { t: 'Feed para preguntar', d: 'Publica tu duda o tu avance y recibe respuesta en el día. Categorías para preguntas, plantillas, herramientas y presentaciones.' },
+  { t: 'Taller mensual "Claude en 1 hora"', d: 'En vivo, con pantalla compartida: un caso real de principio a fin. Queda grabado para los miembros.' },
+  { t: 'Biblioteca de plantillas y skills', d: 'Prompts, flujos y plantillas listas para copiar y adaptar a tu negocio.' },
+  { t: 'Cursos paso a paso', d: 'Con pantallas reales y en español chileno. Algunos se desbloquean a medida que participas.' },
+  { t: 'Proceso real "Creando mi marca"', d: 'Cómo construyo la marca Juan del Agua, con números y errores incluidos.' },
+  { t: 'Ranking y niveles', d: 'Cada me gusta que recibes suma un punto. Subes de nivel (de Gota a Mar abierto) y desbloqueas contenido.' },
+];
+
+const normas = [
+  'Trato respetuoso, de tú a tú.',
+  'Nada de spam ni autopromoción fuera de la categoría Presentaciones.',
+  'No publiques datos personales de tus clientes.',
+  'Pregunta sin miedo: aquí todos estamos aprendiendo.',
+  'Muestra tu avance, con errores incluidos.',
+];
+
+const faq: FaqItem[] = [
+  { q: '¿Necesito saber programar?', a: 'No. La comunidad es justamente para usar IA sin programar: mensajes, reservas, contenido y tareas del día a día de tu negocio.' },
+  { q: '¿Cuánto cuesta?', a: `${COMMUNITY.pricing.map((p) => `${p.when}: ${p.price}`).join('. ')}. ${COMMUNITY.pricingNote}` },
+  { q: '¿Qué pasa con el grupo de WhatsApp?', a: 'Sigue existiendo, pero como canal de avisos. Las conversaciones, cursos y plantillas viven en la comunidad web, donde no se pierden.' },
+  { q: '¿Puedo irme cuando quiera?', a: 'Sí. Puedes cancelar la membresía o eliminar tu cuenta desde tus ajustes cuando quieras.' },
+];
+---
+
+<Base
+  title={`${COMMUNITY.name}: comunidad para usar IA sin programar`}
+  description={description}
+  breadcrumbs={[{ name: COMMUNITY.name, path: '/comunidad' }]}
+  schema={[
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: `${COMMUNITY.name} ${COMMUNITY.endorsement}`,
+      url: `${SITE.url}/comunidad`,
+      description: COMMUNITY.description,
+      parentOrganization: { '@id': `${SITE.url}/#negocio` },
+      founder: { '@id': `${SITE.url}/#juan` },
+    },
+    faqSchema(faq),
+  ]}
+>
+  <PageHero eyebrow={COMMUNITY.endorsement}>
+    <Fragment slot="title">{COMMUNITY.name}: <em>IA sin programar</em>.</Fragment>
+    <Fragment slot="lead"><p>{COMMUNITY.description} Para microempresarios e independientes que quieren automatizar sin enredarse.</p></Fragment>
+    <a class="btn btn--agua" href="/registro?next=/comunidad/ingreso">Unirme gratis</a>
+    <a class="btn btn--ghost" href="/entrar?next=/comunidad/feed">Ya soy miembro</a>
+  </PageHero>
+  <Wave from="var(--perla)" to="var(--bruma)" />
+
+  <section class="section bg-bruma">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Qué incluye</p>
+        <h2 data-reveal style="--d:80ms">Todo lo que necesitas para <em>partir con calma</em>.</h2>
+      </div>
+      <div class="grid grid-3">
+        {incluye.map((x, i) => (
+          <article class="card" data-reveal style={`--d:${(i % 3) * 90}ms`}><span class="num">0{i + 1}</span><h3>{x.t}</h3><p>{x.d}</p></article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Precio</p>
+        <h2 data-reveal style="--d:80ms">Gratis mientras <em>la armamos juntos</em>.</h2>
+        <p class="lead" data-reveal style="--d:160ms">{COMMUNITY.pricingNote} Antes de cobrar cualquier monto te avisaremos con tiempo.</p>
+      </div>
+      <div class="grid grid-3">
+        {COMMUNITY.pricing.map((p, i) => (
+          <article class="card" data-reveal style={`--d:${i * 90}ms`}><span class="num">{p.when}</span><p class="price">{p.price}</p><p>{p.note}</p></article>
+        ))}
+      </div>
+    </div>
+  </section>
+  <Wave from="var(--perla)" to="var(--bruma)" />
+
+  <section class="section bg-bruma">
+    <div class="container" style="max-width:920px">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Normas</p>
+        <h2 data-reveal style="--d:80ms">Cinco reglas <em>simples</em>.</h2>
+      </div>
+      <ol class="checklist" data-reveal>{normas.map((n) => <li>{n}</li>)}</ol>
+      <p class="muted" style="margin-top:20px">Condiciones completas en los <a href="/terminos#comunidad">términos</a> y tratamiento de datos en la <a href="/privacidad#comunidad">política de privacidad</a>.</p>
+      <div style="margin-top:40px"><Faq items={faq} /></div>
+      <p class="btn-row" style="margin-top:32px"><a class="btn btn--agua" href="/registro?next=/comunidad/ingreso">Unirme gratis</a></p>
+    </div>
+  </section>
+</Base>

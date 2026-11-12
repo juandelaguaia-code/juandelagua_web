@@ -1,0 +1,51 @@
+---
+import Community from '../../../layouts/Community.astro';
+import AdminNav from '../../../components/community/AdminNav.astro';
+import { hasRole } from '../../../lib/types';
+import { isoToChileLocal, formatChile } from '../../../lib/time';
+
+export const prerender = false;
+
+if (!hasRole(Astro.locals.profile, 'admin')) return Astro.redirect('/comunidad/admin');
+const supabase = Astro.locals.supabase!;
+const { data: rows } = await supabase.from('events').select('id, title, description_md, starts_at, ends_at, recurrence_rule').order('starts_at', { ascending: false }).limit(50);
+const events = await Promise.all((rows ?? []).map(async (e) => ({ ...e, location_url: (await supabase.rpc('event_location', { p_event: e.id })).data as string | null })));
+const back = '/comunidad/admin/eventos';
+const blank = { id: '', title: '', description_md: '', starts_at: null, ends_at: null, recurrence_rule: null, location_url: '' };
+---
+
+<Community title="Eventos" tab="admin">
+  <AdminNav current="eventos" />
+  <p class="meta" style="margin-bottom:12px">Horas en hora de Chile. Al crear un evento se avisa a todos los miembros activos. El link de Meet solo lo ven los miembros.</p>
+  <div class="stack">
+    {[blank, ...events].map((e: any) => (
+      <details class="card" open={!e.id}>
+        <summary>{e.id ? `${e.title} · ${formatChile(e.starts_at, { dateStyle: 'medium', timeStyle: 'short' })}` : '+ Nuevo evento'}</summary>
+        <form method="post" action="/api/comunidad/admin" class="form form-wide" style="margin-top:12px">
+          <input type="hidden" name="action" value="event.save" /><input type="hidden" name="id" value={e.id} /><input type="hidden" name="back" value={back} />
+          <label>Título <input name="title" value={e.title} required placeholder="Taller mensual: Claude en 1 hora" /></label>
+          <div class="row">
+            <label style="flex:1">Inicio <input type="datetime-local" name="starts_at" value={isoToChileLocal(e.starts_at)} required /></label>
+            <label style="flex:1">Término <input type="datetime-local" name="ends_at" value={isoToChileLocal(e.ends_at)} /></label>
+            <label style="flex:1">Repetir
+              <select name="recurrence">
+                <option value="">No se repite</option>
+                <option value="weekly" selected={e.recurrence_rule === 'FREQ=WEEKLY'}>Cada semana</option>
+                <option value="monthly" selected={e.recurrence_rule === 'FREQ=MONTHLY'}>Cada mes</option>
+              </select>
+            </label>
+          </div>
+          <label>Link de la reunión (solo miembros) <input type="url" name="location_url" value={e.location_url ?? ''} placeholder="https://meet.google.com/…" /></label>
+          <label>Descripción (Markdown) <textarea name="description_md" rows="4">{e.description_md}</textarea></label>
+          <button class="btn btn--agua btn--sm" type="submit" style="justify-self:start">{e.id ? 'Guardar' : 'Crear evento'}</button>
+        </form>
+        {e.id && (
+          <form method="post" action="/api/comunidad/admin" onsubmit="return confirm('¿Eliminar el evento?')">
+            <input type="hidden" name="action" value="event.delete" /><input type="hidden" name="id" value={e.id} /><input type="hidden" name="back" value={back} />
+            <button class="btn--link" type="submit">Eliminar</button>
+          </form>
+        )}
+      </details>
+    ))}
+  </div>
+</Community>

@@ -1,0 +1,64 @@
+---
+import Community from '../../../layouts/Community.astro';
+import AdminNav from '../../../components/community/AdminNav.astro';
+import { hasRole } from '../../../lib/types';
+
+export const prerender = false;
+
+const supabase = Astro.locals.supabase!;
+if (!hasRole(Astro.locals.profile, 'admin')) return Astro.redirect('/comunidad/admin');
+const [{ data: s }, { data: levels }, { data: categories }] = await Promise.all([
+  supabase.from('community_settings').select('*').eq('id', 1).single(),
+  supabase.from('levels').select('*').order('level'),
+  supabase.from('categories').select('*').order('position'),
+]);
+const back = '/comunidad/admin/ajustes';
+const questionsText = ((s?.join_questions ?? []) as any[]).map((q) => `${q.label}${q.required ? ' *' : ''}`).join('\n');
+---
+
+<Community title="Ajustes" tab="admin">
+  <AdminNav current="ajustes" />
+
+  <h2 style="font-size:var(--fs-lg)">Comunidad</h2>
+  <form method="post" action="/api/comunidad/admin" class="form form-wide card" style="margin:12px 0 32px">
+    <input type="hidden" name="action" value="settings" /><input type="hidden" name="back" value={back} />
+    <p class="meta">El nombre público de la marca se cambia en <code>COMMUNITY.name</code> (src/data/site.ts). Este nombre se usa en los correos y datos internos.</p>
+    <label>Nombre <input name="name" value={s?.name} maxlength="80" /></label>
+    <label>Bajada <input name="tagline" value={s?.tagline} maxlength="200" /></label>
+    <label>Aprobación de nuevos miembros
+      <select name="approval_mode"><option value="manual" selected={s?.approval_mode === 'manual'}>Manual (revisar cada solicitud)</option><option value="auto" selected={s?.approval_mode === 'auto'}>Automática</option></select>
+    </label>
+    <label>Preguntas de ingreso <span class="hint">Una por línea (máx. 8). Termina con * las obligatorias.</span><textarea name="join_questions" rows="4">{questionsText}</textarea></label>
+    <label>Normas (Markdown) <textarea name="rules_md" rows="6">{s?.rules_md}</textarea></label>
+    <label>Curso de bienvenida (slug) <input name="welcome_course_slug" value={s?.welcome_course_slug ?? ''} /></label>
+    <button class="btn btn--agua" type="submit" style="justify-self:start">Guardar ajustes</button>
+  </form>
+
+  <h2 style="font-size:var(--fs-lg)">Niveles</h2>
+  <form method="post" action="/api/comunidad/admin" class="form form-wide card" style="margin:12px 0 32px">
+    <input type="hidden" name="action" value="levels" /><input type="hidden" name="back" value={back} />
+    {(levels ?? []).map((l: any) => (
+      <div class="row">
+        <strong style="width:70px">Nivel {l.level}</strong>
+        <label style="flex:2">Nombre <input name={`name_${l.level}`} value={l.name} maxlength="40" required /></label>
+        <label style="flex:1">Desde (puntos) <input type="number" name={`min_${l.level}`} value={l.min_points} min="0" disabled={l.level === 1} /></label>
+      </div>
+    ))}
+    <button class="btn btn--agua" type="submit" style="justify-self:start">Guardar niveles</button>
+  </form>
+
+  <h2 style="font-size:var(--fs-lg)">Categorías del feed</h2>
+  <div class="stack" style="margin-top:12px">
+    {[...(categories ?? []), { id: '', slug: '', name: '', emoji: '', position: (categories ?? []).length, admins_only_post: false }].map((c: any) => (
+      <form method="post" action="/api/comunidad/admin" class="row form form-wide card" style="padding:14px;align-items:end">
+        <input type="hidden" name="action" value="category.save" /><input type="hidden" name="id" value={c.id} /><input type="hidden" name="back" value={back} />
+        <label style="width:70px">Emoji <input name="emoji" value={c.emoji} maxlength="8" /></label>
+        <label style="flex:2">Nombre <input name="name" value={c.name} required maxlength="60" placeholder={c.id ? '' : 'Nueva categoría'} /></label>
+        <label style="flex:1">Slug <input name="slug" value={c.slug} maxlength="40" /></label>
+        <label style="width:90px">Orden <input type="number" name="position" value={c.position} /></label>
+        <label class="check"><input type="checkbox" name="admins_only_post" checked={c.admins_only_post} /> Solo admins publican</label>
+        <button class="btn btn--sm" type="submit">{c.id ? 'Guardar' : 'Agregar'}</button>
+      </form>
+    ))}
+  </div>
+</Community>

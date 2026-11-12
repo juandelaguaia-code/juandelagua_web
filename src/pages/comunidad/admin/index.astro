@@ -1,0 +1,56 @@
+---
+import Community from '../../../layouts/Community.astro';
+import AdminNav from '../../../components/community/AdminNav.astro';
+import { hasRole } from '../../../lib/types';
+import { authorsById, displayName, timeAgo } from '../../../lib/community';
+
+export const prerender = false;
+
+const supabase = Astro.locals.supabase!;
+const profile = Astro.locals.profile!;
+const iso = (days: number) => new Date(Date.now() - days * 86400_000).toISOString();
+const head = { count: 'exact' as const, head: true };
+const [members, active7, active30, posts7, posts30, comments30, pending, reports] = await Promise.all([
+  supabase.from('profiles').select('id', head).in('status', ['active', 'suspended']),
+  supabase.from('profiles').select('id', head).gte('last_seen_at', iso(7)),
+  supabase.from('profiles').select('id', head).gte('last_seen_at', iso(30)),
+  supabase.from('posts').select('id', head).gte('created_at', iso(7)),
+  supabase.from('posts').select('id', head).gte('created_at', iso(30)),
+  supabase.from('comments').select('id', head).gte('created_at', iso(30)),
+  supabase.from('join_requests').select('id', head).eq('status', 'pending'),
+  supabase.from('reports').select('id', head).eq('status', 'open'),
+]);
+const stats = [
+  ['Miembros', members.count], ['Activos 7 días', active7.count], ['Activos 30 días', active30.count],
+  ['Publicaciones 7 días', posts7.count], ['Publicaciones 30 días', posts30.count], ['Comentarios 30 días', comments30.count],
+  ['Solicitudes pendientes', pending.count], ['Reportes abiertos', reports.count],
+];
+const { data: audit } = hasRole(profile, 'admin') ? await supabase.from('audit_log').select('*').order('created_at', { ascending: false }).limit(20) : { data: [] };
+const actors = await authorsById(supabase, (audit ?? []).flatMap((a: any) => [a.actor_id, a.target_type === 'profile' ? a.target_id : null]));
+---
+
+<Community title="Administración" tab="admin">
+  <AdminNav current="inicio" />
+  <div class="grid grid-4">
+    {stats.map(([label, n]) => <div class="card" style="padding:18px"><span class="meta">{label}</span><p class="price" style="font-size:2rem">{n ?? 0}</p></div>)}
+  </div>
+  {hasRole(profile, 'admin') && (
+    <section style="margin-top:32px">
+      <h2 style="font-size:var(--fs-lg);margin-bottom:12px">Registro de acciones</h2>
+      <table class="data-table">
+        <thead><tr><th>Cuándo</th><th>Quién</th><th>Acción</th><th>Sobre</th><th>Detalle</th></tr></thead>
+        <tbody>
+          {(audit ?? []).map((a: any) => (
+            <tr>
+              <td>{timeAgo(a.created_at)}</td>
+              <td>{a.actor_id ? displayName(actors.get(a.actor_id)) : 'Sistema'}</td>
+              <td>{a.action}</td>
+              <td>{a.target_type === 'profile' ? displayName(actors.get(a.target_id)) : `${a.target_type} ${a.target_id}`}</td>
+              <td class="meta">{JSON.stringify(a.meta)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
+  )}
+</Community>

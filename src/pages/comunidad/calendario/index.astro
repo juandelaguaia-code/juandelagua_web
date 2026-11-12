@@ -1,0 +1,69 @@
+---
+import Community from '../../../layouts/Community.astro';
+import { occurrences, googleCalendarUrl, type EventRow } from '../../../lib/events';
+import { renderMarkdown, plainText } from '../../../lib/markdown';
+import { formatChile } from '../../../lib/time';
+import { canWrite } from '../../../lib/types';
+import { SITE_URL } from 'astro:env/server';
+
+export const prerender = false;
+
+const supabase = Astro.locals.supabase!;
+const profile = Astro.locals.profile!;
+const since = new Date(Date.now() - 400 * 86400_000).toISOString();
+const { data: rows } = await supabase.from('events').select('id, title, description_md, starts_at, ends_at, tz, recurrence_rule, cover_url').gte('starts_at', since).order('starts_at');
+const events = ((rows ?? []) as EventRow[])
+  .map((e) => ({ e, next: occurrences(e)[0] }))
+  .filter((x) => x.next)
+  .sort((a, b) => +a.next.start - +b.next.start);
+const ids = events.map((x) => x.e.id);
+const [{ data: rsvps }, locations] = await Promise.all([
+  ids.length ? supabase.from('event_rsvps').select('event_id, user_id, status').in('event_id', ids) : Promise.resolve({ data: [] as any[] }),
+  Promise.all(ids.map(async (id) => [id, (await supabase.rpc('event_location', { p_event: id })).data as string | null] as const)),
+]);
+const loc = new Map(locations);
+const writable = canWrite(profile);
+---
+
+<Community title="Calendario" tab="calendario">
+  <p class="meta" style="margin-bottom:16px">Horas en hora de Chile (America/Santiago). <span data-local-note></span></p>
+  <div class="stack">
+    {events.map(({ e, next }) => {
+      const going = (rsvps ?? []).filter((r) => r.event_id === e.id && r.status === 'going').length;
+      const mine = (rsvps ?? []).find((r) => r.event_id === e.id && r.user_id === profile.id)?.status;
+      const url = `${SITE_URL}/comunidad/calendario`;
+      return (
+        <article class="card">
+          <p class="meta">{e.recurrence_rule ? (e.recurrence_rule.includes('MONTHLY') ? '🔁 Mensual' : '🔁 Semanal') : 'Evento'}</p>
+          <h2 style="font-size:var(--fs-xl)">{e.title}</h2>
+          <p><strong><time datetime={next.start.toISOString()} data-local>{formatChile(next.start.toISOString())}</time></strong> (hora de Chile)</p>
+          <div class="md" set:html={renderMarkdown(e.description_md, { mentions: false })} />
+          {loc.get(e.id) && <p>📹 <a href={loc.get(e.id)!} target="_blank" rel="noopener">Link de la reunión</a></p>}
+          <div class="row meta">
+            <span>{going} asistirán</span>
+            {writable && (
+              <form method="post" action="/api/comunidad/accion" class="inline-form">
+                <input type="hidden" name="action" value="rsvp" /><input type="hidden" name="id" value={e.id} /><input type="hidden" name="status" value={mine === 'going' ? 'no' : 'going'} /><input type="hidden" name="back" value="/comunidad/calendario" />
+                <button class="btn btn--sm" type="submit">{mine === 'going' ? '✔ Asistiré (cancelar)' : 'Asistiré'}</button>
+              </form>
+            )}
+            <a href={googleCalendarUrl(e, next.start, next.end, `${plainText(e.description_md, 400)}\n${url}`)} target="_blank" rel="noopener">Agregar a Google Calendar</a>
+            <a href={`/comunidad/calendario/${e.id}.ics`}>Descargar .ics</a>
+          </div>
+        </article>
+      );
+    })}
+    {events.length === 0 && <p class="lead">No hay eventos próximos. El taller mensual "Claude en 1 hora" se anunciará aquí.</p>}
+  </div>
+</Community>
+
+<script>
+  // Muestra también la hora en la zona del navegador si es distinta a la de Chile
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  if (tz && tz !== 'America/Santiago') {
+    document.querySelectorAll<HTMLTimeElement>('time[data-local]').forEach((t) => {
+      const local = new Intl.DateTimeFormat('es-CL', { dateStyle: 'full', timeStyle: 'short' }).format(new Date(t.dateTime));
+      t.insertAdjacentText('afterend', ` · en tu zona (${tz}): ${local}`);
+    });
+  }
+</script>

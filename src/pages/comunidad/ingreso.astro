@@ -1,0 +1,66 @@
+---
+// Paso de ingreso: preguntas configurables + aceptación de normas, términos y privacidad.
+import App from '../../layouts/App.astro';
+import { COMMUNITY, LEGAL } from '../../data/site';
+import { isPost, form, withMsg, errorCode, ipHash, clientIp } from '../../lib/http';
+import { renderMarkdown } from '../../lib/markdown';
+import { canRead } from '../../lib/types';
+
+export const prerender = false;
+
+const { supabase, user, profile } = Astro.locals;
+if (!supabase || !user || !profile) return Astro.redirect('/registro?next=/comunidad/ingreso');
+if (canRead(profile)) return Astro.redirect('/comunidad/feed');
+
+const { data: settings } = await supabase.from('community_settings').select('join_questions, rules_md, approval_mode').eq('id', 1).single();
+const questions = (settings?.join_questions ?? []) as { id: string; label: string; required?: boolean }[];
+const { data: request } = await supabase.from('join_requests').select('id, status, created_at').eq('user_id', user.id).maybeSingle();
+const verified = !!user.email_confirmed_at;
+
+if (isPost(Astro) && !request && verified) {
+  const { str, bool } = await form(Astro);
+  if (!bool('rules') || !bool('legal')) return Astro.redirect(withMsg('/comunidad/ingreso', 'error', 'consentimiento'));
+  const answers = Object.fromEntries(questions.map((q) => [q.id, str(`q_${q.id}`, 1000)]));
+  if (questions.some((q) => q.required && !answers[q.id])) return Astro.redirect(withMsg('/comunidad/ingreso', 'error', 'desconocido'));
+  const hash = await ipHash(clientIp(Astro));
+  await supabase.from('consents').insert([
+    { user_id: user.id, kind: 'rules', version: LEGAL.rules, ip_hash: hash },
+    { user_id: user.id, kind: 'terms', version: LEGAL.terms, ip_hash: hash },
+    { user_id: user.id, kind: 'privacy', version: LEGAL.privacy, ip_hash: hash },
+  ]);
+  const { error } = await supabase.from('join_requests').insert({ user_id: user.id, answers });
+  if (error) return Astro.redirect(withMsg('/comunidad/ingreso', 'error', errorCode(error)));
+  // Con aprobación automática ya queda activo
+  const { data: me } = await supabase.from('profiles').select('status').eq('id', user.id).single();
+  return Astro.redirect(me?.status === 'active' ? '/comunidad/feed?ok=publicado&bienvenida=1' : withMsg('/comunidad/ingreso', 'ok', 'solicitud'));
+}
+---
+
+<App title={`Unirme a ${COMMUNITY.name}`} narrow>
+  <p class="eyebrow">{COMMUNITY.endorsement}</p>
+  <h1>Unirme a {COMMUNITY.name}</h1>
+  {profile.status === 'banned' ? (
+    <p class="lead">Tu cuenta no puede ingresar a la comunidad.</p>
+  ) : !verified ? (
+    <p class="lead">Primero confirma tu correo con el enlace que te enviamos a <strong>{user.email}</strong>. Después vuelve a esta página.</p>
+  ) : request ? (
+    <>
+      <p class="lead">{request.status === 'rejected' ? 'Tu solicitud no fue aprobada esta vez.' : 'Tu solicitud está en revisión. Te avisaremos por aquí cuando sea aprobada (normalmente en menos de un día).'}</p>
+      <p style="margin-top:16px"><a class="btn btn--ghost" href="/cuenta">Completar mi perfil mientras tanto</a></p>
+    </>
+  ) : (
+    <form method="post" class="form" style="margin-top:24px">
+      <p class="lead">Cuéntanos un poco de ti. {settings?.approval_mode === 'manual' ? 'Revisamos cada solicitud a mano.' : ''}</p>
+      {questions.map((q) => (
+        <label>{q.label}{!q.required && <span class="hint"> (opcional)</span>}<textarea name={`q_${q.id}`} rows="2" maxlength="1000" required={q.required}></textarea></label>
+      ))}
+      <div class="card">
+        <strong>Normas de la comunidad</strong>
+        <div class="md" set:html={renderMarkdown(settings?.rules_md ?? '', { mentions: false })} />
+      </div>
+      <label class="check"><input type="checkbox" name="rules" required /> <span>Acepto las normas de la comunidad.</span></label>
+      <label class="check"><input type="checkbox" name="legal" required /> <span>Acepto los <a href="/terminos#comunidad" target="_blank">términos</a> y la <a href="/privacidad#comunidad" target="_blank">política de privacidad</a> (versiones {LEGAL.terms} y {LEGAL.privacy}).</span></label>
+      <button class="btn btn--agua" type="submit">Enviar solicitud</button>
+    </form>
+  )}
+</App>

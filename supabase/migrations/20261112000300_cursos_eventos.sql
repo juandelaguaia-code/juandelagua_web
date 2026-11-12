@@ -155,7 +155,10 @@ language sql stable security definer set search_path = '' as $$
 $$;
 
 create policy progress_own on public.lesson_progress for all to authenticated
-  using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()) and public.is_member_reader());
+  using (user_id = (select auth.uid()))
+  with check (user_id = (select auth.uid()) and public.is_member_reader()
+    -- solo lecciones que el usuario puede ver (la subconsulta aplica la RLS de lessons)
+    and exists (select 1 from public.lessons l where l.id = lesson_id));
 
 -- Eventos: título y fecha visibles para todos; el link solo vía event_location(); staff gestiona
 create policy events_read on public.events for select using (true);
