@@ -293,3 +293,8 @@ p { text-wrap: pretty; }
 .progress > span { display: block; height: 100%; background: var(--corriente); }
 .account-link[hidden] { display: none; }
 .account-link { font-size: var(--fs-sm); font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+
+/* ---------- ofertas ---------- */
+.offer-note { display: block; margin: 0 0 clamp(16px, 2.4vw, 28px); }
+.offer-launch { display: block; margin-top: 28px; }
+.offer-extra { margin-top: clamp(16px, 2.4vw, 28px); }

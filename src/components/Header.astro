@@ -15,13 +15,20 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
     </a>
     <nav class="nav-desktop" aria-label="Principal">
       <ul>
-        {NAV.map((item) => (
+        {NAV.map((item) => item.children ? (
+          <li class="has-sub">
+            <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined} aria-haspopup="true">{item.label} <span class="caret" aria-hidden="true">▾</span></a>
+            <ul class="submenu">
+              {item.children.map((c) => <li><a href={c.href} aria-current={isActive(c.href) ? 'page' : undefined}>{c.label}</a></li>)}
+            </ul>
+          </li>
+        ) : (
           <li><a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a></li>
         ))}
       </ul>
     </nav>
     <SocialLinks class="social-desktop" />
-    <a class="account-link" href="/comunidad/feed" data-account hidden><span class="avatar avatar--sm" data-account-avatar aria-hidden="true"></span><span data-account-label>Mi cuenta</span></a>
+    <a class="account-link" href="/comunidad/feed" data-account hidden><span class="avatar avatar--sm" data-account-avatar aria-hidden="true"></span><span class="account-count" data-account-label></span></a>
     <a class="btn btn--ghost btn--sm cta-desktop" href={COMMUNITY.url}>Comunidad</a>
     <a class="btn btn--agua btn--sm cta-desktop" href={diagnosticoHref()}>Diagnóstico gratis</a>
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-movil" data-menu-toggle>
@@ -37,7 +44,10 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
     <ul>
       <li><a href={home}>Inicio</a></li>
       {NAV.map((item) => (
-        <li><a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a></li>
+        <li>
+          <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a>
+          {item.children && <ul class="sub-movil">{item.children.map((c) => <li><a href={c.href}>{c.label}</a></li>)}</ul>}
+        </li>
       ))}
       <li><a href="/contacto">Contacto</a></li>
     </ul>
@@ -66,12 +76,26 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
   .wordmark em { font-style: italic; font-weight: 400; color: var(--corriente-ink); }
   .nav-desktop ul { display: flex; gap: 4px; list-style: none; padding: 0; }
   .nav-desktop a {
-    display: block; padding: 8px 12px; border-radius: 999px;
+    display: block; padding: 8px 12px; border-radius: 999px; white-space: nowrap;
     font-size: var(--fs-sm); font-weight: 500; text-decoration: none; color: var(--tinta);
     transition: background-color 0.2s, color 0.2s;
   }
   .nav-desktop a:hover { background: rgba(14, 42, 67, 0.06); }
   .nav-desktop a[aria-current='page'] { color: var(--corriente-ink); }
+  /* Ofertas: se despliega al pasar el cursor o con el teclado */
+  .has-sub { position: relative; }
+  .caret { font-size: 0.7em; margin-left: 2px; }
+  .nav-desktop .submenu {
+    position: absolute; left: 0; top: 100%; min-width: 240px; padding: 8px; margin-top: 4px;
+    list-style: none; display: grid; gap: 2px; background: var(--perla); border: 1px solid var(--linea);
+    border-radius: var(--radius); box-shadow: 0 18px 40px -20px rgba(14, 42, 67, 0.45);
+    opacity: 0; visibility: hidden; transform: translateY(-4px); transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
+  }
+  .nav-desktop .submenu::before { content: ''; position: absolute; left: 0; right: 0; top: -8px; height: 8px; }
+  .nav-desktop .submenu a { border-radius: 10px; }
+  .has-sub:hover .submenu, .has-sub:focus-within .submenu { opacity: 1; visibility: visible; transform: none; }
+  .bar .btn, .account-link { white-space: nowrap; flex: none; }
+  .account-count:empty { display: none; }
   .btn--sm { min-height: 42px; padding: 0.6em 1.2em; }
   .menu-toggle { display: none; width: 46px; height: 46px; border: 0; background: transparent; cursor: pointer; border-radius: 12px; }
   .burger { display: grid; gap: 7px; width: 24px; margin: auto; }
@@ -91,15 +115,18 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
   }
   .menu-movil a[aria-current='page'] { color: var(--corriente-ink); font-style: italic; }
   .menu-movil .btn { width: 100%; margin-bottom: 10px; }
+  .menu-movil .sub-movil { list-style: none; padding: 0 0 12px 16px; margin: 0; }
+  .menu-movil .sub-movil li { border: 0; }
+  .menu-movil .sub-movil a { font-size: 1.15rem; padding: 8px 0; color: var(--piedra); }
 
   .bar :global(.social-desktop) { margin-right: -8px; }
   .menu-movil :global(.social-mobile) { justify-content: center; margin-top: 10px; }
-  @media (max-width: 1100px) { .bar :global(.social-desktop) { display: none; } }
-  @media (max-width: 960px) {
+  @media (max-width: 1320px) { .bar :global(.social-desktop) { display: none; } }
+  @media (max-width: 1100px) {
     .nav-desktop, .cta-desktop { display: none; }
     .menu-toggle { display: block; }
   }
-  @media (min-width: 961px) { .menu-movil { display: none !important; } }
+  @media (min-width: 1101px) { .menu-movil { display: none !important; } }
 </style>
 
 <script>
@@ -115,7 +142,9 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
         img.src = s.user.avatar_url; img.alt = ''; img.className = 'avatar avatar--sm';
         av.replaceWith(img);
       } else av.textContent = (s.user.username || '?').slice(0, 1).toUpperCase();
-      link.querySelector('[data-account-label]')!.textContent = s.unread ? `${s.unread} nuevas` : 'Mi cuenta';
+      link.querySelector('[data-account-label]')!.textContent = s.unread ? `${s.unread}` : '';
+      link.title = s.unread ? `${s.unread} notificaciones nuevas` : 'Mi cuenta';
+      link.setAttribute('aria-label', link.title);
       if (s.unread) link.href = '/comunidad/notificaciones';
       link.hidden = false;
     }).catch(() => {});
@@ -139,5 +168,5 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
   toggle?.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
   menu?.addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('a')) setOpen(false); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
-  window.matchMedia('(min-width: 961px)').addEventListener('change', (e) => { if (e.matches) setOpen(false); });
+  window.matchMedia("(min-width: 1101px)").addEventListener('change', (e) => { if (e.matches) setOpen(false); });
 </script>

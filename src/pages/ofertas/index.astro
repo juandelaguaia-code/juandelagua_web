@@ -1,0 +1,82 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Faq from '../../components/Faq.astro';
+import Wave from '../../components/Wave.astro';
+import DiagnosticoButton from '../../components/DiagnosticoButton.astro';
+import OtrasOfertas from '../../components/ofertas/OtrasOfertas.astro';
+import Calculadora from '../../components/ofertas/Calculadora.astro';
+import { CONDICIONES, DIAGNOSTICO, RESPUESTA, APARTE } from '../../data/planes';
+import { faqSchema, FAQ_PRECIOS } from '../../data/faq';
+
+const msg = 'Hola Juan, vengo desde la página de ofertas de tu sitio y quiero conversar.';
+const description =
+  'Ofertas con precio publicado: agentes de IA, campañas Meta, contenido, sitios web y consultoría personalizada para pymes en Chile. Diagnóstico gratis de 15 minutos.';
+---
+
+<Base
+  title="Ofertas: agentes de IA, marketing, webs y consultoría"
+  description={description}
+  breadcrumbs={[{ name: 'Ofertas', path: '/ofertas' }]}
+  waMessage={msg}
+  schema={faqSchema(FAQ_PRECIOS)}
+>
+  <PageHero eyebrow="Ofertas">
+    <Fragment slot="title">Cuánto cuesta dejar de <em>perder clientes</em>.</Fragment>
+    <Fragment slot="lead">
+      <p>Cada consulta que nadie responde a tiempo es una venta que se va a la competencia. Elige por dónde quieres partir: todos los precios están publicados, sin "cotiza para saber". Y si no sabes cuál te conviene, lo vemos en 15 minutos.</p>
+    </Fragment>
+    <a class="btn btn--agua" href="#ofertas">Ver las ofertas</a>
+    <a class="btn btn--ghost" href="#calculadora">Haz la cuenta primero</a>
+  </PageHero>
+
+  <OtrasOfertas title="¿Qué necesita <em>tu negocio</em>?" bg="bruma" />
+
+  <!-- DIAGNÓSTICO -->
+  <section class="section" id="diagnostico">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Antes de pagar un peso</p>
+        <h2 data-reveal style="--d:80ms">Partamos con un diagnóstico <em>gratis de {DIAGNOSTICO.minutes} minutos</em>.</h2>
+        <p class="lead" data-reveal style="--d:160ms">{DIAGNOSTICO.summary}</p>
+      </div>
+      <ul class="checklist" data-reveal>
+        <li>Agendas tú, en el horario que te acomode.</li>
+        <li>{RESPUESTA.proposal}, si tiene sentido trabajar juntos.</li>
+        <li>Si no conviene automatizar, te lo digo con la misma claridad.</li>
+      </ul>
+      <p data-reveal style="margin-top:24px"><DiagnosticoButton label="Elegir día y hora" /></p>
+    </div>
+  </section>
+  <Wave from="var(--perla)" to="var(--bruma)" />
+
+  <Calculadora />
+
+  <!-- CONDICIONES -->
+  <section class="section" id="condiciones">
+    <div class="container" style="max-width:920px">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Sin sorpresas</p>
+        <h2 data-reveal style="--d:80ms">Las reglas del juego, <em>claras desde el inicio</em>.</h2>
+      </div>
+      <p class="note card offer-note" data-reveal>💡 {APARTE}</p>
+      <ul class="checklist" data-reveal>{CONDICIONES.map((c) => <li>{c}</li>)}</ul>
+      <p class="muted" data-reveal style="margin-top:24px">Detalle completo en los <a href="/terminos#condiciones-comerciales">términos y condiciones</a>.</p>
+    </div>
+  </section>
+  <Wave from="var(--perla)" to="var(--bruma)" />
+
+  <section class="section bg-bruma">
+    <div class="container" style="max-width:920px">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Preguntas frecuentes</p>
+        <h2 data-reveal style="--d:80ms">Lo que todos preguntan <em>antes de contratar</em>.</h2>
+      </div>
+      <div data-reveal style="--d:120ms"><Faq items={FAQ_PRECIOS} /></div>
+    </div>
+  </section>
+
+  <Wave from="var(--bruma)" to="var(--marino)" />
+  <CtaBand message={msg} title="¿No sabes cuál elegir? <em>Lo vemos en 15 minutos</em>." text={`Me cuentas cómo funciona tu negocio y te digo qué te sirve, o si nada te conviene. Es gratis. ${RESPUESTA.proposal}.`} />
+</Base>

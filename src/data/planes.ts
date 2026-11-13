@@ -123,8 +123,8 @@ export const CONTENIDO_IA = 'Las fotos y los videos se generan con IA. Si prefie
 export const LAUNCH = { total: 3, left: 3, discount: 20, months: 6 } as const;
 
 export const DIAGNOSTICO = {
-  minutes: 20,
-  summary: 'Una videollamada de 20 minutos para entender tu caso. Te llevas 3 oportunidades concretas, sin compromiso.',
+  minutes: 15,
+  summary: 'Una videollamada de 15 minutos para entender tu caso. Te llevas 3 oportunidades concretas, sin compromiso.',
   excludes: 'No incluye informe escrito.',
 } as const;
 
@@ -134,7 +134,7 @@ export const RESPUESTA = {
   proposal: 'Propuesta en 48 horas después del diagnóstico',
 } as const;
 
-/** Condiciones comerciales (se muestran en /planes y /terminos) */
+/** Condiciones comerciales (se muestran en /ofertas y /terminos) */
 export const CONDICIONES = [
   'Pronto pago: 15% de descuento en la instalación si pagas el 100% dentro de 10 días hábiles desde la propuesta. No aplica a mensualidades.',
   `Precio de lanzamiento: los ${LAUNCH.total} primeros clientes de Agente Starter o Campaña + agente que autoricen publicar su caso (con nombre o anónimo) pagan ${LAUNCH.discount}% menos en la mensualidad durante ${LAUNCH.months} meses.`,
@@ -182,7 +182,7 @@ export const planServiceSchema = (p: Plan) => {
     description: `${p.summary} Precios en pesos chilenos + IVA.`,
     provider: { '@id': 'https://juandelagua.com/#negocio' },
     areaServed: { '@type': 'Country', name: 'Chile' },
-    url: 'https://juandelagua.com/planes',
+    url: `https://juandelagua.com${p.line === 'web' ? '/ofertas/webs' : p.id === 'consultoria' || p.id === 'medida' ? '/ofertas/consultoria' : '/ofertas/ia-y-marketing'}`,
     offers:
       offers.length > 1
         ? { '@type': 'AggregateOffer', priceCurrency: 'CLP', lowPrice: Math.min(...prices), highPrice: Math.max(...prices), offerCount: offers.length, offers }

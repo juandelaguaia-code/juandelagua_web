@@ -1,0 +1,65 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import PlanCard from '../../components/PlanCard.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Wave from '../../components/Wave.astro';
+import DiagnosticoButton from '../../components/DiagnosticoButton.astro';
+import OtrasOfertas from '../../components/ofertas/OtrasOfertas.astro';
+import { PLANES, planServiceSchema } from '../../data/planes';
+
+const msg = 'Hola Juan, vengo desde tu sitio web y me interesa una consultoría personalizada para mi empresa.';
+const pasos = [
+  { t: 'Entiendo tu empresa', d: 'Cómo te llegan los clientes, qué hace cada persona, qué herramientas usan y dónde se pierde tiempo o plata.' },
+  { t: 'Te muestro el mapa', d: 'Qué conviene hacer, en qué orden y qué no vale la pena. Con números, no con promesas.' },
+  { t: 'Propuesta cerrada', d: 'Alcance, plazos y precio fijo. Tomas solo lo que necesitas, cuando lo necesites.' },
+  { t: 'Implemento y mido', d: 'Lo dejo funcionando, documentado y con tu equipo capacitado. Y medimos qué cambió.' },
+];
+---
+
+<Base
+  title="Consultoría personalizada en IA y marketing para empresas"
+  description="Consultoría a la medida de tu empresa: entiendo cómo trabajas y te propongo solo lo que necesitas, con alcance, plazos y precio cerrado. También consultoría IA por fases."
+  breadcrumbs={[{ name: 'Ofertas', path: '/ofertas' }, { name: 'Consultoría personalizada', path: '/ofertas/consultoria' }]}
+  waMessage={msg}
+  schema={[planServiceSchema(PLANES.consultoria)]}
+>
+  <PageHero eyebrow="Ofertas · Consultoría personalizada">
+    <Fragment slot="title">Ningún plan calza con tu empresa. <em>Normal.</em></Fragment>
+    <Fragment slot="lead"><p>Cada negocio es distinto. Primero entiendo cómo trabajas y después te propongo solo lo que de verdad necesitas, con precio cerrado. Sin paquetes inflados ni herramientas que nadie va a usar.</p></Fragment>
+    <a class="btn btn--agua" href={`https://wa.me/56984388246?text=${encodeURIComponent(msg)}`} target="_blank" rel="noopener">Conversemos tu caso</a>
+    <DiagnosticoButton class="btn btn--ghost" label="Agendar 15 minutos" />
+  </PageHero>
+  <Wave from="var(--perla)" to="var(--bruma)" />
+
+  <section class="section bg-bruma">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Cómo funciona</p>
+        <h2 data-reveal style="--d:80ms">Primero entender, <em>después proponer</em>.</h2>
+      </div>
+      <div class="grid grid-4">
+        {pasos.map((p, i) => <article class="card" data-reveal style={`--d:${i * 90}ms`}><span class="num">0{i + 1}</span><h3>{p.t}</h3><p>{p.d}</p></article>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="planes">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Dos formas de trabajar</p>
+        <h2 data-reveal style="--d:80ms">A tu medida o <em>por fases</em>.</h2>
+        <p class="lead" data-reveal style="--d:160ms">La consultoría personalizada sirve a cualquier empresa. La consultoría por fases es para medianas que quieren integrar IA en varias áreas con un método de 7 pasos.</p>
+      </div>
+      <div class="grid grid-2">
+        <PlanCard plan={PLANES.medida} dark />
+        <PlanCard plan={PLANES.consultoria} delay={90} />
+      </div>
+    </div>
+  </section>
+  <Wave from="var(--perla)" to="var(--bruma)" />
+
+  <OtrasOfertas current="/ofertas/consultoria" bg="bruma" />
+  <Wave from="var(--bruma)" to="var(--marino)" />
+  <CtaBand message={msg} title="Cuéntame cómo funciona <em>tu empresa</em>." text="Con una conversación de 15 minutos ya puedo decirte por dónde partir y si tiene sentido una consultoría." />
+</Base>

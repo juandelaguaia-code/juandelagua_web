@@ -1,5 +1,5 @@
 ---
-// Agenda del diagnóstico gratis (20 min), conectada a Google Calendar con una "Agenda de citas".
+// Agenda del diagnóstico gratis (15 min), conectada a Google Calendar con una "Agenda de citas".
 // La URL va en SITE.bookingUrl (src/data/site.ts). Google revisa tu disponibilidad, crea el evento con
 // link de Meet y les envía la invitación a ambos.
 import Base from '../layouts/Base.astro';
@@ -8,15 +8,18 @@ import WhatsAppIcon from '../components/WhatsAppIcon.astro';
 import { SITE, DIAG_MSG, waLink } from '../data/site';
 import { DIAGNOSTICO, RESPUESTA } from '../data/planes';
 
-const embed = SITE.bookingUrl ? `${SITE.bookingUrl}${SITE.bookingUrl.includes('?') ? '&' : '?'}gv=true` : '';
+// Si el link es el de "Insertar en el sitio web" (calendar.google.com/calendar/appointments/...), se muestra dentro de la página.
+// Si es el link corto para compartir (calendar.app.google/...), se abre en una pestaña nueva.
+const url = SITE.bookingUrl;
+const embed = /calendar\.google\.com\/calendar\/appointments\//.test(url) ? `${url}${url.includes('?') ? '&' : '?'}gv=true` : '';
 ---
 
 <Base
-  title="Agenda tu diagnóstico gratis (20 min)"
-  description="Elige día y hora para tu diagnóstico gratis de 20 minutos con Juan del Agua. Videollamada, sin compromiso: te llevas 3 oportunidades concretas para tu negocio."
+  title="Agenda tu diagnóstico gratis (15 min)"
+  description="Elige día y hora para tu diagnóstico gratis de 15 minutos con Juan del Agua. Videollamada, sin compromiso: te llevas 3 oportunidades concretas para tu negocio."
   breadcrumbs={[{ name: 'Agendar diagnóstico', path: '/agendar' }]}
 >
-  <PageHero eyebrow="Diagnóstico gratis · 20 min">
+  <PageHero eyebrow="Diagnóstico gratis · 15 min">
     <Fragment slot="title">Elige el día y la hora. <em>Yo me preparo.</em></Fragment>
     <Fragment slot="lead"><p>{DIAGNOSTICO.summary} {RESPUESTA.proposal}.</p></Fragment>
   </PageHero>
@@ -26,6 +29,13 @@ const embed = SITE.bookingUrl ? `${SITE.bookingUrl}${SITE.bookingUrl.includes('?
       {embed ? (
         <div class="card booking">
           <iframe src={embed} title="Agenda del diagnóstico gratis" loading="lazy"></iframe>
+        </div>
+      ) : url ? (
+        <div class="card" style="max-width:640px">
+          <span class="tag" style="justify-self:start">Google Calendar · Meet</span>
+          <h2>Elige tu horario</h2>
+          <p>Se abre mi agenda: eliges el día y la hora que te acomoden, dejas tu nombre y correo, y te llega la invitación con el link de Google Meet.</p>
+          <a class="btn btn--agua" href={url} target="_blank" rel="noopener" style="justify-self:start">Ver horarios disponibles</a>
         </div>
       ) : (
         <div class="card" style="max-width:640px">
@@ -39,7 +49,7 @@ const embed = SITE.bookingUrl ? `${SITE.bookingUrl}${SITE.bookingUrl.includes('?
         <li>Te llevas 3 oportunidades concretas para tu negocio.</li>
         <li>Si no conviene automatizar, te lo digo.</li>
       </ul>
-      {embed && <p class="meta" style="margin-top:16px">¿Ningún horario te acomoda? <a href={waLink(DIAG_MSG)} target="_blank" rel="noopener">Escríbeme por WhatsApp</a>.</p>}
+      {url && <p class="meta" style="margin-top:16px">¿Ningún horario te acomoda? <a href={waLink(DIAG_MSG)} target="_blank" rel="noopener">Escríbeme por WhatsApp</a>.</p>}
     </div>
   </section>
 </Base>

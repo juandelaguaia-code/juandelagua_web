@@ -1,0 +1,38 @@
+---
+// Tarjetas para saltar a las otras ofertas (al pie de cada subpágina y en /ofertas)
+import { OFERTAS } from '../../data/site';
+import { PLANES, clp } from '../../data/planes';
+interface Props { current?: string; title?: string; bg?: 'perla' | 'bruma' }
+const { current, title = 'Otras ofertas', bg = 'perla' } = Astro.props;
+const desde: Record<string, string> = {
+  '/ofertas/ia-y-marketing': `Desde ${clp(PLANES.starter.monthly!)}/mes + IVA`,
+  '/ofertas/webs': `Desde ${clp(PLANES.landing.setup!)} + IVA`,
+  '/ofertas/consultoria': 'Propuesta a tu medida',
+};
+const items = OFERTAS.filter((o) => o.href !== current);
+---
+
+<section class:list={['section', { 'bg-bruma': bg === 'bruma' }]} id="ofertas">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>Ofertas</p>
+      <h2 data-reveal style="--d:80ms" set:html={title} />
+    </div>
+    <div class:list={['grid', items.length === 3 ? 'grid-3' : 'grid-2']}>
+      {items.map((o, i) => (
+        <a class="card offer" href={o.href} data-reveal style={`--d:${i * 90}ms`}>
+          <span class="offer-icon" aria-hidden="true">{o.icon}</span>
+          <h3>{o.label}</h3>
+          <p>{o.desc}</p>
+          <span class="meta">{desde[o.href]}</span>
+          <span class="link-arrow">Ver detalle y precios →</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .offer-icon { font-size: 2rem; }
+  .offer .meta { font-weight: 600; color: var(--corriente-ink); }
+</style>

@@ -30,7 +30,7 @@ npm run preview    # sirve el build
 
 ## Páginas
 
-**Marketing (pre-generadas, estáticas):** `/` · `/planes` · `/consultor-ia` (incluye el método) · `/marketing-digital` · `/casos` · `/comunidad` (página pública de ingreso) · `/sobre-mi` · `/contacto` · `/privacidad` · `/cookies` · `/terminos` · `404`
+**Marketing (pre-generadas, estáticas):** `/` · `/ofertas` (+ `/ofertas/ia-y-marketing`, `/ofertas/webs`, `/ofertas/consultoria`) · `/agendar` · `/consultor-ia` (incluye el método) · `/marketing-digital` · `/casos` · `/comunidad` (página pública de ingreso) · `/sobre-mi` · `/contacto` · `/privacidad` · `/cookies` · `/terminos` · `404`
 
 **Servidor (Supabase):**
 

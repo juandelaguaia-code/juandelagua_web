@@ -20,7 +20,6 @@ const links = [
   { href: '/comunidad/recursos', label: 'Recursos', private: false },
   { href: '/comunidad/miembros', label: 'Miembros', private: true },
   { href: '/comunidad/ranking', label: 'Ranking', private: true },
-  ...(hasRole(profile ?? null, 'moderator') ? [{ href: '/comunidad/admin', label: 'Admin', private: true }] : []),
 ].filter((l) => member || !l.private);
 const active = (href: string) => path === href || path.startsWith(`${href}/`);
 ---

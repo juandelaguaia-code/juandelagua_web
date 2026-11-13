@@ -1,0 +1,63 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import PlanCard from '../../components/PlanCard.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Wave from '../../components/Wave.astro';
+import DiagnosticoButton from '../../components/DiagnosticoButton.astro';
+import OtrasOfertas from '../../components/ofertas/OtrasOfertas.astro';
+import { PLANES, WEB_ORDER, planServiceSchema } from '../../data/planes';
+
+const msg = 'Hola Juan, vengo desde tu sitio web y quiero cotizar un sitio web.';
+const pasos = [
+  { t: 'Conversamos', d: 'Me cuentas qué vendes, a quién y qué quieres que haga la gente al entrar.' },
+  { t: 'Te muestro una propuesta', d: 'Estructura, textos y diseño. Dos rondas de cambios incluidas.' },
+  { t: 'Queda en línea', d: 'Rápida, adaptada a celular, con analítica y botón a WhatsApp funcionando.' },
+  { t: 'Yo la mantengo', d: 'Hosting, seguridad, respaldos y cambios mensuales: tú te dedicas a vender.' },
+];
+---
+
+<Base
+  title="Sitios web: landing page, página web pro y e-commerce"
+  description="Landing page desde $150.000, página web pro $450.000 y e-commerce $750.000 + IVA, con mantención mensual incluida. Sitios rápidos que convierten visitas en clientes."
+  breadcrumbs={[{ name: 'Ofertas', path: '/ofertas' }, { name: 'Sitios web', path: '/ofertas/webs' }]}
+  waMessage={msg}
+  schema={WEB_ORDER.map((id) => planServiceSchema(PLANES[id]))}
+>
+  <PageHero eyebrow="Ofertas · Sitios web">
+    <Fragment slot="title">Una web que <em>trabaja por ti</em> mientras duermes.</Fragment>
+    <Fragment slot="lead"><p>No es una tarjeta de presentación: es tu mejor vendedor. Clara, rápida y pensada para que te escriban o te compren. Te la entrego funcionando y me encargo de que siga así.</p></Fragment>
+    <DiagnosticoButton />
+  </PageHero>
+  <Wave from="var(--perla)" to="var(--bruma)" />
+
+  <section class="section bg-bruma" id="webs">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Precios</p>
+        <h2 data-reveal style="--d:80ms">Tres formatos, <em>mantención incluida</em>.</h2>
+        <p class="lead" data-reveal style="--d:160ms">Pagas el desarrollo una vez y una mensualidad baja para que tu sitio esté siempre rápido, seguro y al día.</p>
+      </div>
+      <div class="grid grid-3">
+        {WEB_ORDER.map((id, i) => <PlanCard plan={PLANES[id]} dark={id === 'webpro'} delay={i * 90} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Cómo trabajo</p>
+        <h2 data-reveal style="--d:80ms">De la idea a <em>tu web en línea</em>.</h2>
+      </div>
+      <div class="grid grid-4">
+        {pasos.map((p, i) => <article class="card" data-reveal style={`--d:${i * 90}ms`}><span class="num">0{i + 1}</span><h3>{p.t}</h3><p>{p.d}</p></article>)}
+      </div>
+    </div>
+  </section>
+  <Wave from="var(--perla)" to="var(--bruma)" />
+
+  <OtrasOfertas current="/ofertas/webs" bg="bruma" />
+  <Wave from="var(--bruma)" to="var(--marino)" />
+  <CtaBand message={msg} title="¿Cuál web <em>necesitas</em>?" text="Cuéntame qué vendes y te digo qué formato te conviene. A veces una landing page bien hecha basta para partir." />
+</Base>

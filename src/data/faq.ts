@@ -37,7 +37,7 @@ export const FAQ_HOME: FaqItem[] = [
   },
   {
     q: '¿Cuánto cuesta y cómo parto?',
-    a: 'Los precios están publicados en la página de planes, en pesos + IVA. Se parte con un diagnóstico gratis de 20 minutos y, si tiene sentido, recibes una propuesta en 48 horas.',
+    a: 'Los precios están publicados en la página de planes, en pesos + IVA. Se parte con un diagnóstico gratis de 15 minutos y, si tiene sentido, recibes una propuesta en 48 horas.',
   },
   {
     q: '¿Qué pasa si el diagnóstico indica que no conviene automatizar?',
@@ -49,7 +49,7 @@ export const FAQ_HOME: FaqItem[] = [
   },
 ];
 
-/** Preguntas comunes sobre precios y contratación (en /planes y páginas de servicio) */
+/** Preguntas comunes sobre precios y contratación (en /ofertas y páginas de servicio) */
 export const FAQ_PRECIOS: FaqItem[] = [
   {
     q: '¿Los precios publicados son los finales?',

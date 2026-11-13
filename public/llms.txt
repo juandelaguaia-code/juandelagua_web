@@ -10,7 +10,7 @@ Contacto: WhatsApp +56 9 8438 8246 · https://juandelagua.com/contacto. Diagnós
 
 ## Oferta y precios (pesos chilenos + IVA)
 
-- Diagnóstico: gratis, 20 minutos, por videollamada. Entrega 3 oportunidades concretas; no incluye informe escrito. Propuesta en 48 horas.
+- Diagnóstico: gratis, 15 minutos, por videollamada. Entrega 3 oportunidades concretas; no incluye informe escrito. Propuesta en 48 horas.
 - Plan Base: $290.000 pago único (auditoría, brandbook básico, 8 plantillas, bio y enlace único, WhatsApp Business, capacitación).
 - Agente Starter: $590.000 instalación + $89.000/mes (agente de IA con el catálogo del cliente en WhatsApp o Instagram que atiende, vende, agenda y deriva a una persona).
 - Gestión de campañas Meta: $120.000 instalación + $120.000/mes.
@@ -30,7 +30,7 @@ Condiciones: permanencia mínima de 3 meses; 15% de descuento en la instalación
 ## Páginas
 
 - [Inicio](https://juandelagua.com/): propuesta, oferta estrella Campaña + agente y cómo partir
-- [Planes y precios](https://juandelagua.com/planes): todos los planes, condiciones y calculadora de retorno
+- [Ofertas y precios](https://juandelagua.com/ofertas): calculadora de retorno y condiciones; detalle en [IA y marketing](https://juandelagua.com/ofertas/ia-y-marketing), [Sitios web](https://juandelagua.com/ofertas/webs) y [Consultoría personalizada](https://juandelagua.com/ofertas/consultoria)
 - [Consultoría en IA](https://juandelagua.com/consultor-ia): agentes de IA, automatización, método de 7 pasos
 - [Marketing](https://juandelagua.com/marketing-digital): campañas, contenido, sitios web y SEO
 - [Blog](https://juandelagua.com/blog): IA para pymes, automatización y agentes, marketing y campañas, casos, "Creando mi marca" y buen vivir. RSS: https://juandelagua.com/blog/rss.xml

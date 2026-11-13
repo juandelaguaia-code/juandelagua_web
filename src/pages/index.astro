@@ -23,11 +23,11 @@ const dolores = [
 
 // Escalera de oferta resumida (precios desde src/data/planes.ts)
 const escalera = [
-  { n: 'Gratis', t: 'Diagnóstico de 20 min', d: 'Entiendo tu caso y te llevas 3 oportunidades concretas.', href: '/planes#diagnostico' },
-  { n: 'Entrada', t: 'Plan Base o Agente Starter', d: `Desde ${clp(PLANES.base.setup)} + IVA, pago único.`, href: '/planes#automatizacion' },
-  { n: 'Mensual', t: 'Campañas, agente y contenido', d: `Desde ${clp(PLANES.starter.monthly)}/mes + IVA.`, href: '/planes#contenido' },
-  { n: 'Estrella', t: 'Campaña + agente', d: `${clp(PLANES.combo.monthly)}/mes + IVA.`, href: '/planes#combo' },
-  { n: 'Medianas', t: 'Consultoría IA por fases', d: PLANES.consultoria.setupLabel + ' + IVA.', href: '/planes#consultoria' },
+  { n: 'Gratis', t: 'Diagnóstico de 15 min', d: 'Entiendo tu caso y te llevas 3 oportunidades concretas.', href: '/ofertas#diagnostico' },
+  { n: 'Entrada', t: 'Plan Base o Agente Starter', d: `Desde ${clp(PLANES.base.setup)} + IVA, pago único.`, href: '/ofertas/ia-y-marketing#automatizacion' },
+  { n: 'Mensual', t: 'Campañas, agente y contenido', d: `Desde ${clp(PLANES.starter.monthly)}/mes + IVA.`, href: '/ofertas/ia-y-marketing#contenido' },
+  { n: 'Estrella', t: 'Campaña + agente', d: `${clp(PLANES.combo.monthly)}/mes + IVA.`, href: '/ofertas/ia-y-marketing#combo' },
+  { n: 'Medianas', t: 'Consultoría IA por fases', d: PLANES.consultoria.setupLabel + ' + IVA.', href: '/ofertas/consultoria' },
 ];
 
 // Frase del medio: una línea por idea; las palabras con `em` van en acento.
@@ -53,7 +53,7 @@ const DESC = SITE.description;
       <p class="lead rise" style="--d:160ms">Para dueños y gerentes de pymes de servicios: no pierdes ninguna consulta de WhatsApp o Instagram y sabes cuánto te cuesta cada cliente, sin estar encima de todo.</p>
       <div class="btn-row rise" style="--d:240ms">
         <DiagnosticoButton />
-        <a class="btn btn--ghost" href="/planes">Ver planes y precios</a>
+        <a class="btn btn--ghost" href="/ofertas">Ver ofertas y precios</a>
       </div>
       <ul class="hero-proof rise" style="--d:320ms">
         <li><a href="/sobre-mi#certificaciones">Certificado por <strong>Anthropic</strong></a></li>
@@ -152,7 +152,7 @@ const DESC = SITE.description;
         <p class="lead" data-reveal style="--d:160ms">A diferencia de las agencias que solo publican y de los chatbots que responden pero no venden: campaña, agente y reporte de costo por contacto, en un solo servicio.</p>
         <p class="price" data-reveal>{clp(PLANES.combo.monthly)}<small>/mes + IVA</small></p>
         <div class="btn-row" data-reveal>
-          <a class="btn btn--agua" href="/planes#combo">Ver qué incluye</a>
+          <a class="btn btn--agua" href="/ofertas/ia-y-marketing#combo">Ver qué incluye</a>
         </div>
       </div>
       <ComboFlow />
@@ -177,7 +177,7 @@ const DESC = SITE.description;
           </a>
         ))}
       </div>
-      <p data-reveal style="margin-top:28px"><a class="link-arrow" href="/planes">Ver todos los planes y precios →</a></p>
+      <p data-reveal style="margin-top:28px"><a class="link-arrow" href="/ofertas">Ver todas las ofertas y precios →</a></p>
     </div>
   </section>
 
@@ -233,7 +233,7 @@ const DESC = SITE.description;
   </section>
 
   <Wave from="var(--bruma)" to="var(--marino)" />
-  <CtaBand title="IA y marketing <em>con criterio</em>, para que recuperes tu tiempo." text="Agenda el diagnóstico gratis de 20 minutos o escríbeme por WhatsApp. Respondo en menos de 2 horas hábiles y, si no es algo en lo que pueda aportar, te lo digo." />
+  <CtaBand title="IA y marketing <em>con criterio</em>, para que recuperes tu tiempo." text="Agenda el diagnóstico gratis de 15 minutos o escríbeme por WhatsApp. Respondo en menos de 2 horas hábiles y, si no es algo en lo que pueda aportar, te lo digo." />
 </Base>
 
 <style>

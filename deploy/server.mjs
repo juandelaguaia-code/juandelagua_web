@@ -11,6 +11,7 @@
 process.env.ASTRO_NODE_AUTOSTART = 'disabled';
 const { handler } = await import('../dist/server/entry.mjs');
 import http from 'node:http';
+import fs from 'node:fs';
 
 const PORT = Number(process.env.PORT ?? 4321);
 const HOST = process.env.HOST ?? '0.0.0.0';
@@ -23,6 +24,15 @@ const SHARED = [/^\/_astro\//, /^\/api\//, /^\/auth\//, /^\/(entrar|registro|rec
   /^\/(favicon\.svg|apple-touch-icon\.png|og\.jpg|robots\.txt|[0-9a-f]{32}\.txt)$/];
 // Secciones propias de la comunidad (en el subdominio van sin el prefijo /comunidad)
 const COMMUNITY = /^\/($|ingreso|feed|p\/|cursos|calendario|miembros|ranking|u\/|notificaciones|admin|recursos)/;
+
+// Con build.format 'file', una página con subpáginas (p. ej. /ofertas y /ofertas/webs) genera ofertas.html
+// y la carpeta ofertas/. El servidor estático de Astro ve la carpeta y responde 404: aquí se sirve el .html.
+const CLIENT = new URL('../dist/client/', import.meta.url);
+const pageWithFolder = (path) => {
+  if (!/^\/[a-z0-9/_-]+$/i.test(path)) return false;
+  try { return fs.statSync(new URL(`.${path}`, CLIENT)).isDirectory() && fs.existsSync(new URL(`.${path}.html`, CLIENT)); }
+  catch { return false; }
+};
 
 const redirect = (res, location, status = 301) => { res.writeHead(status, { Location: location, 'Cache-Control': 'no-cache' }); res.end(); };
 
@@ -43,6 +53,7 @@ const server = http.createServer((req, res) => {
     return redirect(res, `https://${COMMUNITY_HOST}${path.slice('/comunidad'.length) || '/'}${url.search}`);
   } else {
     delete req.headers['x-jda-community'];
+    if (pageWithFolder(path)) req.url = `${path}.html${url.search}`;
   }
   handler(req, res);
 });

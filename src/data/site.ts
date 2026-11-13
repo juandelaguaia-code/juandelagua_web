@@ -23,10 +23,10 @@ export const SITE = {
   privacyEmail: 'juandelagua.ia@gmail.com',
   // RUT del responsable (persona natural o empresa). Si está vacío, no se muestra en las páginas legales.
   rut: '',
-  // Agenda del diagnóstico gratis (20 min) conectada a Google Calendar: link de tu "Agenda de citas"
+  // Agenda del diagnóstico gratis (15 min) conectada a Google Calendar: link de tu "Agenda de citas"
   // (Google Calendar → Crear → Agenda de citas → Compartir → "Página de reservas"). Se muestra en /agendar.
   // Mientras esté vacío, /agendar ofrece WhatsApp.
-  bookingUrl: '',
+  bookingUrl: 'https://calendar.app.google/hbkxmvsmsJCTaxD9A',
   whatsappNumber: '56984388246',
   whatsappDisplay: '+56 9 8438 8246',
   social: {
@@ -42,18 +42,26 @@ export const LEGAL = { terms: '2.0', privacy: '2.2', rules: '1.0' } as const;
 export const waLink = (message = 'Hola Juan, vengo desde su sitio web y me gustaría conversar sobre mi empresa.') =>
   `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(message)}`;
 
-export const DIAG_MSG = 'Hola Juan, vengo desde tu sitio web y quiero agendar el diagnóstico gratis de 20 minutos.';
+export const DIAG_MSG = 'Hola Juan, vengo desde tu sitio web y quiero agendar el diagnóstico gratis de 15 minutos.';
 
 /** Link de los botones "Diagnóstico gratis": la página de agenda del sitio */
 export const diagnosticoHref = () => "/agendar";
 
-export const NAV = [
+/** Subpáginas de Ofertas (menú desplegable y tarjetas de /ofertas) */
+export const OFERTAS = [
+  { href: '/ofertas/ia-y-marketing', label: 'IA y marketing', icon: '🤖', desc: 'Agentes de IA que responden en minutos, campañas en Meta y contenido todas las semanas.' },
+  { href: '/ofertas/webs', label: 'Sitios web', icon: '🖥️', desc: 'Landing page, página web pro o tienda online, con mantención incluida.' },
+  { href: '/ofertas/consultoria', label: 'Consultoría personalizada', icon: '🧭', desc: 'Entiendo tu empresa y te propongo solo lo que necesitas, con precio cerrado.' },
+] as const;
+
+export interface NavItem { href: string; label: string; children?: readonly { href: string; label: string }[] }
+export const NAV: readonly NavItem[] = [
   { href: '/consultor-ia', label: 'Consultoría IA' },
   { href: '/marketing-digital', label: 'Marketing' },
-  { href: '/planes', label: 'Planes' },
+  { href: '/ofertas', label: 'Ofertas', children: OFERTAS },
   { href: '/blog', label: 'Blog' },
   { href: '/sobre-mi', label: 'Sobre mí' },
-] as const;
+];
 
 /**
  * Comunidad (producto endosado: "[nombre] by Juan del Agua").
