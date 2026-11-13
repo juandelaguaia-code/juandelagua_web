@@ -132,6 +132,36 @@ export const POST: APIRoute = async (ctx) => {
       return done(error);
     }
 
+    // ---------- acciones rápidas ----------
+    case 'broadcast': {
+      const link = str('link', 300);
+      const { data, error } = await supabase.rpc('broadcast_notification', { p_text: str('text', 300), p_link: link.startsWith('/') ? link : null });
+      if (error) return done(error);
+      return ctx.redirect(withMsg(back, 'ok', `aviso_${data}`));
+    }
+    case 'announce': {
+      // Publicación fijada en Anuncios (y aviso a todos si se marca)
+      const { data: cat } = await supabase.from('categories').select('id').eq('slug', 'anuncios').maybeSingle();
+      const { data: post, error } = await supabase.from('posts').insert({
+        author_id: user.id, category_id: cat?.id ?? int('category_id'), title: str('title', 160), body_md: str('body_md', 20000), pinned: bool('pinned'),
+      }).select('id').single();
+      if (error) return done(error);
+      if (bool('notify')) await supabase.rpc('broadcast_notification', { p_text: `Nuevo anuncio: ${str('title', 160)}`, p_link: `/comunidad/p/${post.id}` });
+      return done(null, `/comunidad/p/${post.id}`);
+    }
+    case 'join.approve_all': {
+      const { data: pending } = await supabase.from('join_requests').select('id').eq('status', 'pending');
+      for (const r of pending ?? []) {
+        const { error } = await supabase.rpc('review_join_request', { p_request: r.id, approve: true });
+        if (error) return done(error);
+      }
+      return done(null);
+    }
+    case 'approval_mode': {
+      const { error } = await supabase.from('community_settings').update({ approval_mode: str('mode') === 'manual' ? 'manual' : 'auto', updated_at: new Date().toISOString() }).eq('id', 1);
+      return done(error);
+    }
+
     // ---------- recursos gratis ----------
     case 'resource.save': {
       const slug = slugify(str('slug', 60)).slice(0, 60);

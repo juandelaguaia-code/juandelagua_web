@@ -62,7 +62,7 @@ const faq: FaqItem[] = [
     <Fragment slot="lead"><p>{COMMUNITY.description} Para microempresarios e independientes que quieren automatizar sin enredarse.</p></Fragment>
     {member ? <a class="btn btn--agua" href="/comunidad/feed">Entrar a la comunidad</a>
       : logged ? <a class="btn btn--agua" href="/comunidad/ingreso">Completar mi ingreso</a>
-      : <a class="btn btn--agua" href="/registro?next=/comunidad/ingreso">Unirme gratis</a>}
+      : <a class="btn btn--agua" href="/registro">Unirme gratis</a>}
     {!logged && <a class="btn btn--ghost" href="/entrar?next=/comunidad/feed">Ya soy miembro</a>}
     <a class="btn btn--ghost" href="/comunidad/recursos">Recursos gratis</a>
   </PageHero>
@@ -98,7 +98,7 @@ const faq: FaqItem[] = [
   </section>
   <Wave from="var(--perla)" to="var(--bruma)" />
 
-  <section class="section bg-bruma">
+  <section class="section bg-bruma" id="normas">
     <div class="container" style="max-width:920px">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Normas</p>
@@ -107,7 +107,7 @@ const faq: FaqItem[] = [
       <ol class="checklist" data-reveal>{normas.map((n) => <li>{n}</li>)}</ol>
       <p class="muted" style="margin-top:20px">Condiciones completas en los <a href="/terminos#comunidad">términos</a> y tratamiento de datos en la <a href="/privacidad#comunidad">política de privacidad</a>.</p>
       <div style="margin-top:40px"><Faq items={faq} /></div>
-      <p class="btn-row" style="margin-top:32px"><a class="btn btn--agua" href="/registro?next=/comunidad/ingreso">Unirme gratis</a></p>
+      <p class="btn-row" style="margin-top:32px"><a class="btn btn--agua" href="/registro">Unirme gratis</a></p>
     </div>
   </section>
 </Base>

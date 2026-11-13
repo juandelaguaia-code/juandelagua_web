@@ -34,7 +34,7 @@ const lineas = [
 
 const etapas = [
   {
-    n: '01', t: 'Diagnóstico gratis', d: 'Conversación de 30 minutos, por videollamada o presencial en la región, para entender cómo opera tu empresa y dónde se pierde tiempo.',
+    n: '01', t: 'Diagnóstico gratis', d: 'Videollamada de 20 minutos para entender cómo opera tu empresa y dónde se pierde tiempo.',
     items: ['3 oportunidades concretas para tu caso', 'Qué conviene automatizar y qué no', 'Propuesta por fases en 48 horas, si tiene sentido'],
     note: 'El diagnóstico es gratis. No incluye informe escrito.',
   },
@@ -49,7 +49,7 @@ const etapas = [
 ];
 
 const faq: FaqItem[] = [
-  { q: '¿Cuánto cuesta?', a: `Los precios están publicados: Agente Starter ${desde(PLANES.starter)}, Campaña + agente ${desde(PLANES.combo)} y la consultoría por fases ${PLANES.consultoria.setupLabel} + IVA. El diagnóstico de 30 minutos es gratis.` },
+  { q: '¿Cuánto cuesta?', a: `Los precios están publicados: Agente Starter ${desde(PLANES.starter)}, Campaña + agente ${desde(PLANES.combo)} y la consultoría por fases ${PLANES.consultoria.setupLabel} + IVA. El diagnóstico de 20 minutos es gratis.` },
   { q: '¿Qué tipo de empresas pueden trabajar contigo?', a: 'Empresas y pymes con equipo y procesos que se repiten a diario: atención por WhatsApp, cotizaciones, seguimiento de clientes, agendamiento o gestión documental.' },
   { q: '¿Cuánto toma una implementación?', a: 'Depende del alcance. Se trabaja por fases cortas, partiendo por un prototipo que se puede revisar funcionando. El diagnóstico entrega plazos concretos para cada fase.' },
   { q: '¿Es necesario cambiar las herramientas actuales?', a: 'En general no. El objetivo es conectar lo que la empresa ya usa. Si alguna herramienta limita el proceso, se plantea con alternativas.' },
@@ -80,7 +80,7 @@ const faq: FaqItem[] = [
 >
   <PageHero eyebrow="Consultoría en inteligencia artificial">
     <Fragment slot="title">Inteligencia artificial aplicada a <em>cómo opera tu empresa</em>.</Fragment>
-    <Fragment slot="lead"><p>¿Tu chatbot responde pero no vende? Agentes de IA que atienden, califican y agendan en tus canales, automatización de flujos e IA para tu equipo. Todo parte con un diagnóstico gratis de 30 minutos y termina funcionando, documentado y medido.</p></Fragment>
+    <Fragment slot="lead"><p>¿Tu chatbot responde pero no vende? Agentes de IA que atienden, califican y agendan en tus canales, automatización de flujos e IA para tu equipo. Todo parte con un diagnóstico gratis de 20 minutos y termina funcionando, documentado y medido.</p></Fragment>
     <DiagnosticoButton />
     <a class="btn btn--ghost" href="#planes">Ver precios</a>
   </PageHero>
@@ -201,7 +201,7 @@ const faq: FaqItem[] = [
   </section>
 
   <Wave from="var(--perla)" to="var(--marino)" />
-  <CtaBand message={msg} title="¿Qué proceso está <em>consumiendo más tiempo</em>?" text="Cuéntamelo en el diagnóstico gratis de 30 minutos. Te llevas 3 oportunidades concretas y, si no conviene automatizar, te lo digo." />
+  <CtaBand message={msg} title="¿Qué proceso está <em>consumiendo más tiempo</em>?" text="Cuéntamelo en el diagnóstico gratis de 20 minutos. Te llevas 3 oportunidades concretas y, si no conviene automatizar, te lo digo." />
 </Base>
 
 <script>

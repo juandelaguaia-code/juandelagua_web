@@ -10,13 +10,16 @@ if (!hasRole(Astro.locals.profile, 'admin')) return Astro.redirect('/comunidad/a
 const supabase = Astro.locals.supabase!;
 const { data: rows } = await supabase.from('resources').select('id, slug, title, description_md, cover_url, file_name, published, download_count, created_at').order('created_at', { ascending: false });
 const resources = await Promise.all((rows ?? []).map(async (r) => {
-  const { data } = await supabase.rpc('resource_admin_links', { p_id: r.id });
-  return { ...r, external_url: (data as any[])?.[0]?.external_url ?? '' };
+  const [{ data }, { data: who }] = await Promise.all([
+    supabase.rpc('resource_admin_links', { p_id: r.id }),
+    supabase.rpc('admin_resource_downloads', { p_resource: r.id }),
+  ]);
+  return { ...r, external_url: (data as any[])?.[0]?.external_url ?? '', who: (who ?? []) as any[] };
 }));
 const { data: downloads } = await supabase.from('resource_downloads').select('resource_id');
 const people = (id: number) => (downloads ?? []).filter((d) => d.resource_id === id).length;
 const back = '/comunidad/admin/recursos';
-const blank = { id: '', slug: '', title: '', description_md: '', cover_url: null, file_name: null, published: false, download_count: 0, external_url: '' };
+const blank = { who: [] as any[], id: '', slug: '', title: '', description_md: '', cover_url: null, file_name: null, published: false, download_count: 0, external_url: '' };
 ---
 
 <Community title="Recursos" tab="admin">
@@ -31,6 +34,15 @@ const blank = { id: '', slug: '', title: '', description_md: '', cover_url: null
         <summary>
           {r.id ? <>{r.title} · <code>/recursos/{r.slug}</code> · {r.published ? 'Publicado' : 'Borrador'} · {r.download_count} descargas, {people(r.id)} personas</> : '+ Nuevo recurso'}
         </summary>
+        {r.id && r.who.length > 0 && (
+          <details style="margin-top:10px">
+            <summary class="meta">Quién lo descargó ({r.who.length}) · <a href={`/api/comunidad/exportar?que=recurso&id=${r.id}`}>⬇ CSV</a></summary>
+            <table class="data-table" style="margin-top:8px">
+              <thead><tr><th>Usuario</th><th>Correo</th><th>Veces</th><th>Última</th><th>Acepta correos</th></tr></thead>
+              <tbody>{r.who.slice(0, 50).map((w: any) => <tr><td><a href={`/comunidad/u/${w.username}`}>@{w.username}</a></td><td>{w.email}</td><td>{w.times}</td><td>{new Date(w.last_at).toLocaleDateString('es-CL')}</td><td>{w.marketing_email ? 'Sí' : 'No'}</td></tr>)}</tbody>
+            </table>
+          </details>
+        )}
         {r.id && <p class="row" style="margin-top:10px"><input readonly value={`${COMMUNITY.url}/recursos/${r.slug}`} style="flex:1;padding:8px;border:1px solid var(--linea);border-radius:8px" onclick="this.select()" aria-label="Link para compartir" /> <a href={`/comunidad/recursos/${r.slug}`} target="_blank">Ver ↗</a></p>}
         <form method="post" action="/api/comunidad/admin" enctype="multipart/form-data" class="form form-wide" style="margin-top:12px">
           <input type="hidden" name="action" value="resource.save" /><input type="hidden" name="id" value={r.id} /><input type="hidden" name="back" value={back} />

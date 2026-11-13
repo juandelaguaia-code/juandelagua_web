@@ -1,0 +1,26 @@
+---
+import { COMMUNITY, SITE } from '../../data/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="c-footer">
+  <div class="container c-foot">
+    <p><strong>{COMMUNITY.name}</strong> {COMMUNITY.endorsement} · {COMMUNITY.tagline}</p>
+    <p class="c-links">
+      <a href={SITE.url}>juandelagua.com</a>
+      <a href={`${SITE.url}/blog`}>Blog</a>
+      <a href={`${SITE.url}/terminos#comunidad`}>Términos</a>
+      <a href={`${SITE.url}/privacidad#comunidad`}>Privacidad</a>
+      <a href={`${SITE.url}/cookies`}>Cookies</a>
+    </p>
+    <p class="c-copy">© {year} {SITE.legalName}</p>
+  </div>
+</footer>
+
+<style>
+  .c-footer { margin-top: 48px; padding: 32px 0 40px; border-top: 1px solid var(--linea); font-size: var(--fs-sm); color: var(--piedra); }
+  .c-foot { display: grid; gap: 10px; }
+  .c-links { display: flex; flex-wrap: wrap; gap: 6px 18px; }
+  .c-links a { color: var(--corriente-ink); }
+  .c-copy { font-size: var(--fs-xs); }
+</style>

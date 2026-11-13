@@ -1,8 +1,8 @@
 ---
-// Botón "Diagnóstico gratis": va a Cal.com (SITE.calUrl) o, si aún no existe, a WhatsApp.
+// Botón "Diagnóstico gratis": lleva a /agendar (agenda conectada a Google Calendar).
 import { diagnosticoHref } from '../data/site';
 interface Props { label?: string; class?: string }
-const { label = 'Agenda tu diagnóstico gratis (30 min)', class: cls = 'btn btn--agua' } = Astro.props;
+const { label = 'Agenda tu diagnóstico gratis (20 min)', class: cls = 'btn btn--agua' } = Astro.props;
 ---
 
-<a class={cls} href={diagnosticoHref()} target="_blank" rel="noopener" data-diagnostico>{label}</a>
+<a class={cls} href={diagnosticoHref()} data-diagnostico>{label}</a>

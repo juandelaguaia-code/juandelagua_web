@@ -1,0 +1,71 @@
+---
+// Header propio de la comunidad (comunidad.juandelagua.com): solo comunidad, sin el menú del sitio principal.
+import Avatar from './Avatar.astro';
+import { COMMUNITY } from '../../data/site';
+import { cleanPath } from '../../data/path';
+import { canRead, hasRole } from '../../lib/types';
+
+const { profile, supabase } = Astro.locals;
+const path = cleanPath(Astro.url.pathname);
+const member = canRead(profile ?? null);
+let unread = 0;
+if (profile && supabase) {
+  const { count } = await supabase.from('notifications').select('id', { count: 'exact', head: true }).is('read_at', null);
+  unread = count ?? 0;
+}
+const links = [
+  { href: '/comunidad/feed', label: 'Comunidad', private: true },
+  { href: '/comunidad/cursos', label: 'Cursos', private: true },
+  { href: '/comunidad/calendario', label: 'Calendario', private: true },
+  { href: '/comunidad/recursos', label: 'Recursos', private: false },
+  { href: '/comunidad/miembros', label: 'Miembros', private: true },
+  { href: '/comunidad/ranking', label: 'Ranking', private: true },
+  ...(hasRole(profile ?? null, 'moderator') ? [{ href: '/comunidad/admin', label: 'Admin', private: true }] : []),
+].filter((l) => member || !l.private);
+const active = (href: string) => path === href || path.startsWith(`${href}/`);
+---
+
+<header class="c-header">
+  <div class="container c-bar">
+    <a href={member ? '/comunidad/feed' : '/comunidad'} class="c-brand" aria-label={`${COMMUNITY.name}, inicio`}>
+      <span class="c-name">{COMMUNITY.name}</span>
+      <span class="c-by">{COMMUNITY.endorsement}</span>
+    </a>
+    <div class="c-actions">
+      {profile ? (
+        <>
+          <a href="/comunidad/notificaciones" class="c-bell" aria-label={`Notificaciones: ${unread} sin leer`}>🔔{unread > 0 && <span class="c-badge">{unread > 9 ? '9+' : unread}</span>}</a>
+          <a href="/cuenta" class="c-me" aria-label="Mi cuenta"><Avatar user={profile} size="sm" /><span class="c-me-name">@{profile.username}</span></a>
+        </>
+      ) : (
+        <>
+          <a class="c-login" href={`/entrar?next=${encodeURIComponent('/comunidad/feed')}`}>Entrar</a>
+          <a class="btn btn--agua btn--sm" href={`/registro?next=${encodeURIComponent(path.startsWith('/comunidad/recursos/') ? path : '/comunidad/feed')}`}>Unirme gratis</a>
+        </>
+      )}
+    </div>
+  </div>
+  <nav class="container c-nav" aria-label="Secciones de la comunidad">
+    <ul>
+      {links.map((l) => <li><a href={l.href} aria-current={active(l.href) ? 'page' : undefined}>{l.label}</a></li>)}
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .c-header { position: sticky; top: 0; z-index: 50; background: var(--marino); color: var(--perla); box-shadow: 0 1px 0 var(--linea-dark); }
+  .c-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; }
+  .c-brand { display: flex; align-items: baseline; gap: 10px; text-decoration: none; color: var(--perla); white-space: nowrap; }
+  .c-name { font-family: var(--serif); font-size: 1.5rem; font-style: italic; color: var(--corriente-soft); }
+  .c-by { font-size: var(--fs-xs); letter-spacing: 0.08em; text-transform: uppercase; color: rgba(245, 243, 236, 0.7); }
+  .c-actions { display: flex; align-items: center; gap: 14px; }
+  .c-login { color: var(--perla); font-size: var(--fs-sm); font-weight: 600; text-decoration: none; }
+  .c-bell { position: relative; text-decoration: none; font-size: 1.15rem; }
+  .c-badge { position: absolute; top: -6px; right: -10px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; background: var(--corriente); color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center; }
+  .c-me { display: flex; align-items: center; gap: 8px; color: var(--perla); text-decoration: none; font-size: var(--fs-sm); }
+  .c-nav ul { display: flex; gap: 2px; list-style: none; padding: 0; overflow-x: auto; scrollbar-width: none; }
+  .c-nav a { display: block; padding: 10px 14px; font-size: var(--fs-sm); font-weight: 600; text-decoration: none; color: rgba(245, 243, 236, 0.78); border-bottom: 2px solid transparent; white-space: nowrap; }
+  .c-nav a:hover { color: var(--perla); }
+  .c-nav a[aria-current='page'] { color: var(--perla); border-bottom-color: var(--corriente-soft); }
+  @media (max-width: 560px) { .c-by, .c-me-name { display: none; } }
+</style>

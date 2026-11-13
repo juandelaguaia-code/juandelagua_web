@@ -88,6 +88,7 @@ export const flash = (url: URL) => {
   const ok = url.searchParams.get('ok');
   const error = url.searchParams.get('error');
   if (error) return { kind: 'error' as const, text: MESSAGES[error] ?? MESSAGES.desconocido };
+  if (ok?.startsWith('aviso_')) return { kind: 'ok' as const, text: `Aviso enviado a ${ok.slice(6)} miembros.` };
   if (ok) return { kind: 'ok' as const, text: MESSAGES[ok] ?? MESSAGES.guardado };
   return null;
 };

@@ -15,7 +15,7 @@ export const GET: APIRoute = async ({ url, locals, redirect }) => {
   const supabase = locals.supabase;
   if (!supabase) return redirect(withMsg('/entrar', 'error', 'no_configurado'));
   const type = url.searchParams.get('type') as EmailOtpType | null;
-  const next = safeNext(url.searchParams.get('next'), type === 'recovery' ? '/restablecer' : '/comunidad/ingreso');
+  const next = safeNext(url.searchParams.get('next'), type === 'recovery' ? '/restablecer' : '/comunidad/feed?bienvenida=1');
   const code = url.searchParams.get('code');
   const tokenHash = url.searchParams.get('token_hash');
 

@@ -23,7 +23,7 @@ const dolores = [
 
 // Escalera de oferta resumida (precios desde src/data/planes.ts)
 const escalera = [
-  { n: 'Gratis', t: 'Diagnóstico de 30 min', d: 'Entiendo tu caso y te llevas 3 oportunidades concretas.', href: '/planes#diagnostico' },
+  { n: 'Gratis', t: 'Diagnóstico de 20 min', d: 'Entiendo tu caso y te llevas 3 oportunidades concretas.', href: '/planes#diagnostico' },
   { n: 'Entrada', t: 'Plan Base o Agente Starter', d: `Desde ${clp(PLANES.base.setup)} + IVA, pago único.`, href: '/planes#automatizacion' },
   { n: 'Mensual', t: 'Campañas, agente y contenido', d: `Desde ${clp(PLANES.starter.monthly)}/mes + IVA.`, href: '/planes#contenido' },
   { n: 'Estrella', t: 'Campaña + agente', d: `${clp(PLANES.combo.monthly)}/mes + IVA.`, href: '/planes#combo' },
@@ -150,7 +150,7 @@ const DESC = SITE.description;
         <p class="eyebrow" data-reveal>Oferta estrella · Campaña + agente</p>
         <h2 data-reveal style="--d:80ms">Tu campaña trae la consulta; <em>tu agente la responde en minutos</em>.</h2>
         <p class="lead" data-reveal style="--d:160ms">A diferencia de las agencias que solo publican y de los chatbots que responden pero no venden: campaña, agente y reporte de costo por contacto, en un solo servicio.</p>
-        <p class="price" data-reveal>{clp(PLANES.combo.monthly)}<small>/mes + IVA · por separado <s>{clp(PLANES.combo.compareMonthly)}</s></small></p>
+        <p class="price" data-reveal>{clp(PLANES.combo.monthly)}<small>/mes + IVA</small></p>
         <div class="btn-row" data-reveal>
           <a class="btn btn--agua" href="/planes#combo">Ver qué incluye</a>
         </div>
@@ -233,7 +233,7 @@ const DESC = SITE.description;
   </section>
 
   <Wave from="var(--bruma)" to="var(--marino)" />
-  <CtaBand title="IA y marketing <em>con criterio</em>, para que recuperes tu tiempo." text="Agenda el diagnóstico gratis de 30 minutos o escríbeme por WhatsApp. Respondo en menos de 2 horas hábiles y, si no es algo en lo que pueda aportar, te lo digo." />
+  <CtaBand title="IA y marketing <em>con criterio</em>, para que recuperes tu tiempo." text="Agenda el diagnóstico gratis de 20 minutos o escríbeme por WhatsApp. Respondo en menos de 2 horas hábiles y, si no es algo en lo que pueda aportar, te lo digo." />
 </Base>
 
 <style>

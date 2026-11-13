@@ -6,7 +6,7 @@ import DiagnosticoButton from '../components/DiagnosticoButton.astro';
 import { SITE, waLink } from '../data/site';
 import { DIAGNOSTICO, RESPUESTA } from '../data/planes';
 
-const description = 'Agenda el diagnóstico gratis de 30 minutos con Juan del Agua o escríbele por WhatsApp. Respuesta en menos de 2 horas hábiles.';
+const description = 'Agenda el diagnóstico gratis de 20 minutos con Juan del Agua o escríbele por WhatsApp. Respuesta en menos de 2 horas hábiles.';
 const contact = {
   '@context': 'https://schema.org',
   '@type': 'ContactPage',
@@ -19,7 +19,7 @@ const contact = {
 <Base title="Contacto: consultoría en IA en Viña del Mar"description={description} breadcrumbs={[{ name: 'Contacto', path: '/contacto' }]} schema={contact}>
   <PageHero eyebrow="Contacto">
     <Fragment slot="title">Contacto <em>directo</em>.</Fragment>
-    <Fragment slot="lead"><p>Las consultas las respondo personalmente, en menos de 2 horas hábiles ({SITE.hours}). Cuéntame a qué se dedica tu empresa y qué necesitas resolver.</p></Fragment>
+    <Fragment slot="lead"><p>Las consultas las respondo personalmente y rápido. Cuéntame a qué se dedica tu empresa y qué necesitas resolver.</p></Fragment>
     <DiagnosticoButton />
   </PageHero>
 
@@ -29,7 +29,7 @@ const contact = {
         <span class="tag">Gratis · {DIAGNOSTICO.minutes} min</span>
         <h2>Diagnóstico gratis</h2>
         <p>{DIAGNOSTICO.summary} {DIAGNOSTICO.excludes} Antes de la reunión te pido completar un formulario corto para llegar preparado. {RESPUESTA.proposal}.</p>
-        <DiagnosticoButton label={SITE.calUrl ? 'Elegir día y hora' : 'Pedir hora por WhatsApp'} />
+        <DiagnosticoButton label="Elegir día y hora" />
       </div>
     </div>
     <div class="container grid grid-3" style="margin-top:clamp(16px, 2.4vw, 28px)">

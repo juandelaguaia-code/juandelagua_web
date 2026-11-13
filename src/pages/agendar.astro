@@ -1,0 +1,50 @@
+---
+// Agenda del diagnóstico gratis (20 min), conectada a Google Calendar con una "Agenda de citas".
+// La URL va en SITE.bookingUrl (src/data/site.ts). Google revisa tu disponibilidad, crea el evento con
+// link de Meet y les envía la invitación a ambos.
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import WhatsAppIcon from '../components/WhatsAppIcon.astro';
+import { SITE, DIAG_MSG, waLink } from '../data/site';
+import { DIAGNOSTICO, RESPUESTA } from '../data/planes';
+
+const embed = SITE.bookingUrl ? `${SITE.bookingUrl}${SITE.bookingUrl.includes('?') ? '&' : '?'}gv=true` : '';
+---
+
+<Base
+  title="Agenda tu diagnóstico gratis (20 min)"
+  description="Elige día y hora para tu diagnóstico gratis de 20 minutos con Juan del Agua. Videollamada, sin compromiso: te llevas 3 oportunidades concretas para tu negocio."
+  breadcrumbs={[{ name: 'Agendar diagnóstico', path: '/agendar' }]}
+>
+  <PageHero eyebrow="Diagnóstico gratis · 20 min">
+    <Fragment slot="title">Elige el día y la hora. <em>Yo me preparo.</em></Fragment>
+    <Fragment slot="lead"><p>{DIAGNOSTICO.summary} {RESPUESTA.proposal}.</p></Fragment>
+  </PageHero>
+
+  <section class="section section--tight bg-bruma">
+    <div class="container">
+      {embed ? (
+        <div class="card booking">
+          <iframe src={embed} title="Agenda del diagnóstico gratis" loading="lazy"></iframe>
+        </div>
+      ) : (
+        <div class="card" style="max-width:640px">
+          <h2>Agéndalo por WhatsApp</h2>
+          <p>Escríbeme y coordinamos el día y la hora en un par de mensajes.</p>
+          <a class="btn btn--agua" href={waLink(DIAG_MSG)} target="_blank" rel="noopener" style="justify-self:start"><WhatsAppIcon /> Escribir por WhatsApp</a>
+        </div>
+      )}
+      <ul class="checklist" style="margin-top:28px">
+        <li>Es gratis y no te compromete a nada.</li>
+        <li>Te llevas 3 oportunidades concretas para tu negocio.</li>
+        <li>Si no conviene automatizar, te lo digo.</li>
+      </ul>
+      {embed && <p class="meta" style="margin-top:16px">¿Ningún horario te acomoda? <a href={waLink(DIAG_MSG)} target="_blank" rel="noopener">Escríbeme por WhatsApp</a>.</p>}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .booking { padding: 0; overflow: hidden; }
+  .booking iframe { width: 100%; height: min(860px, 85vh); border: 0; display: block; }
+</style>

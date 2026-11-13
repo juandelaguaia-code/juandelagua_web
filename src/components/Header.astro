@@ -1,5 +1,5 @@
 ---
-import { NAV, SITE, waLink, diagnosticoHref } from '../data/site';
+import { NAV, SITE, COMMUNITY, waLink, diagnosticoHref } from '../data/site';
 import { cleanPath } from '../data/path';
 import SocialLinks from './SocialLinks.astro';
 const path = cleanPath(Astro.url.pathname);
@@ -22,7 +22,8 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
     </nav>
     <SocialLinks class="social-desktop" />
     <a class="account-link" href="/comunidad/feed" data-account hidden><span class="avatar avatar--sm" data-account-avatar aria-hidden="true"></span><span data-account-label>Mi cuenta</span></a>
-    <a class="btn btn--agua btn--sm cta-desktop" href={diagnosticoHref()} target="_blank" rel="noopener">Diagnóstico gratis</a>
+    <a class="btn btn--ghost btn--sm cta-desktop" href={COMMUNITY.url}>Comunidad</a>
+    <a class="btn btn--agua btn--sm cta-desktop" href={diagnosticoHref()}>Diagnóstico gratis</a>
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-movil" data-menu-toggle>
       <span class="sr-only">Abrir menú</span>
       <span class="burger" aria-hidden="true"><i></i><i></i></span>
@@ -40,7 +41,8 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
       ))}
       <li><a href="/contacto">Contacto</a></li>
     </ul>
-    <a class="btn btn--agua" href={diagnosticoHref()} target="_blank" rel="noopener">Diagnóstico gratis</a>
+    <a class="btn btn--agua" href={diagnosticoHref()}>Diagnóstico gratis</a>
+    <a class="btn btn--ghost" href={COMMUNITY.url}>{COMMUNITY.name}</a>
     <a class="btn btn--ghost" href={waLink()} target="_blank" rel="noopener">WhatsApp</a>
     <SocialLinks class="social-mobile" />
   </nav>

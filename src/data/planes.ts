@@ -8,7 +8,7 @@ export interface Plan {
   id: string;
   name: string;
   /** Línea: contenido (marketing) o automatización (IA) */
-  line: 'contenido' | 'automatizacion' | 'otro';
+  line: 'contenido' | 'automatizacion' | 'web' | 'otro';
   /** Pago único de instalación (CLP + IVA). null = no aplica */
   setup: number | null;
   /** Mensualidad (CLP + IVA). null = no aplica */
@@ -16,6 +16,9 @@ export interface Plan {
   /** Texto en vez de cifra cuando el precio es "desde" o "según alcance" */
   setupLabel?: string;
   monthlyLabel?: string;
+  /** Títulos de los precios (por defecto "Instalación" y "Mensualidad") */
+  setupTitle?: string;
+  monthlyTitle?: string;
   /** El precio parte desde este valor */
   from?: boolean;
   summary: string;
@@ -31,53 +34,76 @@ export interface Plan {
 }
 
 export const PLANES = {
+  // ---------- Marketing y contenido ----------
   base: {
     id: 'base', name: 'Plan Base', line: 'contenido', setup: 290_000, monthly: null, page: '/marketing-digital',
-    summary: 'Ordena tu marca y tus canales para partir bien.',
-    includes: ['Auditoría de tu marca y canales', 'Brandbook básico', '8 plantillas de contenido', 'Bio y enlace único', 'WhatsApp Business configurado', 'Capacitación para usarlo'],
-    excludes: ['Gestión mensual de redes', 'Pauta publicitaria'],
+    summary: 'Tu marca ordenada y lista para vender: lo justo para dejar de improvisar.',
+    includes: ['Auditoría de tu marca y tus canales', 'Brandbook básico', '8 plantillas de contenido listas para usar', 'Bio y enlace único que convierten', 'WhatsApp Business bien configurado', 'Capacitación para que lo manejes tú'],
+    excludes: ['Gestión mensual de redes', 'Pauta en Meta (la pagas directo)'],
   },
   crecer: {
     id: 'crecer', name: 'Plan Crecer', line: 'contenido', setup: 590_000, monthly: 450_000, limited: true, page: '/marketing-digital',
-    summary: 'Base + contenido semanal y presencia web, con reporte cada mes.',
-    includes: ['Todo el Plan Base', 'Plan de marketing', '2 reels y 2 carruseles por semana', 'Web y catálogo', 'Google Business Profile', 'Reporte mensual', 'Tope de 16 horas al mes: tú grabas; yo hago guion, edición y reporte'],
-    excludes: ['Pauta publicitaria', 'Grabación en terreno'],
+    summary: 'Contenido todas las semanas y presencia web, sin que tengas que pensar en qué publicar.',
+    includes: ['Todo el Plan Base', 'Plan de marketing con objetivos', '2 reels y 2 carruseles por semana, con fotos y videos generados con IA', 'Web y catálogo', 'Google Business Profile', 'Reporte mensual de resultados', 'Hasta 16 horas de trabajo al mes'],
+    excludes: ['Grabación presencial (se cotiza aparte)', 'Pauta en Meta (la pagas directo)'],
   },
   escalar: {
     id: 'escalar', name: 'Plan Escalar', line: 'contenido', setup: 990_000, monthly: 690_000, limited: true, page: '/marketing-digital',
-    summary: 'Crecer + más contenido, automatización de mensajes y CRM.',
-    includes: ['Todo el Plan Crecer', '3 reels y 3 carruseles por semana', 'Automatización de DM y WhatsApp', 'CRM configurado', 'Reunión mensual de resultados', 'Tope de 24 horas al mes'],
-    excludes: ['Pauta publicitaria', 'Grabación en terreno'],
+    summary: 'Más contenido, mensajes automáticos y un CRM: para cuando ya no das abasto.',
+    includes: ['Todo el Plan Crecer', '3 reels y 3 carruseles por semana, con fotos y videos generados con IA', 'Respuestas automáticas en DM y WhatsApp', 'CRM configurado', 'Reunión mensual de resultados', 'Hasta 24 horas de trabajo al mes'],
+    excludes: ['Grabación presencial (se cotiza aparte)', 'Pauta en Meta (la pagas directo)'],
   },
   campanas: {
-    id: 'campanas', name: 'Gestión de campañas Meta', line: 'contenido', setup: 120_000, monthly: 190_000, page: '/marketing-digital',
-    summary: 'Campañas en Instagram y Facebook medidas desde el primer día.',
-    includes: ['Estrategia de campaña', 'Creatividades', 'Públicos', 'Optimización continua', 'Reporte de costo por contacto'],
-    excludes: ['La pauta: la pagas tú directo a Meta'],
+    id: 'campanas', name: 'Gestión de campañas Meta', line: 'contenido', setup: 120_000, monthly: 120_000, page: '/marketing-digital',
+    summary: 'Anuncios en Instagram y Facebook que se miden: sabes cuánto te cuesta cada contacto.',
+    includes: ['Estrategia de campaña', 'Creatividades (fotos y videos generados con IA)', 'Públicos y segmentación', 'Optimización continua', 'Reporte mensual de costo por contacto'],
+    excludes: ['Pauta en Meta (la pagas directo)', 'Grabación presencial (se cotiza aparte)'],
   },
+  // ---------- Agentes de IA y automatización ----------
   starter: {
     id: 'starter', name: 'Agente Starter', line: 'automatizacion', setup: 590_000, monthly: 89_000, page: '/consultor-ia',
-    summary: 'Un agente de IA con tu catálogo que atiende, vende y agenda en un canal.',
-    includes: ['Un agente con tu catálogo en WhatsApp o Instagram', 'Atiende, vende y agenda', 'Deriva a una persona cuando corresponde', 'Mantención, ajustes y reporte mensual'],
-    excludes: ['Cuentas de IA, Cloudflare y WhatsApp: van a tu nombre y se pagan aparte (aprox. $5.000–30.000/mes)'],
+    summary: 'Un agente de IA que conoce tu catálogo y atiende, vende y agenda mientras tú trabajas.',
+    includes: ['Un agente con tu catálogo en WhatsApp o Instagram', 'Responde en minutos, a cualquier hora', 'Califica, vende y agenda', 'Pasa la conversación a una persona cuando corresponde', 'Mantención, ajustes y reporte mensual'],
+    excludes: ['Créditos de IA, Cloudflare y WhatsApp (a tu nombre, se pagan aparte)'],
   },
   combo: {
     id: 'combo', name: 'Campaña + agente', line: 'automatizacion', setup: 790_000, monthly: 259_000, star: true, page: '/consultor-ia',
-    compareMonthly: 89_000 + 190_000, compareNote: 'Agente $89.000 + campañas $190.000',
-    summary: 'La campaña trae la consulta; tu agente la responde en minutos, la califica y agenda.',
-    includes: ['Gestión de campañas Meta', 'Agente de IA en WhatsApp o Instagram', 'El agente responde, califica y agenda', 'Reporte mensual de costo por contacto'],
-    excludes: ['La pauta: la pagas tú directo a Meta', 'Cuentas de IA y WhatsApp a tu nombre (costo aparte)'],
+    summary: 'La campaña trae la consulta y tu agente la responde en minutos, la califica y la agenda.',
+    includes: ['Gestión de campañas Meta', 'Agente de IA en WhatsApp o Instagram', 'Cada consulta respondida, calificada y agendada', 'Reporte mensual de costo por contacto'],
+    excludes: ['Pauta en Meta (la pagas directo)', 'Créditos de IA (se pagan aparte)'],
   },
   consultoria: {
     id: 'consultoria', name: 'Consultoría IA por fases', line: 'automatizacion', setup: 1_500_000, monthly: null, from: true, page: '/consultor-ia',
     setupLabel: 'desde $1.500.000 por fase', monthlyLabel: 'según alcance',
-    summary: 'Flujos, agentes integrados e IA para el equipo en empresas medianas.',
-    includes: ['Método de 7 pasos con piloto acotado', 'Flujos y agentes integrados a tus herramientas', 'IA para el equipo', 'Documentación y capacitación'],
+    summary: 'Para empresas medianas: flujos, agentes integrados a tus sistemas e IA para todo el equipo.',
+    includes: ['Método de 7 pasos con piloto acotado', 'Flujos y agentes conectados a tus herramientas', 'IA aplicada al trabajo del equipo', 'Documentación y capacitación'],
+    excludes: ['Créditos de IA (se pagan aparte)'],
   },
-  web: {
-    id: 'web', name: 'Mantención web', line: 'otro', setup: null, monthly: 40_000,
-    summary: 'Tu sitio al día sin preocuparte.',
-    includes: ['Hosting, dominio y SSL', 'Respaldos y monitoreo', '1 hora de cambios al mes'],
+  // ---------- Sitios web ----------
+  landing: {
+    id: 'landing', name: 'Landing page', line: 'web', setup: 150_000, monthly: 20_000, page: '/marketing-digital', setupTitle: 'Desarrollo', monthlyTitle: 'Mantención',
+    summary: 'Una página enfocada en una sola cosa: que te escriban o te compren.',
+    includes: ['1 página con tu oferta, testimonios y llamado a la acción', 'Botón a WhatsApp y formulario', 'Adaptada a celular y rápida', 'SEO básico y analítica', 'Mantención: hosting, SSL, respaldos y 30 min de cambios al mes'],
+    excludes: ['Dominio (a tu nombre, se paga aparte)'],
+  },
+  webpro: {
+    id: 'webpro', name: 'Página web pro', line: 'web', setup: 450_000, monthly: 40_000, page: '/marketing-digital', setupTitle: 'Desarrollo', monthlyTitle: 'Mantención',
+    summary: 'El sitio completo de tu negocio: explica lo que haces y convierte visitas en clientes.',
+    includes: ['Hasta 6 secciones (inicio, servicios, nosotros, contacto…)', 'Textos orientados a vender', 'SEO local y Google Business Profile', 'Blog listo para publicar', 'Analítica y medición de contactos', 'Mantención: hosting, SSL, respaldos, monitoreo y 1 hora de cambios al mes'],
+    excludes: ['Dominio (a tu nombre, se paga aparte)'],
+  },
+  ecommerce: {
+    id: 'ecommerce', name: 'E-commerce', line: 'web', setup: 750_000, monthly: 70_000, page: '/marketing-digital', setupTitle: 'Desarrollo', monthlyTitle: 'Mantención',
+    summary: 'Tu tienda online lista para vender: catálogo, pagos y despachos.',
+    includes: ['Catálogo de hasta 50 productos', 'Pagos en línea (Webpay, Mercado Pago o Flow)', 'Configuración de despachos', 'Correos de compra automáticos', 'Capacitación para cargar productos', 'Mantención: hosting, SSL, respaldos, actualizaciones de seguridad y 2 horas de cambios al mes'],
+    excludes: ['Dominio y comisiones de la pasarela de pago (se pagan aparte)'],
+  },
+  // ---------- A tu medida ----------
+  medida: {
+    id: 'medida', name: 'Consultoría personalizada', line: 'otro', setup: null, monthly: null,
+    setupTitle: 'Precio', setupLabel: 'Propuesta a tu medida',
+    summary: 'Primero entiendo cómo funciona tu empresa; después te propongo solo lo que de verdad necesitas.',
+    includes: ['Levantamiento de tus procesos, canales y números', 'Mapa de qué conviene hacer, en qué orden y qué no', 'Propuesta con alcance, plazos y precio cerrado', 'Puedes tomar solo una parte o todo'],
   },
 } satisfies Record<string, Plan>;
 
@@ -86,13 +112,19 @@ export type PlanId = keyof typeof PLANES;
 /** Orden de las tarjetas: en contenido, de menor a mayor. En automatización, la estrella al medio. */
 export const CONTENIDO_ORDER: PlanId[] = ['base', 'crecer', 'escalar'];
 export const AUTOMATIZACION_ORDER: PlanId[] = ['starter', 'combo', 'consultoria'];
+export const WEB_ORDER: PlanId[] = ['landing', 'webpro', 'ecommerce'];
+
+/** Lo que se cobra aparte en todos los planes */
+export const APARTE = 'En todos los planes, los créditos de IA y la pauta en Meta se pagan aparte, directo al proveedor y a tu nombre.';
+/** Nota de contenido: fotos y videos generados con IA */
+export const CONTENIDO_IA = 'Las fotos y los videos se generan con IA. Si prefieres grabar en persona, la grabación se cotiza aparte.';
 
 /** Precio de lanzamiento: 3 primeros clientes de Agente Starter o Campaña + agente. Edita `left` cuando se ocupe un cupo. */
 export const LAUNCH = { total: 3, left: 3, discount: 20, months: 6 } as const;
 
 export const DIAGNOSTICO = {
-  minutes: 30,
-  summary: 'Conversación de 30 minutos, por videollamada o presencial en la Región de Valparaíso, para entender tu caso y llevarte 3 oportunidades concretas.',
+  minutes: 20,
+  summary: 'Una videollamada de 20 minutos para entender tu caso. Te llevas 3 oportunidades concretas, sin compromiso.',
   excludes: 'No incluye informe escrito.',
 } as const;
 

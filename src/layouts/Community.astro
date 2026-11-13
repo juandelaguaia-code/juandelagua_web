@@ -1,52 +1,19 @@
 ---
-// Layout de la comunidad (privado, noindex): nombre endosado + pestañas tipo Skool.
+// Layout de las páginas privadas de la comunidad (noindex). El header con las secciones lo pone Base
+// (CommunityHeader) porque estas rutas son /comunidad/*.
 import Base from './Base.astro';
 import Flash from '../components/Flash.astro';
-import Avatar from '../components/community/Avatar.astro';
 import { COMMUNITY } from '../data/site';
-import { hasRole, canWrite } from '../lib/types';
+import { canWrite } from '../lib/types';
 
-interface Props { title: string; tab?: 'feed' | 'cursos' | 'calendario' | 'miembros' | 'ranking' | 'recursos' | 'admin' | 'none' }
-const { title, tab = 'none' } = Astro.props;
-const { profile, supabase } = Astro.locals;
-
-let unread = 0;
-if (profile && supabase) {
-  const { count } = await supabase.from('notifications').select('id', { count: 'exact', head: true }).is('read_at', null);
-  unread = count ?? 0;
-}
-const tabs = [
-  { id: 'feed', href: '/comunidad/feed', label: 'Comunidad' },
-  { id: 'cursos', href: '/comunidad/cursos', label: 'Cursos' },
-  { id: 'calendario', href: '/comunidad/calendario', label: 'Calendario' },
-  { id: 'miembros', href: '/comunidad/miembros', label: 'Miembros' },
-  { id: 'ranking', href: '/comunidad/ranking', label: 'Ranking' },
-  { id: 'recursos', href: '/comunidad/recursos', label: 'Recursos' },
-  ...(hasRole(profile, 'moderator') ? [{ id: 'admin', href: '/comunidad/admin', label: 'Administración' }] : []),
-];
+interface Props { title: string; tab?: string }
+const { title } = Astro.props;
+const { profile } = Astro.locals;
 ---
 
 <Base title={`${title} · ${COMMUNITY.name}`} description={COMMUNITY.description} noindex>
   <section class="section section--tight">
     <div class="container">
-      <div class="row" style="justify-content:space-between;margin-bottom:16px">
-        <a href="/comunidad/feed" style="text-decoration:none">
-          <strong style="font-family:var(--serif);font-size:1.5rem">{COMMUNITY.name}</strong>
-          <span class="meta"> {COMMUNITY.endorsement}</span>
-        </a>
-        {profile && (
-          <div class="row">
-            <a href="/comunidad/notificaciones" class="meta" aria-label={`Notificaciones: ${unread} sin leer`}>🔔 {unread > 0 ? `${unread} nuevas` : 'Notificaciones'}</a>
-            <a href={`/comunidad/u/${profile.username}`} class="row" style="gap:6px;text-decoration:none"><Avatar user={profile} size="sm" /> <span class="meta">@{profile.username} · Nivel {profile.level}</span></a>
-            <a href="/cuenta" class="meta">Ajustes</a>
-          </div>
-        )}
-      </div>
-      <nav aria-label="Secciones de la comunidad">
-        <ul class="app-tabs">
-          {tabs.map((t) => <li><a href={t.href} aria-current={tab === t.id ? 'page' : undefined}>{t.label}</a></li>)}
-        </ul>
-      </nav>
       {profile?.status === 'suspended' && !canWrite(profile) && (
         <p class="flash flash--error">Tu cuenta está silenciada hasta el {new Date(profile.suspended_until!).toLocaleString('es-CL', { timeZone: 'America/Santiago' })}. Puedes leer, pero no publicar.</p>
       )}

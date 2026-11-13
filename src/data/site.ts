@@ -23,11 +23,10 @@ export const SITE = {
   privacyEmail: 'juandelagua.ia@gmail.com',
   // RUT del responsable (persona natural o empresa). Si está vacío, no se muestra en las páginas legales.
   rut: '',
-  // Agenda del diagnóstico gratis (Cal.com, 30 min, con formulario previo).
-  // Mientras esté vacío, los botones de "Diagnóstico gratis" llevan a WhatsApp.
-  calUrl: '',
-  // Horario de respuesta comercial
-  hours: 'L–V 9:00–19:00 · sáb 10:00–13:00',
+  // Agenda del diagnóstico gratis (20 min) conectada a Google Calendar: link de tu "Agenda de citas"
+  // (Google Calendar → Crear → Agenda de citas → Compartir → "Página de reservas"). Se muestra en /agendar.
+  // Mientras esté vacío, /agendar ofrece WhatsApp.
+  bookingUrl: '',
   whatsappNumber: '56984388246',
   whatsappDisplay: '+56 9 8438 8246',
   social: {
@@ -43,17 +42,16 @@ export const LEGAL = { terms: '2.0', privacy: '2.2', rules: '1.0' } as const;
 export const waLink = (message = 'Hola Juan, vengo desde su sitio web y me gustaría conversar sobre mi empresa.') =>
   `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(message)}`;
 
-const DIAG_MSG = 'Hola Juan, vengo desde tu sitio web y quiero agendar el diagnóstico gratis de 30 minutos.';
+export const DIAG_MSG = 'Hola Juan, vengo desde tu sitio web y quiero agendar el diagnóstico gratis de 20 minutos.';
 
-/** Link del botón "Diagnóstico gratis": Cal.com si está configurado; si no, WhatsApp. */
-export const diagnosticoHref = () => SITE.calUrl || waLink(DIAG_MSG);
+/** Link de los botones "Diagnóstico gratis": la página de agenda del sitio */
+export const diagnosticoHref = () => "/agendar";
 
 export const NAV = [
   { href: '/consultor-ia', label: 'Consultoría IA' },
   { href: '/marketing-digital', label: 'Marketing' },
   { href: '/planes', label: 'Planes' },
   { href: '/blog', label: 'Blog' },
-  { href: 'https://comunidad.juandelagua.com', label: 'Comunidad' },
   { href: '/sobre-mi', label: 'Sobre mí' },
 ] as const;
 

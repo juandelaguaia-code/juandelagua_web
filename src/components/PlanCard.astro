@@ -1,8 +1,10 @@
 ---
 // Tarjeta de un plan con precios desde src/data/planes.ts. Usa las clases del sistema (card, price, tag, checklist).
 import { clp, type Plan } from '../data/planes';
-interface Props { plan: Plan; dark?: boolean; delay?: number }
-const { plan: p, dark = false, delay = 0 } = Astro.props;
+import { waLink } from '../data/site';
+interface Props { plan: Plan; dark?: boolean; delay?: number; cta?: boolean }
+const { plan: p, dark = false, delay = 0, cta = true } = Astro.props;
+const ctaHref = waLink(`Hola Juan, vengo desde tu sitio web y me interesa ${p.id === 'medida' ? 'una consultoría personalizada' : `el ${p.name}`}.`);
 ---
 
 <article class:list={['card', 'plan', { 'on-dark': dark, 'plan--star': p.star }]} id={p.id} data-reveal style={`--d:${delay}ms`}>
@@ -12,15 +14,14 @@ const { plan: p, dark = false, delay = 0 } = Astro.props;
   <p>{p.summary}</p>
   <dl class="plan-prices">
     {(p.setup != null || p.setupLabel) && (
-      <div><dt>Instalación</dt><dd class="price">{p.setupLabel ?? clp(p.setup!)}{!p.setupLabel && <small>{p.monthly == null ? 'pago único + IVA' : '+ IVA'}</small>}</dd></div>
+      <div><dt>{p.setupTitle ?? 'Instalación'}</dt><dd class="price">{p.setupLabel ?? clp(p.setup!)}{!p.setupLabel && <small>{p.monthly == null ? 'pago único + IVA' : '+ IVA'}</small>}</dd></div>
     )}
     {(p.monthly != null || p.monthlyLabel) && (
       <div>
-        <dt>Mensualidad</dt>
+        <dt>{p.monthlyTitle ?? 'Mensualidad'}</dt>
         <dd class="price">
           {p.monthlyLabel ?? clp(p.monthly!)}{!p.monthlyLabel && <small>/mes + IVA</small>}
         </dd>
-        {p.compareMonthly && <dd class="plan-compare">Por separado: <s>{clp(p.compareMonthly)}</s> ({p.compareNote})</dd>}
       </div>
     )}
   </dl>
@@ -33,6 +34,7 @@ const { plan: p, dark = false, delay = 0 } = Astro.props;
     </>
   )}
   <slot />
+  {cta && <a class:list={['btn', 'btn--sm', dark ? 'btn--agua' : 'btn--ghost', 'plan-cta']} href={ctaHref} target="_blank" rel="noopener">{p.id === 'medida' ? 'Conversemos tu caso' : 'Quiero este plan'}</a>}
 </article>
 
 <style>
@@ -45,5 +47,5 @@ const { plan: p, dark = false, delay = 0 } = Astro.props;
   .plan-prices { display: grid; gap: 12px; }
   .plan-prices dt { font-size: var(--fs-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
   .plan-prices .price { font-size: clamp(1.6rem, 1.3rem + 1vw, 2.2rem); }
-  .plan-compare { font-size: var(--fs-xs); margin-top: 4px; }
+  .plan-cta { justify-self: start; margin-top: auto; }
 </style>

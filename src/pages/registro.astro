@@ -7,7 +7,8 @@ import { SITE_URL, AUTH_GOOGLE } from 'astro:env/server';
 
 export const prerender = false;
 
-const next = safeNext(Astro.url.searchParams.get('next'), '/comunidad/ingreso');
+// Al confirmar el correo se entra directo a la comunidad (sin revisión)
+const next = safeNext(Astro.url.searchParams.get('next'), '/comunidad/feed?bienvenida=1');
 const { supabase, user } = Astro.locals;
 if (user) return Astro.redirect(next);
 
@@ -39,6 +40,7 @@ if (isPost(Astro)) {
         ...(username.length >= 3 ? { username } : {}),
         terms_version: LEGAL.terms,
         privacy_version: LEGAL.privacy,
+        rules_version: LEGAL.rules,
         marketing_email: bool('marketing') ? 'true' : 'false',
       },
     },
@@ -54,7 +56,7 @@ if (isPost(Astro)) {
 
 <App title="Crear cuenta" narrow>
   <h1>Crear cuenta</h1>
-  <p class="lead">Para entrar a {COMMUNITY.name} {COMMUNITY.endorsement}.</p>
+  <p class="lead">Gratis. Confirmas tu correo y entras al tiro a {COMMUNITY.name}: recursos, cursos y comunidad.</p>
   <form method="post" class="form" style="margin-top:24px">
     <label>Nombre <input name="full_name" maxlength="80" autocomplete="name" required /></label>
     <label>Nombre de usuario <span class="hint">Opcional. Se usa para @mencionarte; los espacios se cambian por guion bajo.</span>
@@ -63,7 +65,7 @@ if (isPost(Astro)) {
     <label>Correo <input type="email" name="email" required autocomplete="email" /></label>
     <label>Contraseña <span class="hint">Mínimo 8 caracteres.</span><input type="password" name="password" required minlength="8" autocomplete="new-password" /></label>
     <label>Repite la contraseña <input type="password" name="password2" required minlength="8" autocomplete="new-password" /></label>
-    <label class="check"><input type="checkbox" name="legal" required /> <span>Tengo 18 años o más y acepto los <a href="/terminos#comunidad" target="_blank">términos y condiciones</a> y la <a href="/privacidad" target="_blank">política de privacidad</a>.</span></label>
+    <label class="check"><input type="checkbox" name="legal" required /> <span>Tengo 18 años o más y acepto los <a href="/terminos#comunidad" target="_blank">términos y condiciones</a>, la <a href="/privacidad" target="_blank">política de privacidad</a> y las <a href="/comunidad#normas" target="_blank">normas de la comunidad</a>.</span></label>
     <label class="check"><input type="checkbox" name="marketing" /> <span>Quiero recibir por correo novedades de la comunidad y del blog (opcional, puedes darte de baja cuando quieras).</span></label>
     <Turnstile />
     <button class="btn btn--agua" type="submit">Crear cuenta</button>

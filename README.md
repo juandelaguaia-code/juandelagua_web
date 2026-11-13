@@ -17,7 +17,7 @@ npm run preview    # sirve el build
 
 | Qué | Archivo |
 |---|---|
-| WhatsApp, redes, textos base, menú, método, certificaciones, link de Cal.com (`calUrl`), comunidad (`COMMUNITY`), valores y manifiesto | `src/data/site.ts` |
+| WhatsApp, redes, textos base, menú, método, certificaciones, agenda del diagnóstico (`bookingUrl`, Google Calendar), comunidad (`COMMUNITY`), valores y manifiesto | `src/data/site.ts` |
 | **Precios**, orden de los planes, cupos de lanzamiento (`LAUNCH.left`), condiciones comerciales | `src/data/planes.ts` |
 | Preguntas frecuentes | `src/data/faq.ts` |
 | Casos de clientes | `src/content/casos/*.md` (ver `LEEME.txt`) |
@@ -45,6 +45,7 @@ npm run preview    # sirve el build
 ## Backend (Supabase)
 
 - **Base de datos:** migraciones en `supabase/migrations/` (en orden), datos de ejemplo en `supabase/seed.sql`.
+- **Ingreso:** inmediato (al confirmar el correo se entra a la comunidad). Se puede volver a revisión manual desde el panel de administración.
 - **Permisos:** RLS en todas las tablas. Rol (`owner`, `admin`, `moderator`, `member`) y membresía (`free`, `founder`, `paid`, `comp`) son independientes.
   Rol, estado, membresía y puntos **no** se pueden editar directo: solo con las funciones `set_member_role`, `set_member_status`, `set_member_membership` y `adjust_points`, que validan permisos y dejan registro en `audit_log`.
 - **Gamificación:** cada me gusta recibido suma 1 punto (`points_ledger`), con 9 niveles editables; los niveles desbloquean cursos.
@@ -154,5 +155,5 @@ docker run --rm -p 8080:4321 --env-file .env juandelagua-web   # http://localhos
 - Google Search Console: verificar el dominio y enviar `https://juandelagua.com/sitemap-index.xml`.
 - Google Business Profile apuntando al sitio.
 - Casos: agregar el primer caso en `src/content/casos/` cuando haya autorización escrita.
-- Cal.com: crear el evento de diagnóstico de 30 min y poner la URL en `SITE.calUrl`.
+- Agenda del diagnóstico: en Google Calendar crear una "Agenda de citas" de 20 min y poner el link de la página de reservas en `SITE.bookingUrl` (se muestra en `/agendar`).
 - Logo oficial (hoy el header usa el nombre en texto).

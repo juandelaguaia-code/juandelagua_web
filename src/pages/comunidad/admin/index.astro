@@ -1,56 +1,160 @@
 ---
 import Community from '../../../layouts/Community.astro';
 import AdminNav from '../../../components/community/AdminNav.astro';
+import Avatar from '../../../components/community/Avatar.astro';
 import { hasRole } from '../../../lib/types';
 import { authorsById, displayName, timeAgo } from '../../../lib/community';
+import { COMMUNITY } from '../../../data/site';
 
 export const prerender = false;
 
 const supabase = Astro.locals.supabase!;
 const profile = Astro.locals.profile!;
+const admin = hasRole(profile, 'admin');
 const iso = (days: number) => new Date(Date.now() - days * 86400_000).toISOString();
 const head = { count: 'exact' as const, head: true };
-const [members, active7, active30, posts7, posts30, comments30, pending, reports] = await Promise.all([
+const [members, new7, new30, active7, active30, posts7, comments7, pending, reports, downloads, settings, latest, topResources, recentPosts] = await Promise.all([
   supabase.from('profiles').select('id', head).in('status', ['active', 'suspended']),
+  supabase.from('profiles').select('id', head).gte('created_at', iso(7)),
+  supabase.from('profiles').select('id', head).gte('created_at', iso(30)),
   supabase.from('profiles').select('id', head).gte('last_seen_at', iso(7)),
   supabase.from('profiles').select('id', head).gte('last_seen_at', iso(30)),
   supabase.from('posts').select('id', head).gte('created_at', iso(7)),
-  supabase.from('posts').select('id', head).gte('created_at', iso(30)),
-  supabase.from('comments').select('id', head).gte('created_at', iso(30)),
+  supabase.from('comments').select('id', head).gte('created_at', iso(7)),
   supabase.from('join_requests').select('id', head).eq('status', 'pending'),
   supabase.from('reports').select('id', head).eq('status', 'open'),
+  supabase.from('resource_downloads').select('resource_id', head),
+  supabase.from('community_settings').select('approval_mode').eq('id', 1).single(),
+  supabase.from('profiles').select('id, username, full_name, avatar_url, level, created_at').order('created_at', { ascending: false }).limit(6),
+  supabase.from('resources').select('id, slug, title, download_count').order('download_count', { ascending: false }).limit(5),
+  supabase.from('posts').select('id, title, author_id, created_at, like_count, comment_count').is('deleted_at', null).order('created_at', { ascending: false }).limit(5),
 ]);
 const stats = [
-  ['Miembros', members.count], ['Activos 7 días', active7.count], ['Activos 30 días', active30.count],
-  ['Publicaciones 7 días', posts7.count], ['Publicaciones 30 días', posts30.count], ['Comentarios 30 días', comments30.count],
-  ['Solicitudes pendientes', pending.count], ['Reportes abiertos', reports.count],
+  { label: 'Miembros', n: members.count, href: '/comunidad/admin/miembros' },
+  { label: 'Nuevos 7 días', n: new7.count, sub: `${new30.count ?? 0} en 30 días` },
+  { label: 'Activos 7 días', n: active7.count, sub: `${active30.count ?? 0} en 30 días` },
+  { label: 'Publicaciones 7 días', n: posts7.count, sub: `${comments7.count ?? 0} comentarios` },
+  { label: 'Descargas de recursos', n: downloads.count, href: '/comunidad/admin/recursos' },
+  { label: 'Reportes abiertos', n: reports.count, href: '/comunidad/admin/reportes', alert: (reports.count ?? 0) > 0 },
+  ...(settings.data?.approval_mode === 'manual' || (pending.count ?? 0) > 0
+    ? [{ label: 'Solicitudes pendientes', n: pending.count, href: '/comunidad/admin/solicitudes', alert: (pending.count ?? 0) > 0 }] : []),
 ];
-const { data: audit } = hasRole(profile, 'admin') ? await supabase.from('audit_log').select('*').order('created_at', { ascending: false }).limit(20) : { data: [] };
+const authors = await authorsById(supabase, (recentPosts.data ?? []).map((p) => p.author_id));
+const { data: audit } = admin ? await supabase.from('audit_log').select('*').order('created_at', { ascending: false }).limit(15) : { data: [] };
 const actors = await authorsById(supabase, (audit ?? []).flatMap((a: any) => [a.actor_id, a.target_type === 'profile' ? a.target_id : null]));
+const back = '/comunidad/admin';
 ---
 
-<Community title="Administración" tab="admin">
+<Community title="Administración">
+  <h1 style="font-size:var(--fs-2xl);margin-bottom:16px">Administración</h1>
   <AdminNav current="inicio" />
+
   <div class="grid grid-4">
-    {stats.map(([label, n]) => <div class="card" style="padding:18px"><span class="meta">{label}</span><p class="price" style="font-size:2rem">{n ?? 0}</p></div>)}
+    {stats.map((s) => {
+      const body = <><span class="meta">{s.label}</span><p class="price" style="font-size:2rem">{s.n ?? 0}</p>{s.sub && <span class="meta">{s.sub}</span>}</>;
+      return s.href
+        ? <a class="card stat" href={s.href} style={s.alert ? 'border-color:var(--corriente)' : undefined}>{body}</a>
+        : <div class="card stat">{body}</div>;
+    })}
   </div>
-  {hasRole(profile, 'admin') && (
+
+  {admin && (
     <section style="margin-top:32px">
-      <h2 style="font-size:var(--fs-lg);margin-bottom:12px">Registro de acciones</h2>
-      <table class="data-table">
-        <thead><tr><th>Cuándo</th><th>Quién</th><th>Acción</th><th>Sobre</th><th>Detalle</th></tr></thead>
-        <tbody>
-          {(audit ?? []).map((a: any) => (
-            <tr>
-              <td>{timeAgo(a.created_at)}</td>
-              <td>{a.actor_id ? displayName(actors.get(a.actor_id)) : 'Sistema'}</td>
-              <td>{a.action}</td>
-              <td>{a.target_type === 'profile' ? displayName(actors.get(a.target_id)) : `${a.target_type} ${a.target_id}`}</td>
-              <td class="meta">{JSON.stringify(a.meta)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <h2 class="h">Acciones rápidas</h2>
+      <div class="grid grid-2">
+        <details class="card" open>
+          <summary><strong>📣 Enviar un aviso a todos los miembros</strong></summary>
+          <form method="post" action="/api/comunidad/admin" class="form form-wide" style="margin-top:12px">
+            <input type="hidden" name="action" value="broadcast" /><input type="hidden" name="back" value={back} />
+            <label>Mensaje (aparece en sus notificaciones) <textarea name="text" rows="2" maxlength="300" required style="min-height:0" placeholder="Mañana a las 19:00 es el taller en vivo. ¡Te espero!"></textarea></label>
+            <label>Link al hacer clic (opcional) <input name="link" placeholder="/comunidad/calendario" /></label>
+            <button class="btn btn--agua btn--sm" type="submit" style="justify-self:start">Enviar aviso</button>
+          </form>
+        </details>
+        <details class="card" open>
+          <summary><strong>📌 Publicar un anuncio en el feed</strong></summary>
+          <form method="post" action="/api/comunidad/admin" class="form form-wide" style="margin-top:12px">
+            <input type="hidden" name="action" value="announce" /><input type="hidden" name="back" value={back} />
+            <label>Título <input name="title" required minlength="3" maxlength="160" /></label>
+            <label>Texto (Markdown) <textarea name="body_md" rows="3" style="min-height:0"></textarea></label>
+            <div class="row">
+              <label class="check"><input type="checkbox" name="pinned" checked /> Fijar arriba</label>
+              <label class="check"><input type="checkbox" name="notify" checked /> Avisar a todos</label>
+            </div>
+            <button class="btn btn--agua btn--sm" type="submit" style="justify-self:start">Publicar anuncio</button>
+          </form>
+        </details>
+      </div>
+      <div class="row" style="margin-top:16px">
+        <a class="btn btn--ghost btn--sm" href="/comunidad/admin/recursos">＋ Subir recurso</a>
+        <a class="btn btn--ghost btn--sm" href="/comunidad/admin/eventos">＋ Crear evento</a>
+        <a class="btn btn--ghost btn--sm" href="/comunidad/admin/cursos">＋ Crear curso</a>
+        <a class="btn btn--ghost btn--sm" href="/admin/blog/nuevo">＋ Escribir artículo</a>
+        <a class="btn btn--ghost btn--sm" href="/api/comunidad/exportar?que=miembros">⬇ Exportar miembros (CSV)</a>
+        {(pending.count ?? 0) > 0 && (
+          <form method="post" action="/api/comunidad/admin" class="inline-form">
+            <input type="hidden" name="action" value="join.approve_all" /><input type="hidden" name="back" value={back} />
+            <button class="btn btn--sm" type="submit">✓ Aprobar las {pending.count} solicitudes</button>
+          </form>
+        )}
+      </div>
+      <form method="post" action="/api/comunidad/admin" class="row meta" style="margin-top:12px">
+        <input type="hidden" name="action" value="approval_mode" /><input type="hidden" name="back" value={back} />
+        Ingreso de nuevos miembros: <strong>{settings.data?.approval_mode === 'manual' ? 'con revisión manual' : 'inmediato (sin revisión)'}</strong>
+        <input type="hidden" name="mode" value={settings.data?.approval_mode === 'manual' ? 'auto' : 'manual'} />
+        <button class="btn--link" type="submit">{settings.data?.approval_mode === 'manual' ? 'Cambiar a inmediato' : 'Cambiar a revisión manual'}</button>
+      </form>
     </section>
   )}
+
+  <div class="grid grid-3" style="margin-top:32px">
+    <section class="card">
+      <h2 class="h">Últimos en unirse</h2>
+      <ul class="stack" style="list-style:none;padding:0;gap:10px">
+        {(latest.data ?? []).map((m: any) => <li class="row"><Avatar user={m} size="sm" /><a href={`/comunidad/u/${m.username}`}>{displayName(m)}</a><span class="meta">{timeAgo(m.created_at)}</span></li>)}
+      </ul>
+    </section>
+    <section class="card">
+      <h2 class="h">Recursos más descargados</h2>
+      <ol class="stack" style="padding-left:1.2em;gap:8px">
+        {(topResources.data ?? []).map((r: any) => <li><a href={`/comunidad/recursos/${r.slug}`}>{r.title}</a> <span class="meta">· {r.download_count}</span></li>)}
+      </ol>
+      {!topResources.data?.length && <p class="meta">Aún no hay recursos. <a href="/comunidad/admin/recursos">Sube el primero</a>.</p>}
+    </section>
+    <section class="card">
+      <h2 class="h">Publicaciones recientes</h2>
+      <ul class="stack" style="list-style:none;padding:0;gap:8px">
+        {(recentPosts.data ?? []).map((p: any) => <li><a href={`/comunidad/p/${p.id}`}>{p.title}</a><br /><span class="meta">{displayName(authors.get(p.author_id))} · {timeAgo(p.created_at)} · 💙 {p.like_count} · 💬 {p.comment_count}</span></li>)}
+      </ul>
+      {!recentPosts.data?.length && <p class="meta">Aún no hay publicaciones.</p>}
+    </section>
+  </div>
+
+  {admin && (
+    <section style="margin-top:32px">
+      <h2 class="h">Registro de acciones</h2>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Cuándo</th><th>Quién</th><th>Acción</th><th>Sobre</th><th>Detalle</th></tr></thead>
+          <tbody>
+            {(audit ?? []).map((a: any) => (
+              <tr>
+                <td>{timeAgo(a.created_at)}</td>
+                <td>{a.actor_id ? displayName(actors.get(a.actor_id)) : 'Sistema'}</td>
+                <td>{a.action}</td>
+                <td>{a.target_type === 'profile' ? displayName(actors.get(a.target_id)) : `${a.target_type} ${a.target_id ?? ''}`}</td>
+                <td class="meta">{JSON.stringify(a.meta)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  )}
+  <p class="meta" style="margin-top:24px">Link público de la comunidad: <a href={COMMUNITY.url}>{COMMUNITY.url}</a></p>
 </Community>
+
+<style>
+  .h { font-size: var(--fs-lg); margin-bottom: 12px; }
+  .stat { padding: 18px; gap: 4px; }
+</style>
