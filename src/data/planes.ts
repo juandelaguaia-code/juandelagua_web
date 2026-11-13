@@ -67,7 +67,7 @@ export const PLANES = {
     excludes: ['Créditos de IA, Cloudflare y WhatsApp (a tu nombre, se pagan aparte)'],
   },
   combo: {
-    id: 'combo', name: 'Campaña + agente', line: 'automatizacion', setup: 790_000, monthly: 259_000, star: true, page: '/consultor-ia',
+    id: 'combo', name: 'Campaña + agente', line: 'automatizacion', setup: 790_000, monthly: 189_000, star: true, page: '/consultor-ia',
     summary: 'La campaña trae la consulta y tu agente la responde en minutos, la califica y la agenda.',
     includes: ['Gestión de campañas Meta', 'Agente de IA en WhatsApp o Instagram', 'Cada consulta respondida, calificada y agendada', 'Reporte mensual de costo por contacto'],
     excludes: ['Pauta en Meta (la pagas directo)', 'Créditos de IA (se pagan aparte)'],
