@@ -1,5 +1,5 @@
 ---
-import { waLink } from '../data/site';
+import { waLink, diagnosticoHref } from '../data/site';
 import WhatsAppIcon from './WhatsAppIcon.astro';
 import WaterCanvas from './WaterCanvas.astro';
 interface Props { title?: string; text?: string; message?: string }
@@ -17,7 +17,8 @@ const {
     <div class="side" data-reveal style="--d:100ms">
       <p class="lead">{text}</p>
       <div class="btn-row">
-        <a class="btn btn--agua" href={waLink(message)} target="_blank" rel="noopener"><WhatsAppIcon /> Escribir por WhatsApp</a>
+        <a class="btn btn--agua" href={diagnosticoHref()} data-diagnostico>Agendar diagnóstico gratis</a>
+        <a class="btn btn--ghost" href={waLink(message)} target="_blank" rel="noopener"><WhatsAppIcon /> WhatsApp</a>
       </div>
     </div>
   </div>

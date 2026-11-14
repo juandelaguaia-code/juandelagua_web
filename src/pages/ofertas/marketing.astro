@@ -35,10 +35,10 @@ const msg = 'Hola Juan, vengo desde tu sitio web y me interesan los planes de ma
         <h2 data-reveal style="--d:80ms">Contenido con un <em>objetivo comercial</em></h2>
         <p class="lead" data-reveal style="--d:160ms">Cada pieza tiene un para qué, y cada mes revisamos cuáles trajeron contactos. Crecer y Escalar tienen cupos limitados porque los trabajo personalmente.</p>
       </div>
-      <p class="note card offer-note" data-reveal>{CONTENIDO_IA}</p>
       <div class="grid grid-3">
         {CONTENIDO_ORDER.map((id, i) => <PlanCard plan={PLANES[id]} delay={i * 90} />)}
       </div>
+      <p class="note card offer-note" data-reveal style="margin-top:28px">{CONTENIDO_IA}</p>
     </div>
   </section>
 
