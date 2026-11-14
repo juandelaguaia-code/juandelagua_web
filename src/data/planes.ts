@@ -75,7 +75,7 @@ export const PLANES = {
   consultoria: {
     id: 'consultoria', name: 'Consultoría IA por fases', line: 'automatizacion', setup: 1_500_000, monthly: null, from: true, page: '/consultor-ia',
     setupLabel: 'desde $1.500.000 por fase', monthlyLabel: 'según alcance',
-    summary: 'Para empresas medianas: flujos, agentes integrados a tus sistemas e IA para todo el equipo.',
+    summary: 'Para empresas con equipo y varias áreas: flujos, agentes conectados a tus sistemas e IA para todo el equipo.',
     includes: ['Método de 7 pasos con piloto acotado', 'Flujos y agentes conectados a tus herramientas', 'IA aplicada al trabajo del equipo', 'Documentación y capacitación'],
     excludes: ['Créditos de IA (se pagan aparte)'],
   },
@@ -182,7 +182,7 @@ export const planServiceSchema = (p: Plan) => {
     description: `${p.summary} Precios en pesos chilenos + IVA.`,
     provider: { '@id': 'https://juandelagua.com/#negocio' },
     areaServed: { '@type': 'Country', name: 'Chile' },
-    url: `https://juandelagua.com${p.line === 'web' ? '/ofertas/webs' : p.id === 'consultoria' || p.id === 'medida' ? '/ofertas/consultoria' : '/ofertas/ia-y-marketing'}`,
+    url: `https://juandelagua.com${p.line === 'web' ? '/ofertas/webs' : p.id === 'consultoria' || p.id === 'medida' ? '/ofertas/consultoria' : p.line === 'automatizacion' ? '/ofertas/ia' : '/ofertas/marketing'}`,
     offers:
       offers.length > 1
         ? { '@type': 'AggregateOffer', priceCurrency: 'CLP', lowPrice: Math.min(...prices), highPrice: Math.max(...prices), offerCount: offers.length, offers }

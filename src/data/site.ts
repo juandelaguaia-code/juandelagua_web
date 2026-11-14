@@ -10,7 +10,7 @@ export const SITE = {
   /** Frase corta de la propuesta (hero) */
   promise: 'Delega tu IA y tu marketing en una sola persona con criterio, y recupera tu tiempo.',
   description:
-    'Agentes de IA, campañas y contenido para pymes y medianas en Chile: no pierdes ninguna consulta y sabes cuánto te cuesta cada cliente. Diagnóstico gratis.',
+    'Agentes de IA, campañas y contenido para pymes y empresas en Chile: no pierdes ninguna consulta y sabes cuánto te cuesta cada cliente. Diagnóstico gratis.',
   locale: 'es_CL',
   region: 'Región de Valparaíso',
   city: 'Viña del Mar',
@@ -26,7 +26,7 @@ export const SITE = {
   // Agenda del diagnóstico gratis (15 min) conectada a Google Calendar: link de tu "Agenda de citas"
   // (Google Calendar → Crear → Agenda de citas → Compartir → "Página de reservas"). Se muestra en /agendar.
   // Mientras esté vacío, /agendar ofrece WhatsApp.
-  bookingUrl: 'https://calendar.app.google/hbkxmvsmsJCTaxD9A',
+  bookingUrl: 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ2h40Fxum9r_5rNzgYNAK7kGfH1BsFbdTVZR9zRzSsFAAVZkzcEkfh6cTqiMqeCUiszfqRQd811',
   whatsappNumber: '56984388246',
   whatsappDisplay: '+56 9 8438 8246',
   social: {
@@ -49,15 +49,14 @@ export const diagnosticoHref = () => "/agendar";
 
 /** Subpáginas de Ofertas (menú desplegable y tarjetas de /ofertas) */
 export const OFERTAS = [
-  { href: '/ofertas/ia-y-marketing', label: 'IA y marketing', icon: '🤖', desc: 'Agentes de IA que responden en minutos, campañas en Meta y contenido todas las semanas.' },
-  { href: '/ofertas/webs', label: 'Sitios web', icon: '🖥️', desc: 'Landing page, página web pro o tienda online, con mantención incluida.' },
-  { href: '/ofertas/consultoria', label: 'Consultoría personalizada', icon: '🧭', desc: 'Entiendo tu empresa y te propongo solo lo que necesitas, con precio cerrado.' },
+  { href: '/ofertas/ia', label: 'Inteligencia artificial', icon: '🤖', short: 'Responde en minutos, a toda hora', desc: 'Un agente que atiende, vende y agenda por WhatsApp o Instagram mientras tú trabajas.' },
+  { href: '/ofertas/marketing', label: 'Marketing', icon: '📈', short: 'Campañas y contenido que se miden', desc: 'Campañas en Meta, contenido semanal y reporte de cuánto te cuesta cada cliente.' },
+  { href: '/ofertas/webs', label: 'Sitios web', icon: '🖥️', short: 'Landing, web pro o tienda online', desc: 'Landing page, página web pro o tienda online, con mantención incluida.' },
+  { href: '/ofertas/consultoria', label: 'Consultoría personalizada', icon: '🧭', short: 'Solo lo que tu empresa necesita', desc: 'Entiendo tu empresa y te propongo solo lo que necesitas, con precio cerrado.' },
 ] as const;
 
-export interface NavItem { href: string; label: string; children?: readonly { href: string; label: string }[] }
+export interface NavItem { href: string; label: string; children?: readonly { href: string; label: string; short?: string; icon?: string }[] }
 export const NAV: readonly NavItem[] = [
-  { href: '/consultor-ia', label: 'Consultoría IA' },
-  { href: '/marketing-digital', label: 'Marketing' },
   { href: '/ofertas', label: 'Ofertas', children: OFERTAS },
   { href: '/blog', label: 'Blog' },
   { href: '/sobre-mi', label: 'Sobre mí' },
@@ -88,19 +87,18 @@ export const COMMUNITY = {
 /** Valores de marca (Brand Book) */
 export const VALUES = [
   { name: 'Claridad estratégica', d: 'Antes de implementar, se entiende el problema. Cada decisión tiene un porqué y un plan medible.' },
-  { name: 'Autenticidad y cercanía', d: 'De tú a tú, sin lenguaje corporativo. Se muestra el proceso real, con los errores incluidos.' },
+  { name: 'Autenticidad y cercanía', d: 'De tú a tú, sin lenguaje corporativo. Muestro el proceso real, tal como es.' },
   { name: 'Pragmatismo realista', d: 'Lo más simple que funcione. Y si no conviene automatizar, se dice.' },
   { name: 'El buen vivir', d: 'El objetivo no es solo facturar más: es recuperar tiempo para la familia, el deporte, la salud y el ocio.' },
 ] as const;
 
 /** Manifiesto (texto literal del Brand Book) */
 export const MANIFESTO = [
-  'Hay un mar de información sobre inteligencia artificial. Todos los días aparece una herramienta nueva, una promesa nueva, un experto nuevo. Con tanto ruido, la mayoría de las personas y empresas se enreda, se cansa o ni siquiera se atreve a partir.',
-  'Yo creo que la tecnología tiene que servir para algo concreto.',
-  'Creo en el criterio por sobre la moda. No todo se automatiza, y decir cuándo no conviene también es parte del trabajo.',
-  'Creo en mostrar el proceso completo, con pantallas reales y los errores incluidos.',
-  'Y creo, sobre todo, que el objetivo no es solo facturar más. Es devolverle al equipo su eficiencia, a la gerencia su tranquilidad y a cada persona el tiempo para lo que importa cuando se apaga el computador: la familia, el deporte, la salud, los amigos, el ocio.',
-  'Por eso hago lo que hago. Para que avances en este mar con calma, acompañado por alguien que conoce la corriente. Y para que, al final del día, te quede tiempo para vivir.',
+  'Hay un mar de información sobre IA: cada día aparece una herramienta, una promesa o un experto nuevo. Con tanto ruido, es fácil enredarse o no partir nunca.',
+  'Creo que la tecnología tiene que servir para algo concreto. Creo en el criterio por sobre la moda: no todo se automatiza, y decir cuándo no conviene también es parte del trabajo.',
+  'Creo en mostrar el proceso completo, con pantallas reales.',
+  'Y creo, sobre todo, que el objetivo no es solo facturar más: es devolverle al equipo su eficiencia, a la gerencia su tranquilidad y a cada persona tiempo para lo que importa cuando se apaga el computador.',
+  'Para eso estoy: para que avances con calma, acompañado por alguien que conoce la corriente. Y para que, al final del día, te quede tiempo para vivir.',
 ] as const;
 
 /**

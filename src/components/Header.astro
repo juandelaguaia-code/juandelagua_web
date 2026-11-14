@@ -19,7 +19,13 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
           <li class="has-sub">
             <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined} aria-haspopup="true">{item.label} <span class="caret" aria-hidden="true">▾</span></a>
             <ul class="submenu">
-              {item.children.map((c) => <li><a href={c.href} aria-current={isActive(c.href) ? 'page' : undefined}>{c.label}</a></li>)}
+              {item.children.map((c) => (
+                <li><a href={c.href} aria-current={isActive(c.href) ? 'page' : undefined}>
+                  <span class="sub-icon" aria-hidden="true">{c.icon}</span>
+                  <span class="sub-text"><strong>{c.label}</strong>{c.short && <small>{c.short}</small>}</span>
+                </a></li>
+              ))}
+              <li class="sub-all"><a href={item.href}>Ver todas las ofertas y la calculadora →</a></li>
             </ul>
           </li>
         ) : (
@@ -86,13 +92,19 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
   .has-sub { position: relative; }
   .caret { font-size: 0.7em; margin-left: 2px; }
   .nav-desktop .submenu {
-    position: absolute; left: 0; top: 100%; min-width: 240px; padding: 8px; margin-top: 4px;
-    list-style: none; display: grid; gap: 2px; background: var(--perla); border: 1px solid var(--linea);
+    position: absolute; left: 50%; top: 100%; width: 560px; padding: 10px; margin-top: 4px; translate: -50% 0;
+    list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; background: var(--perla); border: 1px solid var(--linea);
     border-radius: var(--radius); box-shadow: 0 18px 40px -20px rgba(14, 42, 67, 0.45);
     opacity: 0; visibility: hidden; transform: translateY(-4px); transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
   }
   .nav-desktop .submenu::before { content: ''; position: absolute; left: 0; right: 0; top: -8px; height: 8px; }
-  .nav-desktop .submenu a { border-radius: 10px; }
+  .nav-desktop .submenu a { border-radius: 12px; display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; white-space: normal; }
+  .sub-icon { font-size: 1.4rem; line-height: 1; }
+  .sub-text { display: grid; gap: 2px; }
+  .sub-text strong { font-weight: 600; color: var(--marino); }
+  .sub-text small { font-size: var(--fs-xs); color: var(--piedra); line-height: 1.35; }
+  .nav-desktop .sub-all { grid-column: 1 / -1; border-top: 1px solid var(--linea); padding-top: 4px; margin-top: 2px; }
+  .nav-desktop .sub-all a { font-size: var(--fs-xs); font-weight: 600; color: var(--corriente-ink); padding: 8px 14px; }
   .has-sub:hover .submenu, .has-sub:focus-within .submenu { opacity: 1; visibility: visible; transform: none; }
   .bar .btn, .account-link { white-space: nowrap; flex: none; }
   .account-count:empty { display: none; }

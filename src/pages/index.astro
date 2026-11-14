@@ -8,7 +8,7 @@ import WaterCanvas from '../components/WaterCanvas.astro';
 import LatestPosts from '../components/LatestPosts.astro';
 import ComboFlow from '../components/ComboFlow.astro';
 import DiagnosticoButton from '../components/DiagnosticoButton.astro';
-import { CERTIFICATIONS, COMMUNITY, SITE } from '../data/site';
+import { CERTIFICATIONS, COMMUNITY, SITE, OFERTAS } from '../data/site';
 import { PLANES, clp } from '../data/planes';
 import { FAQ_HOME, faqSchema } from '../data/faq';
 import hero from '../assets/img/juan-hero.jpg';
@@ -21,13 +21,20 @@ const dolores = [
   { t: 'Estás encima de todo', d: 'Respuestas, cotizaciones y seguimiento avanzan solo cuando tú estás disponible.' },
 ];
 
+const OFERTA_DESDE: Record<string, string> = {
+  '/ofertas/ia': `Desde ${clp(PLANES.starter.monthly)}/mes`,
+  '/ofertas/marketing': `Desde ${clp(PLANES.campanas.monthly)}/mes`,
+  '/ofertas/webs': `Desde ${clp(PLANES.landing.setup)}`,
+  '/ofertas/consultoria': 'Propuesta a tu medida',
+};
+
 // Escalera de oferta resumida (precios desde src/data/planes.ts)
 const escalera = [
   { n: 'Gratis', t: 'Diagnóstico de 15 min', d: 'Entiendo tu caso y te llevas 3 oportunidades concretas.', href: '/ofertas#diagnostico' },
-  { n: 'Entrada', t: 'Plan Base o Agente Starter', d: `Desde ${clp(PLANES.base.setup)} + IVA, pago único.`, href: '/ofertas/ia-y-marketing#automatizacion' },
-  { n: 'Mensual', t: 'Campañas, agente y contenido', d: `Desde ${clp(PLANES.starter.monthly)}/mes + IVA.`, href: '/ofertas/ia-y-marketing#contenido' },
-  { n: 'Estrella', t: 'Campaña + agente', d: `${clp(PLANES.combo.monthly)}/mes + IVA.`, href: '/ofertas/ia-y-marketing#combo' },
-  { n: 'Medianas', t: 'Consultoría IA por fases', d: PLANES.consultoria.setupLabel + ' + IVA.', href: '/ofertas/consultoria' },
+  { n: 'Entrada', t: 'Plan Base o Agente Starter', d: `Desde ${clp(PLANES.base.setup)} + IVA, pago único.`, href: '/ofertas/ia' },
+  { n: 'Mensual', t: 'Campañas, agente y contenido', d: `Desde ${clp(PLANES.starter.monthly)}/mes + IVA.`, href: '/ofertas/marketing' },
+  { n: 'Estrella', t: 'Campaña + agente', d: `${clp(PLANES.combo.monthly)}/mes + IVA.`, href: '/ofertas/ia#combo' },
+  { n: 'Empresas', t: 'Consultoría IA por fases', d: PLANES.consultoria.setupLabel + ' + IVA.', href: '/ofertas/consultoria' },
 ];
 
 // Frase del medio: una línea por idea; las palabras con `em` van en acento.
@@ -106,37 +113,20 @@ const DESC = SITE.description;
   <section class="section bg-bruma services">
     <div class="container">
       <div class="section-head">
-        <p class="eyebrow" data-reveal>Servicios</p>
-        <h2 data-reveal style="--d:80ms">Dos frentes, <em style="white-space:nowrap">un mismo objetivo</em>.</h2>
-        <p class="lead" data-reveal style="--d:160ms">La IA ordena lo que pasa dentro de la empresa. El marketing, cómo llegan los clientes.</p>
+        <p class="eyebrow" data-reveal>Lo que ofrezco</p>
+        <h2 data-reveal style="--d:80ms">Elige por dónde <em style="white-space:nowrap">quieres partir</em>.</h2>
+        <p class="lead" data-reveal style="--d:160ms">Cuatro formas de trabajar juntos, todas con precio publicado. Entra a la que más te interese y mira el detalle.</p>
       </div>
-
-      <div class="svc-grid">
-        <a href="/consultor-ia" class="card svc svc--main on-dark" data-reveal>
-          <span class="tag">Foco principal</span>
-          <h3>Consultoría en <em>inteligencia artificial</em></h3>
-          <p>Diagnóstico de procesos e implementación de soluciones de IA que liberan horas de trabajo y mejoran la atención a clientes.</p>
-          <ul class="checklist">
-            <li>Automatización de flujos de trabajo</li>
-            <li>Agentes de IA para atención y ventas</li>
-            <li>IA aplicada al trabajo diario del equipo</li>
-            <li>Integración de canales y CRM</li>
-          </ul>
-          <span class="link-arrow">Ver consultoría en IA →</span>
-        </a>
-
-        <a href="/marketing-digital" class="card svc" data-reveal style="--d:120ms">
-          <span class="tag">Marketing</span>
-          <h3>Estrategia y campañas <em>con objetivos</em></h3>
-          <p>Planificación, campañas pagadas, contenido y presencia web orientados a generar clientes, con reportes de resultados.</p>
-          <ul class="checklist">
-            <li>Estrategia digital</li>
-            <li>Campañas en Meta, Google y LinkedIn</li>
-            <li>Redes sociales y contenido</li>
-            <li>Sitios web y SEO</li>
-          </ul>
-          <span class="link-arrow">Ver marketing →</span>
-        </a>
+      <div class="grid grid-4">
+        {OFERTAS.map((o, i) => (
+          <a href={o.href} class:list={['card', 'svc', { 'svc--main on-dark': i === 0 }]} data-reveal style={`--d:${i * 90}ms`}>
+            <span class="svc-icon" aria-hidden="true">{o.icon}</span>
+            <h3>{o.label}</h3>
+            <p>{o.desc}</p>
+            <span class="tag">{OFERTA_DESDE[o.href]}</span>
+            <span class="link-arrow">Ver detalle →</span>
+          </a>
+        ))}
       </div>
     </div>
   </section>
@@ -152,7 +142,7 @@ const DESC = SITE.description;
         <p class="lead" data-reveal style="--d:160ms">A diferencia de las agencias que solo publican y de los chatbots que responden pero no venden: campaña, agente y reporte de costo por contacto, en un solo servicio.</p>
         <p class="price" data-reveal>{clp(PLANES.combo.monthly)}<small>/mes + IVA</small></p>
         <div class="btn-row" data-reveal>
-          <a class="btn btn--agua" href="/ofertas/ia-y-marketing#combo">Ver qué incluye</a>
+          <a class="btn btn--agua" href="/ofertas/ia#combo">Ver qué incluye</a>
         </div>
       </div>
       <ComboFlow />
@@ -203,11 +193,11 @@ const DESC = SITE.description;
   <section class="section">
     <div class="container about">
       <div class="about-photo" data-reveal>
-        <Image src={retrato} alt="Juan del Agua Araneda Gattavara" widths={[360, 560, 720]} sizes="(min-width: 900px) 420px, 80vw" />
+        <Image src={retrato} alt="Juan del Agua, consultor en IA y marketing" widths={[360, 560, 720]} sizes="(min-width: 900px) 420px, 80vw" />
       </div>
       <div class="about-text">
         <p class="eyebrow" data-reveal>Quién está detrás</p>
-        <h2 data-reveal style="--d:80ms"><em>Juan del Agua</em> Araneda Gattavara.</h2>
+        <h2 data-reveal style="--d:80ms"><em>Juan del Agua</em>.</h2>
         <p class="lead" data-reveal style="--d:160ms">
           Desarrollo soluciones con inteligencia artificial que operan en negocios reales y estudio Ingeniería en Marketing Digital en Duoc UC (cursando).
           Esa combinación permite abordar tanto el problema operativo como el comercial, con un proceso transparente en cada etapa.
@@ -286,10 +276,10 @@ const DESC = SITE.description;
   .rise-word.accent { font-style: italic; color: var(--corriente-soft); }
 
   /* SERVICIOS */
-  .svc-grid { display: grid; gap: clamp(16px, 2.4vw, 28px); }
-  @media (min-width: 900px) { .svc-grid { grid-template-columns: 1.25fr 1fr; } }
+
   .svc { gap: 18px; }
-  .svc h3 { font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.4rem); }
+  .svc h3 { font-size: clamp(1.35rem, 1.1rem + 0.7vw, 1.75rem); }
+  .svc-icon { font-size: 2rem; line-height: 1; }
   .svc .tag { justify-self: start; }
   .svc--main { background: var(--marino); }
   .svc--main.card { border-color: transparent; }

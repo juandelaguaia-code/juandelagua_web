@@ -5,7 +5,8 @@ import { PLANES, clp } from '../../data/planes';
 interface Props { current?: string; title?: string; bg?: 'perla' | 'bruma' }
 const { current, title = 'Otras ofertas', bg = 'perla' } = Astro.props;
 const desde: Record<string, string> = {
-  '/ofertas/ia-y-marketing': `Desde ${clp(PLANES.starter.monthly!)}/mes + IVA`,
+  '/ofertas/ia': `Desde ${clp(PLANES.starter.monthly!)}/mes + IVA`,
+  '/ofertas/marketing': `Desde ${clp(PLANES.campanas.monthly!)}/mes + IVA`,
   '/ofertas/webs': `Desde ${clp(PLANES.landing.setup!)} + IVA`,
   '/ofertas/consultoria': 'Propuesta a tu medida',
 };
@@ -18,7 +19,7 @@ const items = OFERTAS.filter((o) => o.href !== current);
       <p class="eyebrow" data-reveal>Ofertas</p>
       <h2 data-reveal style="--d:80ms" set:html={title} />
     </div>
-    <div class:list={['grid', items.length === 3 ? 'grid-3' : 'grid-2']}>
+    <div class:list={['grid', items.length === 4 ? 'grid-4' : 'grid-3']}>
       {items.map((o, i) => (
         <a class="card offer" href={o.href} data-reveal style={`--d:${i * 90}ms`}>
           <span class="offer-icon" aria-hidden="true">{o.icon}</span>

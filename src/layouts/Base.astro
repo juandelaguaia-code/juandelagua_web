@@ -46,9 +46,6 @@ const baseSchema = [
     '@type': 'Person',
     '@id': personId,
     name: SITE.name,
-    alternateName: [SITE.legalName, 'Juan Araneda Gattavara', 'Juan Araneda'],
-    givenName: 'Juan del Agua',
-    familyName: 'Araneda Gattavara',
     url: SITE.url,
     image: `${SITE.url}/og.jpg`,
     // Certificaciones verificables: refuerzan autoridad (E-E-A-T) en búsquedas por nombre
@@ -119,7 +116,7 @@ const allSchema = [...baseSchema, ...(crumbSchema ? [crumbSchema] : []), ...extr
     <meta name="description" content={description} />
     {!noindex && <link rel="canonical" href={canonical} />}
     {noindex && <meta name="robots" content="noindex, follow" />}
-    <meta name="author" content={SITE.legalName} />
+    <meta name="author" content={SITE.name} />
     <meta name="theme-color" content="#0E2A43" />
     <meta name="geo.region" content="CL-VS" />
     <meta name="geo.placename" content={SITE.city} />
