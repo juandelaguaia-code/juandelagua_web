@@ -63,7 +63,7 @@ export const PLANES = {
   starter: {
     id: 'starter', name: 'Agente Starter', line: 'automatizacion', setup: 590_000, monthly: 89_000, page: '/consultor-ia',
     summary: 'Un agente de IA que conoce tu catálogo y atiende, vende y agenda mientras tú trabajas.',
-    includes: ['Un agente con tu catálogo en WhatsApp o Instagram', 'Responde en minutos, a cualquier hora', 'Califica, vende y agenda', 'Pasa la conversación a una persona cuando corresponde', 'Mantención, ajustes y reporte mensual'],
+    includes: ['Un agente con tu catálogo en WhatsApp o Instagram', 'Responde en minutos, a cualquier hora', 'Califica, vende y agenda', 'Pasa la conversación a una persona cuando corresponde', 'Mantenimiento, ajustes y reporte mensual'],
     excludes: ['Créditos de IA, Cloudflare y WhatsApp (a tu nombre, se pagan aparte)'],
   },
   combo: {
@@ -81,21 +81,21 @@ export const PLANES = {
   },
   // ---------- Sitios web ----------
   landing: {
-    id: 'landing', name: 'Landing page', line: 'web', setup: 150_000, monthly: 20_000, page: '/marketing-digital', setupTitle: 'Desarrollo', monthlyTitle: 'Mantención',
+    id: 'landing', name: 'Landing page', line: 'web', setup: 150_000, monthly: 20_000, page: '/marketing-digital', setupTitle: 'Desarrollo', monthlyTitle: 'Mantenimiento',
     summary: 'Una página enfocada en una sola cosa: que te escriban o te compren.',
-    includes: ['1 página con tu oferta, testimonios y llamado a la acción', 'Botón a WhatsApp y formulario', 'Adaptada a celular y rápida', 'SEO básico y analítica', 'Mantención: hosting, SSL, respaldos y 30 min de cambios al mes'],
+    includes: ['1 página con tu oferta, testimonios y llamado a la acción', 'Botón a WhatsApp y formulario', 'Adaptada a celular y rápida', 'SEO básico y analítica', 'Mantenimiento: hosting, SSL, respaldos y 30 min de cambios al mes'],
     excludes: ['Dominio (a tu nombre, se paga aparte)'],
   },
   webpro: {
-    id: 'webpro', name: 'Página web pro', line: 'web', setup: 450_000, monthly: 40_000, page: '/marketing-digital', setupTitle: 'Desarrollo', monthlyTitle: 'Mantención',
+    id: 'webpro', name: 'Página web pro', line: 'web', setup: 450_000, monthly: 40_000, page: '/marketing-digital', setupTitle: 'Desarrollo', monthlyTitle: 'Mantenimiento',
     summary: 'El sitio completo de tu negocio: explica lo que haces y convierte visitas en clientes.',
-    includes: ['Hasta 6 secciones (inicio, servicios, nosotros, contacto…)', 'Textos orientados a vender', 'SEO local y Google Business Profile', 'Blog listo para publicar', 'Analítica y medición de contactos', 'Mantención: hosting, SSL, respaldos, monitoreo y 1 hora de cambios al mes'],
+    includes: ['Hasta 6 secciones (inicio, servicios, nosotros, contacto…)', 'Textos orientados a vender', 'SEO local y Google Business Profile', 'Blog listo para publicar', 'Analítica y medición de contactos', 'Mantenimiento: hosting, SSL, respaldos, monitoreo y 1 hora de cambios al mes'],
     excludes: ['Dominio (a tu nombre, se paga aparte)'],
   },
   ecommerce: {
-    id: 'ecommerce', name: 'E-commerce', line: 'web', setup: 750_000, monthly: 70_000, page: '/marketing-digital', setupTitle: 'Desarrollo', monthlyTitle: 'Mantención',
+    id: 'ecommerce', name: 'E-commerce', line: 'web', setup: 750_000, monthly: 70_000, page: '/marketing-digital', setupTitle: 'Desarrollo', monthlyTitle: 'Mantenimiento',
     summary: 'Tu tienda online lista para vender: catálogo, pagos y despachos.',
-    includes: ['Catálogo de hasta 50 productos', 'Pagos en línea (Webpay, Mercado Pago o Flow)', 'Configuración de despachos', 'Correos de compra automáticos', 'Capacitación para cargar productos', 'Mantención: hosting, SSL, respaldos, actualizaciones de seguridad y 2 horas de cambios al mes'],
+    includes: ['Catálogo de hasta 50 productos', 'Pagos en línea (Webpay, Mercado Pago o Flow)', 'Configuración de despachos', 'Correos de compra automáticos', 'Capacitación para cargar productos', 'Mantenimiento: hosting, SSL, respaldos, actualizaciones de seguridad y 2 horas de cambios al mes'],
     excludes: ['Dominio y comisiones de la pasarela de pago (se pagan aparte)'],
   },
   // ---------- A tu medida ----------

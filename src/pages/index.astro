@@ -120,7 +120,6 @@ const DESC = SITE.description;
       <div class="grid grid-4">
         {OFERTAS.map((o, i) => (
           <a href={o.href} class:list={['card', 'svc', { 'svc--main on-dark': i === 0 }]} data-reveal style={`--d:${i * 90}ms`}>
-            <span class="svc-icon" aria-hidden="true">{o.icon}</span>
             <h3>{o.label}</h3>
             <p>{o.desc}</p>
             <span class="tag">{OFERTA_DESDE[o.href]}</span>
@@ -199,7 +198,7 @@ const DESC = SITE.description;
         <p class="eyebrow" data-reveal>Quién está detrás</p>
         <h2 data-reveal style="--d:80ms"><em>Juan del Agua</em>.</h2>
         <p class="lead" data-reveal style="--d:160ms">
-          Desarrollo soluciones con inteligencia artificial que operan en negocios reales y estudio Ingeniería en Marketing Digital en Duoc UC (cursando).
+          Diseño e implemento soluciones con inteligencia artificial y estudio Ingeniería en Marketing Digital en Duoc UC (cursando).
           Esa combinación permite abordar tanto el problema operativo como el comercial, con un proceso transparente en cada etapa.
         </p>
         <ul class="certs" data-reveal style="--d:220ms" aria-label="Certificaciones">
@@ -279,7 +278,6 @@ const DESC = SITE.description;
 
   .svc { gap: 18px; }
   .svc h3 { font-size: clamp(1.35rem, 1.1rem + 0.7vw, 1.75rem); }
-  .svc-icon { font-size: 2rem; line-height: 1; }
   .svc .tag { justify-self: start; }
   .svc--main { background: var(--marino); }
   .svc--main.card { border-color: transparent; }

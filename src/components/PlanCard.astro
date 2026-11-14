@@ -8,7 +8,7 @@ const ctaHref = waLink(`Hola Juan, vengo desde tu sitio web y me interesa ${p.id
 ---
 
 <article class:list={['card', 'plan', { 'on-dark': dark, 'plan--star': p.star }]} id={p.id} data-reveal style={`--d:${delay}ms`}>
-  {p.star && <span class="tag">⭐ Oferta estrella</span>}
+  {p.star && <span class="tag">Oferta estrella</span>}
   {p.limited && <span class="tag">Cupo limitado</span>}
   <h3>{p.name}</h3>
   <p>{p.summary}</p>

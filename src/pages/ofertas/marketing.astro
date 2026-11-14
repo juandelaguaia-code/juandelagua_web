@@ -34,7 +34,7 @@ const msg = 'Hola Juan, vengo desde tu sitio web y me interesan los planes de ma
         <h2 data-reveal style="--d:80ms">Que te vean, te entiendan y <em>te escriban</em>.</h2>
         <p class="lead" data-reveal style="--d:160ms">Publicar por publicar no vende. Aquí cada pieza tiene un objetivo y cada mes ves qué trajo clientes y qué no. Crecer y Escalar tienen cupo limitado porque son horas reales de trabajo.</p>
       </div>
-      <p class="note card offer-note" data-reveal>🎬 {CONTENIDO_IA}</p>
+      <p class="note card offer-note" data-reveal>{CONTENIDO_IA}</p>
       <div class="grid grid-3">
         {CONTENIDO_ORDER.map((id, i) => <PlanCard plan={PLANES[id]} delay={i * 90} />)}
       </div>
@@ -48,7 +48,7 @@ const msg = 'Hola Juan, vengo desde tu sitio web y me interesan los planes de ma
           <a class="link-arrow" href="/ofertas/ia#combo">Ver la oferta estrella →</a>
         </div>
       </div>
-      <p class="note card offer-note" data-reveal style="margin-top:28px">💡 {APARTE}</p>
+      <p class="note card offer-note" data-reveal style="margin-top:28px">{APARTE}</p>
     </div>
   </section>
 

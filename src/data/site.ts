@@ -49,13 +49,13 @@ export const diagnosticoHref = () => "/agendar";
 
 /** Subpáginas de Ofertas (menú desplegable y tarjetas de /ofertas) */
 export const OFERTAS = [
-  { href: '/ofertas/ia', label: 'Inteligencia artificial', icon: '🤖', short: 'Responde en minutos, a toda hora', desc: 'Un agente que atiende, vende y agenda por WhatsApp o Instagram mientras tú trabajas.' },
-  { href: '/ofertas/marketing', label: 'Marketing', icon: '📈', short: 'Campañas y contenido que se miden', desc: 'Campañas en Meta, contenido semanal y reporte de cuánto te cuesta cada cliente.' },
-  { href: '/ofertas/webs', label: 'Sitios web', icon: '🖥️', short: 'Landing, web pro o tienda online', desc: 'Landing page, página web pro o tienda online, con mantención incluida.' },
-  { href: '/ofertas/consultoria', label: 'Consultoría personalizada', icon: '🧭', short: 'Solo lo que tu empresa necesita', desc: 'Entiendo tu empresa y te propongo solo lo que necesitas, con precio cerrado.' },
+  { href: '/ofertas/ia', label: 'Inteligencia artificial', short: 'Respuestas en minutos, a cualquier hora', desc: 'Un agente que atiende, resuelve dudas y agenda por WhatsApp o Instagram mientras tú te concentras en tu trabajo.' },
+  { href: '/ofertas/marketing', label: 'Marketing', short: 'Campañas y contenido con resultados medibles', desc: 'Campañas en Meta y contenido semanal, con un reporte mensual de cuánto te cuesta cada cliente.' },
+  { href: '/ofertas/webs', label: 'Sitios web', short: 'Landing page, web completa o tienda online', desc: 'Sitios rápidos y claros, pensados para que te contacten o te compren. El mantenimiento va incluido.' },
+  { href: '/ofertas/consultoria', label: 'Consultoría personalizada', short: 'Solo lo que tu empresa necesita', desc: 'Primero entiendo cómo trabaja tu empresa; después te propongo solo lo necesario, con precio cerrado.' },
 ] as const;
 
-export interface NavItem { href: string; label: string; children?: readonly { href: string; label: string; short?: string; icon?: string }[] }
+export interface NavItem { href: string; label: string; children?: readonly { href: string; label: string; short?: string }[] }
 export const NAV: readonly NavItem[] = [
   { href: '/ofertas', label: 'Ofertas', children: OFERTAS },
   { href: '/blog', label: 'Blog' },
@@ -71,9 +71,9 @@ export const COMMUNITY = {
   endorsement: 'by Juan del Agua',
   // La comunidad vive en su propio subdominio (mismo servidor, ver deploy/server.mjs)
   url: 'https://comunidad.juandelagua.com',
-  tagline: 'IA sin programar, con el proceso real en 1 minuto y en español chileno.',
+  tagline: 'IA sin programar, con el proceso real en 1 minuto.',
   description:
-    'Videos, plantillas y comunidad para usar IA sin programar y automatizar mensajes, reservas y contenido, con el proceso real en 1 minuto y en español chileno.',
+    'Videos, plantillas y comunidad para usar IA sin programar y automatizar mensajes, reservas y contenido, con el proceso real en 1 minuto.',
   // Link al grupo de WhatsApp de avisos (solo se muestra a miembros activos). Vacío = no se muestra.
   whatsappGroupUrl: '',
   pricing: [

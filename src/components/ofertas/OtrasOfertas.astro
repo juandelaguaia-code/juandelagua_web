@@ -22,7 +22,6 @@ const items = OFERTAS.filter((o) => o.href !== current);
     <div class:list={['grid', items.length === 4 ? 'grid-4' : 'grid-3']}>
       {items.map((o, i) => (
         <a class="card offer" href={o.href} data-reveal style={`--d:${i * 90}ms`}>
-          <span class="offer-icon" aria-hidden="true">{o.icon}</span>
           <h3>{o.label}</h3>
           <p>{o.desc}</p>
           <span class="meta">{desde[o.href]}</span>
@@ -34,6 +33,5 @@ const items = OFERTAS.filter((o) => o.href !== current);
 </section>
 
 <style>
-  .offer-icon { font-size: 2rem; }
   .offer .meta { font-weight: 600; color: var(--corriente-ink); }
 </style>
