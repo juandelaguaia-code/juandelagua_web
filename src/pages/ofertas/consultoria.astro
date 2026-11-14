@@ -11,7 +11,7 @@ import { PLANES, planServiceSchema } from '../../data/planes';
 const msg = 'Hola Juan, vengo desde tu sitio web y me interesa una consultoría personalizada para mi empresa.';
 const pasos = [
   { t: 'Entiendo tu empresa', d: 'Cómo te llegan los clientes, qué hace cada persona, qué herramientas usan y dónde se pierde tiempo o plata.' },
-  { t: 'Te muestro el mapa', d: 'Qué conviene hacer, en qué orden y qué no vale la pena. Con números, no con promesas.' },
+  { t: 'Te muestro el mapa', d: 'Qué conviene hacer, en qué orden y qué no vale la pena, con números de tu propia operación.' },
   { t: 'Propuesta cerrada', d: 'Alcance, plazos y precio fijo. Tomas solo lo que necesitas, cuando lo necesites.' },
   { t: 'Implemento y mido', d: 'Lo dejo funcionando, documentado y con tu equipo capacitado. Y medimos qué cambió.' },
 ];
@@ -26,7 +26,7 @@ const pasos = [
 >
   <PageHero eyebrow="Ofertas · Consultoría personalizada">
     <Fragment slot="title">Ningún plan calza con tu empresa. <em>Normal</em></Fragment>
-    <Fragment slot="lead"><p>Cada negocio es distinto. Primero entiendo cómo trabajas y después te propongo solo lo que de verdad necesitas, con precio cerrado. Sin paquetes inflados ni herramientas que nadie va a usar.</p></Fragment>
+    <Fragment slot="lead"><p>Cada empresa trabaja distinto. Primero entiendo cómo funciona la tuya y después te propongo solo lo que necesitas, con precio cerrado. Sin paquetes inflados ni herramientas que nadie va a usar.</p></Fragment>
     <a class="btn btn--agua" href={`https://wa.me/56984388246?text=${encodeURIComponent(msg)}`} target="_blank" rel="noopener">Conversemos tu caso</a>
     <DiagnosticoButton class="btn btn--ghost" label="Agendar 15 minutos" />
   </PageHero>
@@ -36,7 +36,7 @@ const pasos = [
     <div class="container">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Cómo funciona</p>
-        <h2 data-reveal style="--d:80ms">Primero entender, <em>después proponer</em>.</h2>
+        <h2 data-reveal style="--d:80ms">Primero entender, <em>después proponer</em></h2>
       </div>
       <div class="grid grid-4">
         {pasos.map((p, i) => <article class="card" data-reveal style={`--d:${i * 90}ms`}><span class="num">0{i + 1}</span><h3>{p.t}</h3><p>{p.d}</p></article>)}
@@ -48,7 +48,7 @@ const pasos = [
     <div class="container">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Dos formas de trabajar</p>
-        <h2 data-reveal style="--d:80ms">A tu medida o <em>por fases</em>.</h2>
+        <h2 data-reveal style="--d:80ms">A tu medida o <em>por fases</em></h2>
         <p class="lead" data-reveal style="--d:160ms">La consultoría personalizada sirve a cualquier empresa. La consultoría por fases es para empresas con equipo que quieren integrar IA en varias áreas, con un método de 7 pasos.</p>
       </div>
       <div class="grid grid-2">

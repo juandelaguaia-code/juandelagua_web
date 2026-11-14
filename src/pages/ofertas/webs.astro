@@ -13,7 +13,7 @@ const pasos = [
   { t: 'Conversamos', d: 'Me cuentas qué vendes, a quién y qué quieres que haga la gente al entrar.' },
   { t: 'Te muestro una propuesta', d: 'Estructura, textos y diseño. Dos rondas de cambios incluidas.' },
   { t: 'Queda en línea', d: 'Rápida, adaptada a celular, con analítica y botón a WhatsApp funcionando.' },
-  { t: 'Yo la mantengo', d: 'Hosting, seguridad, respaldos y cambios mensuales: tú te dedicas a vender.' },
+  { t: 'Yo lo mantengo', d: 'Hosting, seguridad, respaldos y cambios del mes, sin que tengas que buscar otro proveedor.' },
 ];
 ---
 
@@ -25,8 +25,8 @@ const pasos = [
   schema={WEB_ORDER.map((id) => planServiceSchema(PLANES[id]))}
 >
   <PageHero eyebrow="Ofertas · Sitios web">
-    <Fragment slot="title">Una web que <em>trabaja por ti</em> mientras duermes</Fragment>
-    <Fragment slot="lead"><p>No es una tarjeta de presentación: es tu mejor vendedor. Clara, rápida y pensada para que te escriban o te compren. Te la entrego funcionando y me encargo de que siga así.</p></Fragment>
+    <Fragment slot="title">Un sitio que explica lo que haces <em>y mide quién te contacta</em></Fragment>
+    <Fragment slot="lead"><p>Para empresas que hoy mandan a sus clientes a un Instagram o a una web desactualizada. Te entrego el sitio funcionando, con analítica y WhatsApp conectados, y me encargo del hosting, la seguridad y los cambios del mes.</p></Fragment>
     <DiagnosticoButton />
   </PageHero>
   <Wave from="var(--perla)" to="var(--bruma)" />
@@ -35,8 +35,8 @@ const pasos = [
     <div class="container">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Precios</p>
-        <h2 data-reveal style="--d:80ms">Tres formatos, <em>mantenimiento incluido</em>.</h2>
-        <p class="lead" data-reveal style="--d:160ms">Pagas el desarrollo una vez y una mensualidad baja para que tu sitio esté siempre rápido, seguro y al día.</p>
+        <h2 data-reveal style="--d:80ms">Tres formatos, <em>mantenimiento incluido</em></h2>
+        <p class="lead" data-reveal style="--d:160ms">El desarrollo se paga una vez. La mensualidad cubre hosting, seguridad, respaldos y horas de cambios, para que el sitio no quede abandonado.</p>
       </div>
       <div class="grid grid-3">
         {WEB_ORDER.map((id, i) => <PlanCard plan={PLANES[id]} dark={id === 'webpro'} delay={i * 90} />)}
@@ -48,7 +48,7 @@ const pasos = [
     <div class="container">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Cómo trabajo</p>
-        <h2 data-reveal style="--d:80ms">De la idea a <em>tu web en línea</em>.</h2>
+        <h2 data-reveal style="--d:80ms">De la idea a <em>tu web en línea</em></h2>
       </div>
       <div class="grid grid-4">
         {pasos.map((p, i) => <article class="card" data-reveal style={`--d:${i * 90}ms`}><span class="num">0{i + 1}</span><h3>{p.t}</h3><p>{p.d}</p></article>)}
@@ -59,5 +59,5 @@ const pasos = [
 
   <OtrasOfertas current="/ofertas/webs" bg="bruma" />
   <Wave from="var(--bruma)" to="var(--marino)" />
-  <CtaBand message={msg} title="¿Cuál web <em>necesitas</em>?" text="Cuéntame qué vendes y te digo qué formato te conviene. A veces una landing page bien hecha basta para partir." />
+  <CtaBand message={msg} title="¿Cuál web <em>necesitas</em>?" text="Cuéntame qué vendes y a quién, y vemos qué formato te conviene. A veces una landing bien hecha basta para partir." />
 </Base>

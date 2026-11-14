@@ -23,9 +23,9 @@ const description =
   schema={faqSchema(FAQ_PRECIOS)}
 >
   <PageHero eyebrow="Ofertas">
-    <Fragment slot="title">Menos tareas repetidas. <em>Más clientes atendidos</em></Fragment>
+    <Fragment slot="title">Precios publicados, <em>condiciones a la vista</em></Fragment>
     <Fragment slot="lead">
-      <p>Cuatro formas de trabajar juntos, con precios publicados y condiciones claras. Elige la que se parece a lo que necesitas o agenda 15 minutos y te digo por dónde conviene partir. Si no vale la pena automatizar, también te lo digo.</p>
+      <p>Cuatro líneas de trabajo con precio en pesos + IVA. Revisa la que se parece a tu caso o agenda 15 minutos y vemos juntos por dónde conviene partir.</p>
     </Fragment>
     <a class="btn btn--agua" href="#ofertas">Ver las ofertas</a>
     <a class="btn btn--ghost" href="#calculadora">Calcular el retorno</a>
@@ -38,7 +38,7 @@ const description =
     <div class="container">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Primer paso, sin costo</p>
-        <h2 data-reveal style="--d:80ms">¿No sabes por dónde partir? <em>Lo vemos en {DIAGNOSTICO.minutes} minutos.</em></h2>
+        <h2 data-reveal style="--d:80ms">¿No sabes por dónde partir? <em>Lo vemos en {DIAGNOSTICO.minutes} minutos</em></h2>
         <p class="lead" data-reveal style="--d:160ms">{DIAGNOSTICO.summary}</p>
       </div>
       <ul class="checklist" data-reveal>
@@ -58,7 +58,7 @@ const description =
     <div class="container" style="max-width:920px">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Condiciones</p>
-        <h2 data-reveal style="--d:80ms">Todo claro <em>desde el principio</em>.</h2>
+        <h2 data-reveal style="--d:80ms">Las reglas, <em>antes de firmar</em></h2>
       </div>
       <p class="note card offer-note" data-reveal>{APARTE}</p>
       <ul class="checklist" data-reveal>{CONDICIONES.map((c) => <li>{c}</li>)}</ul>
@@ -71,12 +71,12 @@ const description =
     <div class="container" style="max-width:920px">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Preguntas frecuentes</p>
-        <h2 data-reveal style="--d:80ms">Preguntas <em>frecuentes</em>.</h2>
+        <h2 data-reveal style="--d:80ms">Lo que me preguntan <em>antes de contratar</em></h2>
       </div>
       <div data-reveal style="--d:120ms"><Faq items={FAQ_PRECIOS} /></div>
     </div>
   </section>
 
   <Wave from="var(--bruma)" to="var(--marino)" />
-  <CtaBand message={msg} title="¿Todavía con dudas? <em>Conversemos 15 minutos.</em>" text="Me cuentas cómo funciona tu negocio y te digo qué te conviene, o si por ahora no te conviene nada. Es gratis y sin compromiso." />
+  <CtaBand message={msg} title="¿Lo vemos <em>con tu caso</em>?" text="En 15 minutos revisamos cómo trabaja tu empresa y dónde se está perdiendo tiempo o plata. Sin costo y sin compromiso." />
 </Base>

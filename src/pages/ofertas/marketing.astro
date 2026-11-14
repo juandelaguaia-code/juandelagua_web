@@ -20,8 +20,8 @@ const msg = 'Hola Juan, vengo desde tu sitio web y me interesan los planes de ma
   schema={[...CONTENIDO_ORDER, 'campanas' as const, 'google' as const].map((id) => planServiceSchema(PLANES[id]))}
 >
   <PageHero eyebrow="Ofertas · Marketing">
-    <Fragment slot="title">Marketing que <em>trae clientes</em>, no solo likes</Fragment>
-    <Fragment slot="lead"><p>Contenido y campañas con un objetivo claro, medidos desde el primer día. Cada mes sabes qué funcionó, qué no y cuánto te costó cada contacto.</p></Fragment>
+    <Fragment slot="title">Marketing que puedes <em>medir en pesos</em></Fragment>
+    <Fragment slot="lead"><p>Campañas y contenido con un objetivo comercial y medición desde el primer día. Cada mes recibes un reporte con lo que funcionó, lo que no y cuánto costó cada contacto.</p></Fragment>
     <DiagnosticoButton />
     <a class="btn btn--ghost" href="#publicidad">Ver publicidad en Meta y Google</a>
   </PageHero>
@@ -32,8 +32,8 @@ const msg = 'Hola Juan, vengo desde tu sitio web y me interesan los planes de ma
     <div class="container">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Contenido y presencia</p>
-        <h2 data-reveal style="--d:80ms">Que te vean, te entiendan y <em>te escriban</em></h2>
-        <p class="lead" data-reveal style="--d:160ms">Publicar por publicar no vende. Aquí cada pieza tiene un objetivo y cada mes ves qué trajo clientes. Crecer y Escalar tienen cupo limitado porque son horas reales de trabajo.</p>
+        <h2 data-reveal style="--d:80ms">Contenido con un <em>objetivo comercial</em></h2>
+        <p class="lead" data-reveal style="--d:160ms">Cada pieza tiene un para qué, y cada mes revisamos cuáles trajeron contactos. Crecer y Escalar tienen cupos limitados porque los trabajo personalmente.</p>
       </div>
       <p class="note card offer-note" data-reveal>{CONTENIDO_IA}</p>
       <div class="grid grid-3">
@@ -47,8 +47,8 @@ const msg = 'Hola Juan, vengo desde tu sitio web y me interesan los planes de ma
     <div class="container">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Publicidad digital</p>
-        <h2 data-reveal style="--d:80ms">Anuncios que <em>traen clientes</em>, medidos peso a peso</h2>
-        <p class="lead" data-reveal style="--d:160ms">En Meta llegas a quien todavía no te conoce. En Google apareces justo cuando alguien busca lo que vendes. Puedes partir con uno y sumar el otro cuando funcione.</p>
+        <h2 data-reveal style="--d:80ms">Meta para que te conozcan, <em>Google para que te encuentren</em></h2>
+        <p class="lead" data-reveal style="--d:160ms">En Meta llegas a quien todavía no sabe que existes. En Google apareces cuando alguien ya está buscando lo que vendes. Puedes partir por uno y sumar el otro cuando el primero dé resultados.</p>
       </div>
       <div class="grid grid-2">
         <PlanCard plan={PLANES.campanas} />
@@ -64,7 +64,7 @@ const msg = 'Hola Juan, vengo desde tu sitio web y me interesan los planes de ma
 
   <OtrasOfertas current="/ofertas/marketing" bg="bruma" />
   <Wave from="var(--bruma)" to="var(--marino)" />
-  <CtaBand message={msg} title="¿Tu marketing está <em>trayendo clientes</em>?" text="Cuéntame qué has hecho y qué resultados has tenido. En 15 minutos te digo por dónde partir y cuánto tendrías que invertir." />
+  <CtaBand message={msg} title="¿Tu marketing está <em>trayendo clientes</em>?" text="Cuéntame qué has probado y qué resultados tuviste. En 15 minutos vemos por dónde partir y cuánto tendrías que invertir en pauta." />
 </Base>
 
 <style>

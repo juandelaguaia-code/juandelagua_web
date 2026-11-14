@@ -10,24 +10,24 @@ import { METHOD, waLink } from '../data/site';
 import { faqSchema, serviceSchema, FAQ_PRECIOS, type FaqItem } from '../data/faq';
 import { PLANES, AUTOMATIZACION_ORDER, desde, planServiceSchema } from '../data/planes';
 
-const msg = 'Hola Juan, vengo desde su sitio web. Me interesa la consultoría en IA para mi empresa.';
+const msg = 'Hola Juan, vengo desde tu sitio web. Me interesa la consultoría en IA para mi empresa.';
 const description =
   'Consultor en IA para pymes y empresas en Chile: agentes de IA en WhatsApp e Instagram, automatización y consultoría por fases. Precios publicados y diagnóstico gratis.';
 
 const lineas = [
   {
     t: 'Automatización de flujos',
-    d: 'Procesos repetitivos que hoy dependen de traspasos manuales pasan a ejecutarse solos: registro de clientes, cotizaciones, seguimiento, reportes e integración entre herramientas.',
+    d: 'Los procesos que hoy dependen de copiar, pegar y reenviar pasan a funcionar solos: registro de clientes, cotizaciones, seguimiento, reportes e integración entre herramientas.',
     items: ['Integración de WhatsApp, redes, correo y CRM', 'Cotizaciones y seguimiento automáticos', 'Migración y orden de datos', 'Reportes que se generan solos'],
   },
   {
     t: 'Agentes de IA',
-    d: 'Asistentes que atienden, califican y derivan consultas en los canales donde están los clientes, con reglas claras sobre qué resuelven y qué pasa a una persona.',
+    d: 'Asistentes que atienden y derivan consultas donde ya te escriben tus clientes, con reglas claras sobre qué resuelven solos y qué pasa a una persona.',
     items: ['Atención inmediata por WhatsApp y web', 'Calificación de consultas y agendamiento', 'Respuestas basadas en información de la empresa', 'Derivación a una persona cuando corresponde'],
   },
   {
     t: 'IA aplicada al equipo',
-    d: 'Adopción de inteligencia artificial en el trabajo diario: asistentes configurados con el contexto de la empresa y capacitación para usarlos con criterio.',
+    d: 'Asistentes configurados con el contexto de tu empresa y capacitación práctica para que tu equipo los use en su trabajo diario, con criterio.',
     items: ['Asistentes con el contexto de la empresa', 'Redacción, resumen y análisis de documentos', 'Capacitación práctica al equipo', 'Buenas prácticas y uso responsable'],
   },
 ];
@@ -39,11 +39,11 @@ const etapas = [
     note: 'El diagnóstico es gratis. No incluye informe escrito.',
   },
   {
-    n: '02', t: 'Implementación', d: 'Diseño y construcción de los flujos con las herramientas y datos de la empresa: primero un piloto acotado, luego la integración completa.',
+    n: '02', t: 'Implementación', d: 'Diseño y construyo los flujos con tus herramientas y tus datos: primero un piloto acotado, después la integración completa.',
     items: ['Flujos probados con casos reales', 'Conexión con las herramientas existentes', 'Documentación de funcionamiento', 'Capacitación al equipo'],
   },
   {
-    n: '03', t: 'Mantención', d: 'Monitoreo, soporte y mejoras mensuales, con medición de si los flujos están entregando el resultado esperado.',
+    n: '03', t: 'Mantención', d: 'Monitoreo, soporte y mejoras cada mes, con indicadores para saber si los flujos están entregando lo esperado.',
     items: ['Monitoreo y soporte', 'Mejoras según el uso real', 'Reporte de indicadores'],
   },
 ];
@@ -51,13 +51,13 @@ const etapas = [
 const faq: FaqItem[] = [
   { q: '¿Cuánto cuesta?', a: `Los precios están publicados: Agente Starter ${desde(PLANES.starter)}, Campaña + agente ${desde(PLANES.combo)} y la consultoría por fases ${PLANES.consultoria.setupLabel} + IVA. El diagnóstico de 15 minutos es gratis.` },
   { q: '¿Qué tipo de empresas pueden trabajar contigo?', a: 'Empresas y pymes con equipo y procesos que se repiten a diario: atención por WhatsApp, cotizaciones, seguimiento de clientes, agendamiento o gestión documental.' },
-  { q: '¿Cuánto toma una implementación?', a: 'Depende del alcance. Se trabaja por fases cortas, partiendo por un prototipo que se puede revisar funcionando. El diagnóstico entrega plazos concretos para cada fase.' },
-  { q: '¿Es necesario cambiar las herramientas actuales?', a: 'En general no. El objetivo es conectar lo que la empresa ya usa. Si alguna herramienta limita el proceso, se plantea con alternativas.' },
-  { q: '¿Cómo se resguardan los datos de los clientes?', a: 'Según la Ley 21.719: se trabaja con el mínimo acceso necesario, se documenta dónde queda cada dato y quién tiene acceso, y se definen por escrito las condiciones de tratamiento. NDA a solicitud.' },
+  { q: '¿Cuánto toma una implementación?', a: 'Depende del alcance. Trabajo por fases cortas, partiendo por un piloto que puedes ver funcionando. En el diagnóstico te doy plazos concretos para cada fase.' },
+  { q: '¿Es necesario cambiar las herramientas actuales?', a: 'En general no. Conecto lo que tu empresa ya usa. Si alguna herramienta limita el proceso, te planteo alternativas.' },
+  { q: '¿Cómo se resguardan los datos de los clientes?', a: 'Según la Ley 21.719: trabajo con el acceso mínimo necesario, documento dónde queda cada dato y quién tiene acceso, y dejamos por escrito las condiciones de tratamiento. Si lo necesitas, firmo un NDA.' },
   { q: '¿De quién son las cuentas del agente?', a: 'Tuyas. Las cuentas de IA, Cloudflare y WhatsApp quedan a nombre de tu empresa y su costo (aprox. $5.000–30.000 al mes) lo pagas directo al proveedor.' },
   FAQ_PRECIOS[1],
   FAQ_PRECIOS[4],
-  { q: '¿Qué ocurre si un agente de IA se equivoca?', a: 'Cada agente se prueba con casos reales antes de operar y se definen las situaciones que siempre revisa una persona. Durante la mantención se monitorean sus respuestas.' },
+  { q: '¿Qué ocurre si un agente de IA se equivoca?', a: 'Antes de que opere, pruebo cada agente con casos reales y definimos qué situaciones revisa siempre una persona. Durante la mantención reviso sus respuestas.' },
 ];
 ---
 
@@ -80,7 +80,7 @@ const faq: FaqItem[] = [
 >
   <PageHero eyebrow="Consultoría en inteligencia artificial">
     <Fragment slot="title">Inteligencia artificial aplicada a <em>cómo opera tu empresa</em></Fragment>
-    <Fragment slot="lead"><p>¿Tu chatbot responde pero no vende? Agentes de IA que atienden, califican y agendan en tus canales, automatización de flujos e IA para tu equipo. Todo parte con un diagnóstico gratis de 15 minutos y termina funcionando, documentado y medido.</p></Fragment>
+    <Fragment slot="lead"><p>Automatizo los flujos que hoy dependen de traspasos manuales, instalo agentes que atienden en tus canales y capacito a tu equipo para usar IA con criterio. Parte con un diagnóstico gratis de 15 minutos y termina funcionando, documentado y medido.</p></Fragment>
     <DiagnosticoButton />
     <a class="btn btn--ghost" href="#planes">Ver precios</a>
   </PageHero>
@@ -91,8 +91,8 @@ const faq: FaqItem[] = [
     <div class="container">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Qué hago</p>
-        <h2 data-reveal style="--d:80ms">Tres líneas de trabajo, <em>una misma lógica</em>.</h2>
-        <p class="lead" data-reveal style="--d:160ms">Resolver primero lo que más tiempo consume, con la solución más simple que funcione.</p>
+        <h2 data-reveal style="--d:80ms">Tres líneas de trabajo, <em>una misma lógica</em></h2>
+        <p class="lead" data-reveal style="--d:160ms">Parto por lo que más horas le quita a tu equipo y uso la solución más simple que funcione.</p>
       </div>
       <div class="grid grid-3">
         {lineas.map((l, i) => (
@@ -112,7 +112,7 @@ const faq: FaqItem[] = [
     <div class="container">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Planes</p>
-        <h2 data-reveal style="--d:80ms">No pierdes ninguna consulta y <em>sabes cuánto te cuesta cada cliente</em>.</h2>
+        <h2 data-reveal style="--d:80ms">Planes con <em>precio publicado</em></h2>
         <p class="lead" data-reveal style="--d:160ms">Precios en pesos + IVA. Cuentas y datos siempre a tu nombre.</p>
       </div>
       <div class="grid grid-3">
@@ -128,8 +128,8 @@ const faq: FaqItem[] = [
     <div class="container">
       <div class="section-head">
         <p class="eyebrow" data-reveal>El método</p>
-        <h2 data-reveal style="--d:80ms">Siete pasos, <em>todos a la vista</em>.</h2>
-        <p class="lead" data-reveal style="--d:160ms">Ningún proyecto queda como caja negra. En cada etapa se sabe qué se está construyendo, por qué y qué cambió.</p>
+        <h2 data-reveal style="--d:80ms">Siete pasos, <em>todos a la vista</em></h2>
+        <p class="lead" data-reveal style="--d:160ms">En cada etapa sabes qué estoy construyendo, por qué y qué cambió.</p>
       </div>
       <ol class="cauce" data-cauce>
         <svg class="cauce-line" viewBox="0 0 40 1000" preserveAspectRatio="none" aria-hidden="true">
@@ -156,7 +156,7 @@ const faq: FaqItem[] = [
     <div class="container">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Cómo se contrata</p>
-        <h2 data-reveal style="--d:80ms">Tres etapas. <em>Se avanza solo si tiene sentido.</em></h2>
+        <h2 data-reveal style="--d:80ms">Tres etapas. <em>Se avanza solo si tiene sentido</em></h2>
       </div>
       <div class="stages">
         {etapas.map((e, i) => (
@@ -178,8 +178,8 @@ const faq: FaqItem[] = [
     <div class="container honest">
       <div>
         <p class="eyebrow" data-reveal>Criterio</p>
-        <h2 data-reveal style="--d:80ms">Lo que <em>no</em> forma parte del servicio.</h2>
-        <p class="lead" data-reveal style="--d:160ms">Parte de la consultoría es señalar cuándo una inversión no se justifica.</p>
+        <h2 data-reveal style="--d:80ms">Lo que <em>no</em> forma parte del servicio</h2>
+        <p class="lead" data-reveal style="--d:160ms">Parte de mi trabajo es decirte cuándo una inversión no se justifica.</p>
       </div>
       <ul class="checklist checklist--no" data-reveal style="--d:120ms">
         <li>Automatizar procesos que primero requieren ser ordenados.</li>
@@ -194,14 +194,14 @@ const faq: FaqItem[] = [
     <div class="container" style="max-width:920px">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Preguntas frecuentes</p>
-        <h2 data-reveal style="--d:80ms">Sobre la <em>consultoría en IA</em>.</h2>
+        <h2 data-reveal style="--d:80ms">Sobre la <em>consultoría en IA</em></h2>
       </div>
       <div data-reveal style="--d:120ms"><Faq items={faq} /></div>
     </div>
   </section>
 
   <Wave from="var(--perla)" to="var(--marino)" />
-  <CtaBand message={msg} title="¿Qué proceso está <em>consumiendo más tiempo</em>?" text="Cuéntamelo en el diagnóstico gratis de 15 minutos. Te llevas 3 oportunidades concretas y, si no conviene automatizar, te lo digo." />
+  <CtaBand message={msg} title="¿Qué proceso está <em>consumiendo más tiempo</em>?" text="Cuéntamelo en el diagnóstico gratis de 15 minutos. Sales con 3 oportunidades concretas y una idea clara de qué conviene automatizar y qué no." />
 </Base>
 
 <script>

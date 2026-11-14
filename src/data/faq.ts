@@ -24,28 +24,36 @@ export const serviceSchema = (opts: { name: string; description: string; path: s
 
 export const FAQ_HOME: FaqItem[] = [
   {
-    q: '¿Se necesitan conocimientos técnicos para trabajar juntos?',
-    a: 'No. La parte técnica queda a mi cargo y cada decisión se explica con ejemplos de la propia empresa. Lo importante es conocer en detalle cómo opera hoy el equipo.',
+    q: '¿Necesito saber de tecnología para trabajar contigo?',
+    a: 'No. La parte técnica es mía. Lo que necesito de ti es que me cuentes con detalle cómo trabaja hoy tu equipo. Cada decisión te la explico con ejemplos de tu propia empresa.',
   },
   {
-    q: '¿Trabajas con pymes y también con empresas más grandes?',
-    a: 'Sí. Trabajo con empresas y pymes de distintos tamaños. El alcance y las fases se ajustan al tamaño del equipo y a la complejidad de los procesos.',
+    q: '¿Trabajas solo con pymes?',
+    a: 'No. Trabajo con pymes y con empresas más grandes. Lo que cambia es el alcance: en una empresa con varias áreas avanzamos por fases, partiendo por la que más horas consume.',
   },
   {
     q: '¿Atiendes fuera de la Región de Valparaíso?',
-    a: 'Sí. La base está en Viña del Mar, pero atiendo empresas en todo Chile, incluida Santiago. La mayor parte del trabajo se puede hacer de forma remota y, cuando conviene, presencial.',
+    a: 'Sí. Vivo en Viña del Mar y trabajo con empresas de todo Chile, incluida Santiago. Casi todo se puede hacer remoto y, cuando conviene ir en persona, voy.',
   },
   {
     q: '¿Cuánto cuesta y cómo parto?',
-    a: 'Los precios están publicados en la página de planes, en pesos + IVA. Se parte con un diagnóstico gratis de 15 minutos y, si tiene sentido, recibes una propuesta en 48 horas.',
+    a: 'Los precios están publicados en la página de ofertas, en pesos + IVA. Partimos con un diagnóstico gratis de 15 minutos y, si tiene sentido trabajar juntos, te mando una propuesta en 48 horas.',
   },
   {
-    q: '¿Qué pasa si el diagnóstico indica que no conviene automatizar?',
-    a: 'Se dice con claridad. No todos los procesos justifican una automatización; a veces lo que corresponde es ordenar el proceso o mejorar la captación de clientes antes de sumar tecnología.',
+    q: '¿Y si al final no conviene automatizar?',
+    a: 'Te lo digo en el diagnóstico. Muchas veces conviene ordenar el proceso primero, o partir por cómo llegan los clientes, antes de sumar tecnología. Prefiero no cerrar un proyecto a venderte algo que tu equipo no va a usar.',
   },
   {
-    q: '¿Cómo se protegen los datos de mis clientes?',
-    a: 'Según la Ley 21.719: acceso mínimo necesario, cuentas a nombre de tu empresa, registro de dónde queda cada dato y condiciones de tratamiento por escrito. NDA a solicitud.',
+    q: '¿En qué se diferencia de contratar una agencia?',
+    a: 'Hablas siempre con la persona que hace el trabajo, no con un ejecutivo de cuentas. Y la parte de IA y la de marketing las veo yo, así que no hay traspasos entre proveedores que se culpan entre sí cuando algo no funciona.',
+  },
+  {
+    q: '¿Qué pasa si dejamos de trabajar juntos?',
+    a: 'Todo queda tuyo: cuentas, accesos, datos, dominio y la documentación de lo que construí. No quedas amarrado a mí para seguir operando.',
+  },
+  {
+    q: '¿Qué pasa con los datos de mis clientes?',
+    a: 'Los trato según la Ley 21.719: acceso mínimo necesario, cuentas a nombre de tu empresa, registro de dónde queda cada dato y condiciones de tratamiento por escrito. Si lo necesitas, firmo un NDA.',
   },
 ];
 
@@ -69,10 +77,10 @@ export const FAQ_PRECIOS: FaqItem[] = [
   },
   {
     q: '¿Qué pasa si no conviene automatizar?',
-    a: 'Te lo digo en el diagnóstico, que es gratis. A veces lo que conviene es ordenar el proceso o partir por las campañas antes de sumar un agente.',
+    a: 'Lo vemos en el diagnóstico, que es gratis. A veces conviene ordenar el proceso o partir por las campañas antes de sumar un agente.',
   },
   {
     q: '¿Se garantizan ventas?',
-    a: 'No. Se garantizan entregas, plazos y un reporte mensual con cuánto cuesta cada contacto. Las ventas dependen también de tu oferta y de tu atención.',
+    a: 'No. Lo que sí garantizo son entregas, plazos y un reporte mensual con cuánto costó cada contacto. Las ventas dependen también de tu oferta y de cómo atiende tu equipo. Desconfía de quien te garantice ventas.',
   },
 ];

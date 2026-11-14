@@ -21,8 +21,8 @@ const msg = 'Hola Juan, vengo desde tu sitio web y me interesa un agente de IA p
   schema={AUTOMATIZACION_ORDER.map((id) => planServiceSchema(PLANES[id]))}
 >
   <PageHero eyebrow="Ofertas · Inteligencia artificial">
-    <Fragment slot="title">Ninguna consulta <em>sin respuesta</em></Fragment>
-    <Fragment slot="lead"><p>¿Tu chatbot responde pero no vende? Un agente de IA que conoce tus productos atiende en minutos, califica, agenda y te pasa solo lo que vale la pena. Funciona a toda hora, en los canales donde ya te escriben.</p></Fragment>
+    <Fragment slot="title">Cada consulta respondida <em>en minutos</em></Fragment>
+    <Fragment slot="lead"><p>Un agente de IA entrenado con la información de tu empresa atiende por WhatsApp o Instagram a cualquier hora. Resuelve dudas, agenda y le deriva a tu equipo solo las conversaciones que necesitan a una persona.</p></Fragment>
     <DiagnosticoButton />
     <a class="btn btn--ghost" href="/consultor-ia#metodo">Ver cómo trabajo</a>
   </PageHero>
@@ -33,8 +33,8 @@ const msg = 'Hola Juan, vengo desde tu sitio web y me interesa un agente de IA p
     <div class="container">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Agentes de IA</p>
-        <h2 data-reveal style="--d:80ms">Tu negocio responde en minutos, <em>aunque estés ocupado</em>.</h2>
-        <p class="lead" data-reveal style="--d:160ms">Un agente que conoce tus productos atiende por WhatsApp o Instagram, resuelve dudas, agenda y te pasa solo las conversaciones que valen la pena. Tú atiendes clientes, no el teléfono.</p>
+        <h2 data-reveal style="--d:80ms">Tu equipo atiende a quien <em>ya está listo para comprar</em></h2>
+        <p class="lead" data-reveal style="--d:160ms">La diferencia con un chatbot de respuestas fijas: el agente conoce tus productos, precios y políticas, entiende lo que le preguntan con sus propias palabras y sabe cuándo pasarle la conversación a una persona.</p>
       </div>
       <div class="grid grid-3">
         {AUTOMATIZACION_ORDER.map((id, i) => <PlanCard plan={PLANES[id]} dark={PLANES[id].star} delay={i * 90} />)}
@@ -50,7 +50,7 @@ const msg = 'Hola Juan, vengo desde tu sitio web y me interesa un agente de IA p
     <div class="container combo">
       <div>
         <p class="eyebrow" data-reveal>Así funciona Campaña + agente</p>
-        <h2 data-reveal style="--d:80ms">Tu campaña trae la consulta. <em>Tu agente la responde en minutos.</em></h2>
+        <h2 data-reveal style="--d:80ms">La campaña trae la consulta. <em>El agente la responde en minutos</em></h2>
       </div>
       <ComboFlow />
     </div>
@@ -64,7 +64,7 @@ const msg = 'Hola Juan, vengo desde tu sitio web y me interesa un agente de IA p
 
   <OtrasOfertas current="/ofertas/ia" bg="bruma" />
   <Wave from="var(--bruma)" to="var(--marino)" />
-  <CtaBand message={msg} title="¿Tu negocio necesita <em>un agente</em>?" text="En 15 minutos vemos cuántas consultas te llegan, cuántas se pierden y si un agente se paga solo. Y si no conviene automatizar, te lo digo." />
+  <CtaBand message={msg} title="¿Tu empresa necesita <em>un agente</em>?" text="En 15 minutos revisamos cuántas consultas te llegan, cuántas se quedan sin respuesta y si un agente se paga solo con tus números." />
 </Base>
 
 <style>

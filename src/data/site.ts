@@ -8,9 +8,9 @@ export const SITE = {
   /** Firma de marca */
   signature: 'IA y marketing con criterio, para que recuperes tu tiempo.',
   /** Frase corta de la propuesta (hero) */
-  promise: 'Delega tu IA y tu marketing en una sola persona con criterio, y recupera tu tiempo.',
+  promise: 'IA y marketing para tu empresa: tu operación y tus ventas, con un solo responsable.',
   description:
-    'Agentes de IA, campañas y contenido para pymes y empresas en Chile: no pierdes ninguna consulta y sabes cuánto te cuesta cada cliente. Diagnóstico gratis.',
+    'Consultoría en IA y marketing para empresas en Chile: automatización, agentes de IA y campañas medidas, con un solo responsable. Diagnóstico gratis.',
   locale: 'es_CL',
   region: 'Región de Valparaíso',
   city: 'Viña del Mar',
@@ -39,7 +39,7 @@ export const SITE = {
 /** Versiones vigentes de los documentos legales (se registran con cada consentimiento) */
 export const LEGAL = { terms: '2.0', privacy: '2.2', rules: '1.0' } as const;
 
-export const waLink = (message = 'Hola Juan, vengo desde su sitio web y me gustaría conversar sobre mi empresa.') =>
+export const waLink = (message = 'Hola Juan, vengo desde tu sitio web y me gustaría conversar sobre mi empresa.') =>
   `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(message)}`;
 
 export const DIAG_MSG = 'Hola Juan, vengo desde tu sitio web y quiero agendar el diagnóstico gratis de 15 minutos.';
@@ -49,10 +49,10 @@ export const diagnosticoHref = () => "/agendar";
 
 /** Subpáginas de Ofertas (menú desplegable y tarjetas de /ofertas) */
 export const OFERTAS = [
-  { href: '/ofertas/ia', label: 'Inteligencia artificial', short: 'Respuestas en minutos, a cualquier hora', desc: 'Un agente que atiende, resuelve dudas y agenda por WhatsApp o Instagram mientras tú te concentras en tu trabajo.' },
-  { href: '/ofertas/marketing', label: 'Marketing', short: 'Campañas y contenido con resultados medibles', desc: 'Campañas en Meta y contenido semanal, con un reporte mensual de cuánto te cuesta cada cliente.' },
-  { href: '/ofertas/webs', label: 'Sitios web', short: 'Landing page, web completa o tienda online', desc: 'Sitios rápidos y claros, pensados para que te contacten o te compren. El mantenimiento va incluido.' },
-  { href: '/ofertas/consultoria', label: 'Consultoría personalizada', short: 'Solo lo que tu empresa necesita', desc: 'Primero entiendo cómo trabaja tu empresa; después te propongo solo lo necesario, con precio cerrado.' },
+  { href: '/ofertas/ia', label: 'Inteligencia artificial', short: 'Agentes y automatizaciones para tu equipo', desc: 'Un agente que responde y agenda en WhatsApp o Instagram, y flujos que le sacan de encima a tu equipo las tareas repetitivas.' },
+  { href: '/ofertas/marketing', label: 'Marketing', short: 'Campañas y contenido medidos en pesos', desc: 'Campañas en Meta y Google, contenido y un reporte mensual que dice cuánto costó cada contacto y de dónde vino.' },
+  { href: '/ofertas/webs', label: 'Sitios web', short: 'Landing, web corporativa o tienda online', desc: 'Sitios rápidos que miden cada contacto desde el primer día. El hosting y el mantenimiento corren por mi cuenta.' },
+  { href: '/ofertas/consultoria', label: 'Consultoría personalizada', short: 'Para empresas con varias áreas', desc: 'Reviso cómo trabaja tu empresa y te propongo solo lo que conviene, con alcance, plazos y precio cerrado.' },
 ] as const;
 
 export interface NavItem { href: string; label: string; children?: readonly { href: string; label: string; short?: string }[] }
@@ -115,11 +115,11 @@ export const CERTIFICATIONS = [
 
 /** Método de la consultoría en IA (no aplica a marketing). */
 export const METHOD = [
-  { name: 'Escuchar', q: '¿Qué está consumiendo más tiempo?', d: 'Levantamiento de cómo opera la empresa hoy: responsables, canales de entrada de clientes y puntos donde el trabajo se detiene.' },
-  { name: 'Detectar', q: '¿Qué conviene automatizar y qué no?', d: 'Se separa lo que vale la pena resolver con IA de lo que conviene ordenar primero o dejar como está. Cuando no conviene automatizar, se dice.' },
-  { name: 'Prototipar', q: 'Un piloto acotado primero.', d: 'Se construye un piloto pequeño del flujo para validar la idea con casos reales antes de la inversión mayor. Si el piloto no convence, se para ahí.' },
-  { name: 'Mostrar', q: 'Validación con casos reales.', d: 'El prototipo se revisa funcionando con datos y situaciones reales de la empresa, junto al equipo.' },
-  { name: 'Implementar', q: 'Integración a la operación.', d: 'Se conecta con las herramientas que ya se usan, se documenta y se capacita al equipo. Nada queda como caja negra.' },
-  { name: 'Medir', q: '¿Qué cambió en la práctica?', d: 'Se comparan indicadores antes y después: horas, tiempos de respuesta y solicitudes atendidas.' },
-  { name: 'Mejorar', q: 'Ajuste continuo.', d: 'Con los datos de uso se afinan los flujos para que acompañen el crecimiento de la empresa.' },
+  { name: 'Escuchar', q: '¿Qué está consumiendo más tiempo?', d: 'Reviso cómo opera hoy tu empresa: quién hace qué, por dónde entran los clientes y en qué punto se detiene el trabajo.' },
+  { name: 'Detectar', q: '¿Qué conviene automatizar y qué no?', d: 'Separo lo que vale la pena resolver con IA de lo que conviene ordenar primero o dejar como está. Si algo no conviene automatizarlo, lo sabrás en este paso.' },
+  { name: 'Prototipar', q: 'Un piloto acotado primero.', d: 'Construyo un piloto pequeño y lo pruebo con casos reales antes de la inversión grande.' },
+  { name: 'Mostrar', q: 'Validación con casos reales.', d: 'Revisamos el piloto funcionando con datos y situaciones reales de tu empresa, junto a las personas que lo van a usar.' },
+  { name: 'Implementar', q: 'Integración a la operación.', d: 'Lo conecto con las herramientas que ya usan, lo documento y capacito a tu equipo. Nada queda como caja negra.' },
+  { name: 'Medir', q: '¿Qué cambió en la práctica?', d: 'Comparamos antes y después: horas de trabajo, tiempos de respuesta y solicitudes atendidas.' },
+  { name: 'Mejorar', q: 'Ajuste continuo.', d: 'Con los datos de uso ajusto los flujos para que acompañen el crecimiento de la empresa.' },
 ] as const;

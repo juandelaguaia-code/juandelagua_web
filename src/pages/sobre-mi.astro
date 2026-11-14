@@ -30,8 +30,9 @@ const profile = {
         <p class="eyebrow rise">Sobre mí</p>
         <h1 class="rise" style="--d:80ms"><em>Juan del Agua</em> Araneda Gattavara</h1>
         <div class="lead rise" style="--d:160ms">
-          <p>Consultor en inteligencia artificial y marketing, con base en Viña del Mar. Diseño e implemento soluciones con IA y estudio Ingeniería en Marketing Digital en Duoc UC (cursando).</p>
+          <p>Soy consultor en IA y marketing y vivo en Viña del Mar. Trabajo con empresas de todo Chile que quieren dejar de operar a pulso: automatizo lo repetitivo, ordeno cómo llegan los clientes y mido qué cambió. Estudio Ingeniería en Marketing Digital en Duoc UC.</p>
         </div>
+        <p class="rise" style="--d:200ms"><a class="link-arrow" href={SITE.social.linkedin} target="_blank" rel="noopener me">Ver mi perfil en LinkedIn ↗</a></p>
       </div>
       <div class="photo rise" style="--d:120ms">
         <Image src={retrato} alt="Retrato de Juan del Agua Araneda Gattavara" widths={[360, 560, 720]} sizes="(min-width: 900px) 440px, 80vw" loading="eager" />
@@ -42,10 +43,11 @@ const profile = {
   <section class="section bg-bruma">
     <div class="container story">
       <div class="col" data-reveal>
-        <h2>Enfoque de <em>trabajo</em>.</h2>
+        <h2>Cómo <em>trabajo</em></h2>
       </div>
       <div class="col prose-ish" data-reveal style="--d:100ms">
-        <p>La IA ordena lo que pasa dentro de la empresa. El marketing, cómo llegan los clientes. Trabajo ambos frentes, con un proceso transparente: sabes qué se construye y por qué, sin depender a ciegas de un proveedor.</p>
+        <p>Casi siempre que una empresa me busca por marketing, parte del problema está adentro: consultas que nadie sigue, cotizaciones que tardan días. Y al revés. Por eso trabajo los dos frentes juntos: la IA ordena lo que pasa dentro de la empresa y el marketing, cómo llegan los clientes.</p>
+        <p>Te explico qué construyo y por qué, para que no dependas a ciegas de mí ni de ningún proveedor.</p>
         <p>{SITE.signature}</p>
       </div>
     </div>
@@ -63,7 +65,7 @@ const profile = {
     <div class="container">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Lo que me mueve</p>
-        <h2 data-reveal style="--d:80ms">Cuatro <em>valores</em>.</h2>
+        <h2 data-reveal style="--d:80ms">Cuatro <em>valores</em></h2>
       </div>
       <div class="grid grid-4">
         {VALUES.map((v, i) => (
@@ -81,7 +83,7 @@ const profile = {
     <div class="container">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Formación</p>
-        <h2 data-reveal style="--d:80ms">Certificaciones y <em>estudios</em>.</h2>
+        <h2 data-reveal style="--d:80ms">Certificaciones y <em>estudios</em></h2>
         <p class="lead" data-reveal style="--d:160ms">Cuatro certificaciones de Anthropic Academy (agosto 2026) y la carrera de Ingeniería en Marketing Digital en Duoc UC (cursando).</p>
       </div>
       <div class="grid grid-4 certs">

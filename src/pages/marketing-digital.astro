@@ -45,10 +45,10 @@ const faq: FaqItem[] = [
   { q: '¿Cuánto cuesta?', a: `Los precios están publicados: Plan Base ${clp(PLANES.base.setup)} + IVA (pago único), campañas en Meta ${desde(PLANES.campanas)}, campañas en Google Ads ${desde(PLANES.google)}, Plan Crecer ${desde(PLANES.crecer)} y Plan Escalar ${desde(PLANES.escalar)}. El diagnóstico de 15 minutos es gratis.` },
   FAQ_PRECIOS[1],
   FAQ_PRECIOS[2],
-  { q: '¿La inversión en publicidad está incluida?', a: 'No. La inversión en publicidad se paga directamente a Meta, Google o LinkedIn con un medio de pago de la empresa, lo que permite controlar en todo momento cuánto se gasta. Los honorarios se indican por separado en la propuesta.' },
-  { q: '¿Se garantizan ventas?', a: 'No. Se definen objetivos medibles, se reporta qué está funcionando y se ajusta en base a datos. Ningún proveedor serio puede garantizar ventas.' },
-  { q: '¿Qué relación tiene el marketing con la inteligencia artificial?', a: 'Una campaña que genera consultas pierde valor si nadie responde a tiempo. Las campañas se pueden conectar con un agente de IA que responde de inmediato, registra al contacto y hace seguimiento.' },
-  { q: '¿Trabajas con equipos de diseño o agencias existentes?', a: 'Sí. Puedo trabajar junto al equipo interno o la agencia que ya tenga la empresa, aportando estrategia, medición e integración con IA.' },
+  { q: '¿La inversión en publicidad está incluida?', a: 'No. La pauta la pagas directo a Meta, Google o LinkedIn con un medio de pago de tu empresa, así controlas en todo momento cuánto se gasta. Mis honorarios van por separado en la propuesta.' },
+  { q: '¿Se garantizan ventas?', a: 'No. Definimos objetivos medibles, te reporto qué está funcionando y ajustamos con datos. Desconfía de quien te garantice ventas.' },
+  { q: '¿Qué relación tiene el marketing con la inteligencia artificial?', a: 'Una campaña que trae consultas pierde valor si nadie responde a tiempo. Por eso puedo conectar tus campañas con un agente de IA que responde de inmediato, registra el contacto y hace seguimiento.' },
+  { q: '¿Trabajas con equipos de diseño o agencias existentes?', a: 'Sí. Puedo trabajar con tu equipo interno o con la agencia que ya tienes, aportando estrategia, medición e integración con IA.' },
 ];
 ---
 
@@ -82,7 +82,7 @@ const faq: FaqItem[] = [
     <div class="container">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Servicios</p>
-        <h2 data-reveal style="--d:80ms">Cuatro áreas que <em>funcionan mejor en conjunto</em>.</h2>
+        <h2 data-reveal style="--d:80ms">Cuatro áreas que <em>funcionan mejor en conjunto</em></h2>
         <p class="lead" data-reveal style="--d:160ms">Se pueden contratar por separado o combinadas. El diagnóstico gratis define por dónde conviene comenzar.</p>
       </div>
       <div class="grid grid-2">
@@ -104,7 +104,7 @@ const faq: FaqItem[] = [
     <div class="container">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Planes</p>
-        <h2 data-reveal style="--d:80ms">Contenido y campañas <em>con precio publicado</em>.</h2>
+        <h2 data-reveal style="--d:80ms">Contenido y campañas <em>con precio publicado</em></h2>
         <p class="lead" data-reveal style="--d:160ms">Pesos + IVA. La pauta la pagas tú directo a la plataforma. Crecer y Escalar tienen cupo limitado. {CONTENIDO_IA}</p>
       </div>
       <div class="grid grid-3">
@@ -134,7 +134,7 @@ const faq: FaqItem[] = [
     <div class="container combo">
       <div>
         <p class="eyebrow" data-reveal>Marketing + inteligencia artificial</p>
-        <h2 data-reveal style="--d:80ms">Tu campaña trae la consulta. <em>Tu agente la responde en minutos.</em></h2>
+        <h2 data-reveal style="--d:80ms">La campaña trae la consulta. <em>El agente la responde en minutos</em></h2>
       </div>
       <ComboFlow />
     </div>
@@ -145,8 +145,8 @@ const faq: FaqItem[] = [
     <div class="container">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Cómo trabajo</p>
-        <h2 data-reveal style="--d:80ms">Diagnóstico gratis, <em>propuesta en 48 horas</em>.</h2>
-        <p class="lead" data-reveal style="--d:160ms">Los precios están publicados; el diagnóstico sirve para elegir el plan que de verdad te conviene.</p>
+        <h2 data-reveal style="--d:80ms">Diagnóstico gratis, <em>propuesta en 48 horas</em></h2>
+        <p class="lead" data-reveal style="--d:160ms">Los precios ya están publicados. El diagnóstico sirve para elegir el plan que te conviene con tus números.</p>
       </div>
       <ol class="proceso">
         {proceso.map((p, i) => (
@@ -165,7 +165,7 @@ const faq: FaqItem[] = [
     <div class="container" style="max-width:920px">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Preguntas frecuentes</p>
-        <h2 data-reveal style="--d:80ms">Sobre el <em>marketing</em>.</h2>
+        <h2 data-reveal style="--d:80ms">Sobre el <em>marketing</em></h2>
       </div>
       <div data-reveal style="--d:120ms"><Faq items={faq} /></div>
     </div>

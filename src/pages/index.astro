@@ -15,10 +15,10 @@ import hero from '../assets/img/juan-hero.jpg';
 import retrato from '../assets/img/juan-retrato.jpg';
 
 const dolores = [
-  { t: '¿Tu chatbot responde pero no vende?', d: 'Contesta cualquier cosa, pero no califica, no agenda y no sabe cuándo pasarle la conversación a una persona.' },
-  { t: 'Consultas que se enfrían', d: 'Los mensajes llegan por WhatsApp e Instagram a toda hora y la respuesta tarda. Parte de esas consultas termina en la competencia.' },
-  { t: 'No sabes cuánto te cuesta cada cliente', d: 'Se invierte en publicidad o contenido sin saber qué campaña trae clientes ni cuánto cuesta cada contacto.' },
-  { t: 'Estás encima de todo', d: 'Respuestas, cotizaciones y seguimiento avanzan solo cuando tú estás disponible.' },
+  { t: 'Tu equipo hace a mano lo mismo todos los días', d: 'Copiar datos de un correo a una planilla, armar la misma cotización, mandar el mismo recordatorio. Son horas de gente capaz en tareas que no necesitan criterio.' },
+  { t: 'Las consultas esperan y se enfrían', d: 'Llegan por WhatsApp, Instagram o el formulario cuando todos están ocupados o fuera de horario. Cuando alguien responde, el cliente ya cotizó con otro.' },
+  { t: 'Pagas publicidad sin saber qué vende', d: 'Hay gasto en Meta o Google y reportes con alcance y clics, pero nadie puede decirte cuánto costó cada cliente que llegó a comprar.' },
+  { t: 'Todo pasa por ti', d: 'Cotizaciones, seguimientos y respuestas avanzan solo cuando tienes un rato libre. Y ese rato es cada vez más corto.' },
 ];
 
 const OFERTA_DESDE: Record<string, string> = {
@@ -30,18 +30,18 @@ const OFERTA_DESDE: Record<string, string> = {
 
 // Escalera de oferta resumida (precios desde src/data/planes.ts)
 const escalera = [
-  { n: 'Gratis', t: 'Diagnóstico de 15 min', d: 'Entiendo tu caso y te llevas 3 oportunidades concretas.', href: '/ofertas#diagnostico' },
+  { n: 'Gratis', t: 'Diagnóstico de 15 min', d: 'Revisamos tu caso y te llevas 3 oportunidades concretas, aunque no trabajemos juntos.', href: '/ofertas#diagnostico' },
   { n: 'Entrada', t: 'Plan Base o Agente Starter', d: `Desde ${clp(PLANES.base.setup)} + IVA, pago único.`, href: '/ofertas/ia' },
-  { n: 'Mensual', t: 'Campañas, agente y contenido', d: `Desde ${clp(PLANES.starter.monthly)}/mes + IVA.`, href: '/ofertas/marketing' },
+  { n: 'Mensual', t: 'Campañas, agente o contenido', d: `Desde ${clp(PLANES.starter.monthly)}/mes + IVA.`, href: '/ofertas/marketing' },
   { n: 'Estrella', t: 'Campaña + agente', d: `${clp(PLANES.combo.monthly)}/mes + IVA.`, href: '/ofertas/ia#combo' },
   { n: 'Empresas', t: 'Consultoría IA por fases', d: PLANES.consultoria.setupLabel + ' + IVA.', href: '/ofertas/consultoria' },
 ];
 
 // Frase del medio: una línea por idea; las palabras con `em` van en acento.
 const statement = [
-  [{ t: 'Menos' }, { t: 'trabajo' }, { t: 'manual.', em: true }],
-  [{ t: 'Marketing' }, { t: 'con' }, { t: 'resultados.', em: true }],
-  [{ t: 'Recupera' }, { t: 'tiempo' }, { t: 'para' }, { t: 'vivir', em: true }, { t: 'mejor.', em: true }],
+  [{ t: 'Menos' }, { t: 'trabajo' }, { t: 'manual', em: true }],
+  [{ t: 'Marketing' }, { t: 'con' }, { t: 'resultados', em: true }],
+  [{ t: 'Recupera' }, { t: 'tiempo' }, { t: 'para' }, { t: 'vivir', em: true }, { t: 'mejor', em: true }],
 ];
 
 const DESC = SITE.description;
@@ -56,16 +56,17 @@ const DESC = SITE.description;
     <WaterCanvas class="hero-water" lines={10} opacity={0.7} />
     <div class="container hero-inner">
       <!-- La línea pequeña va dentro del h1 para que el título principal incluya las palabras clave -->
-      <h1 class="rise"><span class="eyebrow hero-kicker">Consultoría en IA y marketing · Empresas y pymes</span><span>Delega tu IA y tu marketing en <em>una sola persona con criterio</em>.</span> <span>Recupera tu tiempo</span></h1>
-      <p class="lead rise" style="--d:160ms">Para dueños y gerentes de empresas: no pierdes ninguna consulta de WhatsApp o Instagram y sabes cuánto te cuesta cada cliente, sin estar encima de todo.</p>
+      <h1 class="rise"><span class="eyebrow hero-kicker">Consultoría en IA y marketing para empresas en Chile</span><span>Tu operación y tus ventas,</span> <span><em>con un solo responsable</em></span></h1>
+      <p class="lead rise" style="--d:160ms">Para empresas donde el equipo cotiza a mano, las consultas esperan horas y nadie sabe qué campaña trae ventas. Diagnostico, armo un piloto y mido lo que cambia.</p>
       <div class="btn-row rise" style="--d:240ms">
         <DiagnosticoButton />
         <a class="btn btn--ghost" href="/ofertas">Ver ofertas y precios</a>
       </div>
       <ul class="hero-proof rise" style="--d:320ms">
         <li><a href="/sobre-mi#certificaciones">Certificado por <strong>Anthropic</strong></a></li>
-        <li>Ingeniería en Marketing Digital, Duoc UC (cursando)</li>
-        <li>Atención en todo Chile</li>
+        <li>Piloto antes de la inversión grande</li>
+        <li>Cuentas y datos a nombre de tu empresa</li>
+        <li>Todo Chile, remoto o presencial</li>
       </ul>
     </div>
   </section>
@@ -75,9 +76,9 @@ const DESC = SITE.description;
   <section class="section" id="situaciones">
     <div class="container">
       <div class="section-head">
-        <p class="eyebrow" data-reveal>Situaciones frecuentes</p>
-        <h2 data-reveal style="--d:80ms">¿Reconoces alguna de <em>estas</em> en tu empresa?</h2>
-        <p class="lead" data-reveal style="--d:160ms">No pierdes ninguna consulta y sabes cuánto te cuesta cada cliente. Y también te digo cuándo NO conviene automatizar.</p>
+        <p class="eyebrow" data-reveal>Lo que más veo en las empresas</p>
+        <h2 data-reveal style="--d:80ms">¿Te suena <em>alguna</em>?</h2>
+        <p class="lead" data-reveal style="--d:160ms">Son las cuatro situaciones que más se repiten cuando converso con gerentes y dueños de pymes. Casi siempre tienen la misma raíz: herramientas y proveedores que no conversan entre sí.</p>
       </div>
       <div class="grid grid-4">
         {dolores.map((p, i) => (
@@ -113,9 +114,9 @@ const DESC = SITE.description;
   <section class="section bg-bruma services">
     <div class="container">
       <div class="section-head">
-        <p class="eyebrow" data-reveal>Lo que ofrezco</p>
-        <h2 data-reveal style="--d:80ms">Elige por dónde <em style="white-space:nowrap">quieres partir</em>.</h2>
-        <p class="lead" data-reveal style="--d:160ms">Cuatro formas de trabajar juntos. Entra a la que más te interese y mira el detalle.</p>
+        <p class="eyebrow" data-reveal>Servicios</p>
+        <h2 data-reveal style="--d:80ms">Cuatro formas de <em style="white-space:nowrap">trabajar juntos</em></h2>
+        <p class="lead" data-reveal style="--d:160ms">Puedes partir por una y sumar otra cuando la primera dé resultados. Si no sabes cuál te conviene, para eso está el diagnóstico.</p>
       </div>
       <div class="grid grid-4">
         {OFERTAS.map((o, i) => (
@@ -136,8 +137,8 @@ const DESC = SITE.description;
     <div class="container combo">
       <div class="combo-text">
         <p class="eyebrow" data-reveal>Oferta estrella · Campaña + agente</p>
-        <h2 data-reveal style="--d:80ms">Tu campaña trae la consulta; <em>tu agente la responde en minutos</em>.</h2>
-        <p class="lead" data-reveal style="--d:160ms">A diferencia de las agencias que solo publican y de los chatbots que responden pero no venden: campaña, agente y reporte de costo por contacto, en un solo servicio.</p>
+        <h2 data-reveal style="--d:80ms">La campaña trae la consulta. <em>El agente la responde en minutos</em></h2>
+        <p class="lead" data-reveal style="--d:160ms">Normalmente esto lo hacen tres proveedores: la agencia que hace los anuncios, quien configura el chatbot y alguien que arma el reporte. Aquí lo hago yo, de punta a punta, y recibes un solo reporte con cuánto costó cada contacto.</p>
         <p class="price" data-reveal>{clp(PLANES.combo.monthly)}<small>/mes + IVA</small></p>
         <div class="btn-row" data-reveal>
           <a class="btn btn--agua" href="/ofertas/ia#combo">Ver qué incluye</a>
@@ -153,8 +154,8 @@ const DESC = SITE.description;
     <div class="container">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Cómo partir</p>
-        <h2 data-reveal style="--d:80ms">De lo gratis a lo grande, <em>por fases</em>.</h2>
-        <p class="lead" data-reveal style="--d:160ms">Por fases, con plan, plazos y documentación. Precios publicados en pesos + IVA.</p>
+        <h2 data-reveal style="--d:80ms">Partes acotado y <em>creces cuando funciona</em></h2>
+        <p class="lead" data-reveal style="--d:160ms">Los precios están publicados en pesos + IVA, para que compares antes de hablar conmigo.</p>
       </div>
       <div class="grid grid-5">
         {escalera.map((e, i) => (
@@ -195,11 +196,11 @@ const DESC = SITE.description;
       </div>
       <div class="about-text">
         <p class="eyebrow" data-reveal>Quién está detrás</p>
-        <h2 data-reveal style="--d:80ms"><em>Juan del Agua</em>.</h2>
+        <h2 data-reveal style="--d:80ms"><em>Juan del Agua</em></h2>
         <p class="lead" data-reveal style="--d:160ms">
-          Diseño e implemento soluciones con inteligencia artificial y estudio Ingeniería en Marketing Digital en Duoc UC (cursando).
-          Esa combinación permite abordar tanto el problema operativo como el comercial, con un proceso transparente en cada etapa.
+          Soy consultor en IA y marketing, con base en Viña del Mar. Quien te hace el diagnóstico es el mismo que construye, documenta y te muestra los números: no hay ejecutivos de cuenta ni equipos que no conoces.
         </p>
+        <p data-reveal style="--d:200ms">Muestro mi proceso real en el blog y en redes, con pantallas y errores incluidos. Estudio Ingeniería en Marketing Digital en Duoc UC y tengo cuatro certificaciones de Anthropic Academy:</p>
         <ul class="certs" data-reveal style="--d:220ms" aria-label="Certificaciones">
           {CERTIFICATIONS.map((c) => <li><a href={c.url} target="_blank" rel="noopener">{c.name}<span>Anthropic Academy · Verificar ↗</span></a></li>)}
         </ul>
@@ -214,14 +215,14 @@ const DESC = SITE.description;
     <div class="container faq-wrap">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Preguntas frecuentes</p>
-        <h2 data-reveal style="--d:80ms">Antes de <em>empezar</em>.</h2>
+        <h2 data-reveal style="--d:80ms">Lo que me preguntan <em>antes de partir</em></h2>
       </div>
       <div data-reveal style="--d:120ms"><Faq items={FAQ_HOME} /></div>
     </div>
   </section>
 
   <Wave from="var(--bruma)" to="var(--marino)" />
-  <CtaBand title="IA y marketing <em>con criterio</em>, para que recuperes tu tiempo." text="Agenda el diagnóstico gratis de 15 minutos o escríbeme por WhatsApp. Respondo en menos de 2 horas hábiles y, si no es algo en lo que pueda aportar, te lo digo." />
+  <CtaBand title="IA y marketing <em>con criterio</em>, para que recuperes tu tiempo" text="Escríbeme por WhatsApp o agenda el diagnóstico de 15 minutos. Te respondo yo, en menos de 2 horas hábiles." />
 </Base>
 
 <style>

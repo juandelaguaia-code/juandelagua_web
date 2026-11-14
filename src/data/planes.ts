@@ -37,64 +37,64 @@ export const PLANES = {
   // ---------- Marketing y contenido ----------
   base: {
     id: 'base', name: 'Plan Base', line: 'contenido', setup: 290_000, monthly: null, page: '/marketing-digital',
-    summary: 'Tu marca ordenada y lista para vender: lo justo para dejar de improvisar.',
+    summary: 'Ordena tu marca y tus canales antes de invertir en publicidad. Pago único, y después lo manejas tú.',
     includes: ['Auditoría de tu marca y tus canales', 'Brandbook básico', '8 plantillas de contenido listas para usar', 'Bio y enlace único que convierten', 'WhatsApp Business bien configurado', 'Capacitación para que lo manejes tú'],
     excludes: ['Gestión mensual de redes', 'Pauta en Meta (la pagas directo)'],
   },
   crecer: {
     id: 'crecer', name: 'Plan Crecer', line: 'contenido', setup: 590_000, monthly: 450_000, limited: true, page: '/marketing-digital',
-    summary: 'Contenido todas las semanas y presencia web, sin que tengas que pensar en qué publicar.',
+    summary: 'Contenido semanal con un plan detrás y un reporte mensual que muestra qué trajo contactos.',
     includes: ['Todo el Plan Base', 'Plan de marketing con objetivos', '2 reels y 2 carruseles por semana, con fotos y videos generados con IA', 'Web y catálogo', 'Google Business Profile', 'Reporte mensual de resultados', 'Hasta 16 horas de trabajo al mes'],
     excludes: ['Grabación presencial (se cotiza aparte)', 'Pauta en Meta (la pagas directo)'],
   },
   escalar: {
     id: 'escalar', name: 'Plan Escalar', line: 'contenido', setup: 990_000, monthly: 690_000, limited: true, page: '/marketing-digital',
-    summary: 'Más contenido, mensajes automáticos y un CRM: para cuando ya no das abasto.',
+    summary: 'Para cuando las consultas superan a tu equipo: más contenido, respuestas automáticas y un CRM para que ningún contacto se pierda.',
     includes: ['Todo el Plan Crecer', '3 reels y 3 carruseles por semana, con fotos y videos generados con IA', 'Respuestas automáticas en DM y WhatsApp', 'CRM configurado', 'Reunión mensual de resultados', 'Hasta 24 horas de trabajo al mes'],
     excludes: ['Grabación presencial (se cotiza aparte)', 'Pauta en Meta (la pagas directo)'],
   },
   campanas: {
     id: 'campanas', name: 'Campañas en Meta', line: 'contenido', setup: 150_000, monthly: 120_000, page: '/marketing-digital',
-    summary: 'Anuncios en Instagram y Facebook que se miden: sabes cuánto te cuesta cada contacto.',
+    summary: 'Anuncios en Instagram y Facebook, con un reporte mensual de cuánto costó cada contacto.',
     includes: ['Estrategia de campaña', 'Creatividades (fotos y videos generados con IA)', 'Públicos y segmentación', 'Optimización continua', 'Reporte mensual de costo por contacto'],
     excludes: ['Pauta en Meta (la pagas directo)', 'Grabación presencial (se cotiza aparte)'],
   },
   google: {
     id: 'google', name: 'Campañas en Google Ads', line: 'contenido', setup: 150_000, monthly: 140_000, page: '/marketing-digital',
-    summary: 'Aparece cuando te buscan en Google: anuncios en búsqueda y mapas para gente que ya quiere comprar.',
+    summary: 'Anuncios en la búsqueda y en Google Maps, para aparecer cuando alguien ya está buscando lo que vendes.',
     includes: ['Investigación de palabras clave', 'Anuncios de búsqueda y de Google Maps', 'Medición de llamadas, formularios y WhatsApp', 'Optimización continua', 'Reporte mensual de costo por contacto'],
     excludes: ['Pauta en Google (la pagas directo)'],
   },
   // ---------- Agentes de IA y automatización ----------
   starter: {
     id: 'starter', name: 'Agente Starter', line: 'automatizacion', setup: 590_000, monthly: 89_000, page: '/consultor-ia',
-    summary: 'Un agente de IA que conoce tu catálogo y atiende, vende y agenda mientras tú trabajas.',
+    summary: 'Un agente de IA entrenado con la información de tu empresa. Responde y agenda en WhatsApp o Instagram, y le pasa a tu equipo lo que necesita una persona.',
     includes: ['Un agente con tu catálogo en WhatsApp o Instagram', 'Responde en minutos, a cualquier hora', 'Califica, vende y agenda', 'Pasa la conversación a una persona cuando corresponde', 'Mantenimiento, ajustes y reporte mensual'],
     excludes: ['Créditos de IA, Cloudflare y WhatsApp (a tu nombre, se pagan aparte)'],
   },
   combo: {
     id: 'combo', name: 'Campaña + agente', line: 'automatizacion', setup: 790_000, monthly: 189_000, star: true, page: '/consultor-ia',
-    summary: 'La campaña trae la consulta y tu agente la responde en minutos, la califica y la agenda.',
+    summary: 'La campaña trae la consulta y el agente la responde en minutos. Un solo proveedor y un solo reporte.',
     includes: ['Gestión de campañas Meta', 'Agente de IA en WhatsApp o Instagram', 'Cada consulta respondida, calificada y agendada', 'Reporte mensual de costo por contacto'],
     excludes: ['Pauta en Meta (la pagas directo)', 'Créditos de IA (se pagan aparte)'],
   },
   consultoria: {
     id: 'consultoria', name: 'Consultoría IA por fases', line: 'automatizacion', setup: 1_500_000, monthly: null, from: true, page: '/consultor-ia',
     setupLabel: 'desde $1.500.000 por fase', monthlyLabel: 'según alcance',
-    summary: 'Para empresas con equipo y varias áreas: flujos, agentes conectados a tus sistemas e IA para todo el equipo.',
+    summary: 'Para empresas con varias áreas. Automatizo los flujos que más horas consumen, conecto agentes a tus sistemas y capacito al equipo. Parte con un piloto.',
     includes: ['Método de 7 pasos con piloto acotado', 'Flujos y agentes conectados a tus herramientas', 'IA aplicada al trabajo del equipo', 'Documentación y capacitación'],
     excludes: ['Créditos de IA (se pagan aparte)'],
   },
   // ---------- Sitios web ----------
   landing: {
     id: 'landing', name: 'Landing page', line: 'web', setup: 150_000, monthly: 20_000, page: '/marketing-digital', setupTitle: 'Desarrollo', monthlyTitle: 'Mantenimiento',
-    summary: 'Una página enfocada en una sola cosa: que te escriban o te compren.',
+    summary: 'Una página para una oferta, ideal para campañas: el visitante entiende qué vendes y te escribe.',
     includes: ['1 página con tu oferta, testimonios y llamado a la acción', 'Botón a WhatsApp y formulario', 'Adaptada a celular y rápida', 'SEO básico y analítica', 'Mantenimiento: hosting, SSL, respaldos y 30 min de cambios al mes'],
     excludes: ['Dominio (a tu nombre, se paga aparte)'],
   },
   webpro: {
     id: 'webpro', name: 'Página web pro', line: 'web', setup: 450_000, monthly: 40_000, page: '/marketing-digital', setupTitle: 'Desarrollo', monthlyTitle: 'Mantenimiento',
-    summary: 'El sitio completo de tu negocio: explica lo que haces y convierte visitas en clientes.',
+    summary: 'El sitio de tu empresa, con tus servicios bien explicados y la medición de cada contacto que llega.',
     includes: ['Hasta 6 secciones (inicio, servicios, nosotros, contacto…)', 'Textos orientados a vender', 'SEO local y Google Business Profile', 'Blog listo para publicar', 'Analítica y medición de contactos', 'Mantenimiento: hosting, SSL, respaldos, monitoreo y 1 hora de cambios al mes'],
     excludes: ['Dominio (a tu nombre, se paga aparte)'],
   },
@@ -108,7 +108,7 @@ export const PLANES = {
   medida: {
     id: 'medida', name: 'Consultoría personalizada', line: 'otro', setup: null, monthly: null,
     setupTitle: 'Precio', setupLabel: 'Propuesta a tu medida',
-    summary: 'Primero entiendo cómo funciona tu empresa; después te propongo solo lo que de verdad necesitas.',
+    summary: 'Reviso cómo funciona tu empresa y te propongo solo lo que necesitas, con precio cerrado.',
     includes: ['Levantamiento de tus procesos, canales y números', 'Mapa de qué conviene hacer, en qué orden y qué no', 'Propuesta con alcance, plazos y precio cerrado', 'Puedes tomar solo una parte o todo'],
   },
 } satisfies Record<string, Plan>;
@@ -130,7 +130,7 @@ export const LAUNCH = { total: 3, left: 3, discount: 20, months: 6 } as const;
 
 export const DIAGNOSTICO = {
   minutes: 15,
-  summary: 'Una videollamada de 15 minutos para entender tu caso. Te llevas 3 oportunidades concretas, sin compromiso.',
+  summary: '15 minutos por videollamada para entender cómo trabaja tu empresa. Sales con 3 oportunidades concretas, trabajemos juntos o no.',
   excludes: 'No incluye informe escrito.',
 } as const;
 
