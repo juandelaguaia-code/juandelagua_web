@@ -34,11 +34,11 @@ const ctaHref = waLink(`Hola Juan, vengo desde tu sitio web y me interesa ${p.id
     </>
   )}
   <slot />
-  {cta && <a class:list={['btn', 'btn--sm', dark ? 'btn--agua' : 'btn--ghost', 'plan-cta']} href={ctaHref} target="_blank" rel="noopener">{p.id === 'medida' ? 'Conversemos tu caso' : 'Quiero este plan'}</a>}
+  {cta && <div class="plan-cta"><a class:list={['btn', 'btn--sm', dark ? 'btn--agua' : 'btn--ghost']} href={ctaHref} target="_blank" rel="noopener">{p.id === 'medida' ? 'Conversemos tu caso' : 'Quiero este plan'}</a></div>}
 </article>
 
 <style>
-  .plan .tag { justify-self: start; }
+  .plan .tag { justify-self: start; align-self: flex-start; }
   /* Tarjeta destacada sobre fondo Marino (la clase .card trae fondo claro por defecto) */
   .plan.on-dark { background: var(--marino); color: var(--perla); border-color: transparent; }
   .plan.on-dark .checklist li, .plan.on-dark strong { color: rgba(245, 243, 236, 0.9); }
@@ -47,5 +47,8 @@ const ctaHref = waLink(`Hola Juan, vengo desde tu sitio web y me interesa ${p.id
   .plan-prices { display: grid; gap: 12px; }
   .plan-prices dt { font-size: var(--fs-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
   .plan-prices .price { font-size: clamp(1.6rem, 1.3rem + 1vw, 2.2rem); }
-  .plan-cta { justify-self: start; margin-top: auto; }
+  /* Columna flexible: el botón queda siempre abajo, a la misma altura en todas las tarjetas de una fila */
+  .plan { display: flex; flex-direction: column; gap: 14px; }
+  .plan > * { margin: 0; }
+  .plan-cta { margin-top: auto; padding-top: 10px; }
 </style>

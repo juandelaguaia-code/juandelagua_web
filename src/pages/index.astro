@@ -56,8 +56,8 @@ const DESC = SITE.description;
     <WaterCanvas class="hero-water" lines={10} opacity={0.7} />
     <div class="container hero-inner">
       <!-- La línea pequeña va dentro del h1 para que el título principal incluya las palabras clave -->
-      <h1 class="rise"><span class="eyebrow hero-kicker">Consultoría en IA y marketing · Empresas y pymes</span><span>Delega tu IA y tu marketing en <em>una sola persona con criterio</em>,</span> <span>y recupera tu tiempo.</span></h1>
-      <p class="lead rise" style="--d:160ms">Para dueños y gerentes de pymes de servicios: no pierdes ninguna consulta de WhatsApp o Instagram y sabes cuánto te cuesta cada cliente, sin estar encima de todo.</p>
+      <h1 class="rise"><span class="eyebrow hero-kicker">Consultoría en IA y marketing · Empresas y pymes</span><span>Delega tu IA y tu marketing en <em>una sola persona con criterio</em>.</span> <span>Recupera tu tiempo</span></h1>
+      <p class="lead rise" style="--d:160ms">Para dueños y gerentes de empresas: no pierdes ninguna consulta de WhatsApp o Instagram y sabes cuánto te cuesta cada cliente, sin estar encima de todo.</p>
       <div class="btn-row rise" style="--d:240ms">
         <DiagnosticoButton />
         <a class="btn btn--ghost" href="/ofertas">Ver ofertas y precios</a>
@@ -115,14 +115,13 @@ const DESC = SITE.description;
       <div class="section-head">
         <p class="eyebrow" data-reveal>Lo que ofrezco</p>
         <h2 data-reveal style="--d:80ms">Elige por dónde <em style="white-space:nowrap">quieres partir</em>.</h2>
-        <p class="lead" data-reveal style="--d:160ms">Cuatro formas de trabajar juntos, todas con precio publicado. Entra a la que más te interese y mira el detalle.</p>
+        <p class="lead" data-reveal style="--d:160ms">Cuatro formas de trabajar juntos. Entra a la que más te interese y mira el detalle.</p>
       </div>
       <div class="grid grid-4">
         {OFERTAS.map((o, i) => (
           <a href={o.href} class:list={['card', 'svc', { 'svc--main on-dark': i === 0 }]} data-reveal style={`--d:${i * 90}ms`}>
             <h3>{o.label}</h3>
             <p>{o.desc}</p>
-            <span class="tag">{OFERTA_DESDE[o.href]}</span>
             <span class="link-arrow">Ver detalle →</span>
           </a>
         ))}
@@ -244,7 +243,7 @@ const DESC = SITE.description;
   .hero :global(.hero-water) { z-index: -1; }
   .hero-inner { display: grid; gap: 22px; opacity: calc(1 - var(--x, 0) * 0.9); transform: translateY(calc(var(--x, 0) * -40px)); }
   .hero h1 { font-size: clamp(2.5rem, 1.4rem + 3.8vw, 4.75rem); }
-  .hero h1 span { display: block; text-wrap: balance; }
+  .hero h1 span { display: block; text-wrap: pretty; }
   .hero h1 .hero-kicker { display: flex; font-family: var(--sans); line-height: 1.4; margin-bottom: 22px; text-wrap: wrap; }
   .hero-proof { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 12px; font-size: var(--fs-sm); color: rgba(245, 243, 236, 0.72); }
   .hero-proof li { display: flex; align-items: center; gap: 8px; }

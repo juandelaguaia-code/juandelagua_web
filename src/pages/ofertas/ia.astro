@@ -8,7 +8,7 @@ import DiagnosticoButton from '../../components/DiagnosticoButton.astro';
 import OtrasOfertas from '../../components/ofertas/OtrasOfertas.astro';
 import ComboFlow from '../../components/ComboFlow.astro';
 import WaterCanvas from '../../components/WaterCanvas.astro';
-import { PLANES, AUTOMATIZACION_ORDER, LAUNCH, APARTE, planServiceSchema } from '../../data/planes';
+import { PLANES, AUTOMATIZACION_ORDER, APARTE, planServiceSchema } from '../../data/planes';
 
 const msg = 'Hola Juan, vengo desde tu sitio web y me interesa un agente de IA para mi negocio.';
 ---
@@ -21,7 +21,7 @@ const msg = 'Hola Juan, vengo desde tu sitio web y me interesa un agente de IA p
   schema={AUTOMATIZACION_ORDER.map((id) => planServiceSchema(PLANES[id]))}
 >
   <PageHero eyebrow="Ofertas · Inteligencia artificial">
-    <Fragment slot="title">Ninguna consulta <em>sin respuesta</em>.</Fragment>
+    <Fragment slot="title">Ninguna consulta <em>sin respuesta</em></Fragment>
     <Fragment slot="lead"><p>¿Tu chatbot responde pero no vende? Un agente de IA que conoce tus productos atiende en minutos, califica, agenda y te pasa solo lo que vale la pena. Funciona a toda hora, en los canales donde ya te escriben.</p></Fragment>
     <DiagnosticoButton />
     <a class="btn btn--ghost" href="/consultor-ia#metodo">Ver cómo trabajo</a>
@@ -39,10 +39,7 @@ const msg = 'Hola Juan, vengo desde tu sitio web y me interesa un agente de IA p
       <div class="grid grid-3">
         {AUTOMATIZACION_ORDER.map((id, i) => <PlanCard plan={PLANES[id]} dark={PLANES[id].star} delay={i * 90} />)}
       </div>
-      <p class="card offer-launch" data-reveal>
-        <strong>Precio de lanzamiento: quedan {LAUNCH.left} de {LAUNCH.total} cupos.</strong>
-        Si eres de los {LAUNCH.total} primeros en contratar Agente Starter o Campaña + agente y me dejas contar tu caso (con tu nombre o de forma anónima), pagas {LAUNCH.discount}% menos de mensualidad durante {LAUNCH.months} meses.
-      </p>
+
     </div>
   </section>
 

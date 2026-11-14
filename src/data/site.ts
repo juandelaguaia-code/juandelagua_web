@@ -89,7 +89,7 @@ export const VALUES = [
   { name: 'Claridad estratégica', d: 'Antes de implementar, se entiende el problema. Cada decisión tiene un porqué y un plan medible.' },
   { name: 'Autenticidad y cercanía', d: 'De tú a tú, sin lenguaje corporativo. Se muestra el proceso real, con los errores incluidos.' },
   { name: 'Pragmatismo realista', d: 'Lo más simple que funcione. Y si no conviene automatizar, se dice.' },
-  { name: 'El buen vivir', d: 'El objetivo no es solo facturar más: es recuperar tiempo para la familia, el deporte, la salud y el ocio.' },
+  { name: 'Vivir bien', d: 'El objetivo no es solo facturar más: es recuperar tiempo para la familia, el deporte, la salud y el ocio.' },
 ] as const;
 
 /** Manifiesto (texto literal del Brand Book) */

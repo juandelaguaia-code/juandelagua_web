@@ -1,0 +1,47 @@
+---
+// Oferta estrella Campaña + agente en formato horizontal y destacado (fondo Marino), sin espacio vacío.
+import { PLANES, clp } from '../../data/planes';
+import { waLink } from '../../data/site';
+const p = PLANES.combo;
+const href = waLink(`Hola Juan, vengo desde tu sitio web y me interesa Campaña + agente.`);
+---
+
+<article class="combo-hl on-dark" data-reveal>
+  <div class="combo-hl__main">
+    <span class="tag">Oferta estrella</span>
+    <h3>Campaña + agente</h3>
+    <p>{p.summary} Es la forma más completa de no perder ninguna consulta.</p>
+    <div class="combo-hl__prices">
+      <div><span class="k">Instalación</span><span class="price">{clp(p.setup!)}<small>+ IVA</small></span></div>
+      <div><span class="k">Mensualidad</span><span class="price">{clp(p.monthly!)}<small>/mes + IVA</small></span></div>
+    </div>
+  </div>
+  <div class="combo-hl__side">
+    <p><strong>Incluye</strong></p>
+    <ul class="checklist">{p.includes.map((i) => <li>{i}</li>)}</ul>
+    {p.excludes && <p class="combo-hl__ex">No incluye: {p.excludes.join(' · ')}</p>}
+    <a class="btn btn--agua" href={href} target="_blank" rel="noopener">Quiero este plan</a>
+  </div>
+</article>
+
+<style>
+  .combo-hl {
+    display: grid; gap: clamp(20px, 3vw, 48px); padding: clamp(24px, 4vw, 48px);
+    border-radius: var(--radius-lg); background: radial-gradient(120% 140% at 100% 100%, #17466b 0%, var(--marino) 60%);
+    box-shadow: 0 30px 60px -36px rgba(14, 42, 67, 0.7);
+  }
+  @media (min-width: 860px) { .combo-hl { grid-template-columns: 1.1fr 1fr; align-items: center; } }
+  .combo-hl__main, .combo-hl__side { display: grid; gap: 14px; align-content: start; }
+  .combo-hl .tag { justify-self: start; }
+  .combo-hl h3 { font-size: var(--fs-xl); color: var(--perla); }
+  .combo-hl p { color: rgba(245, 243, 236, 0.8); }
+  .combo-hl__prices { display: flex; flex-wrap: wrap; gap: 12px 40px; margin-top: 6px; }
+  .combo-hl__prices > div { display: grid; gap: 2px; }
+  .combo-hl .k { font-size: var(--fs-xs); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--corriente-soft); }
+  .combo-hl .price { font-size: clamp(1.8rem, 1.4rem + 1.4vw, 2.6rem); color: var(--perla); }
+  .combo-hl .price small { color: rgba(245, 243, 236, 0.7); }
+  .combo-hl .checklist li { color: rgba(245, 243, 236, 0.9); }
+  .combo-hl strong { color: var(--perla); }
+  .combo-hl__ex { font-size: var(--fs-xs); }
+  .combo-hl .btn { justify-self: start; margin-top: 6px; }
+</style>

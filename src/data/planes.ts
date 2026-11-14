@@ -54,10 +54,16 @@ export const PLANES = {
     excludes: ['Grabación presencial (se cotiza aparte)', 'Pauta en Meta (la pagas directo)'],
   },
   campanas: {
-    id: 'campanas', name: 'Gestión de campañas Meta', line: 'contenido', setup: 120_000, monthly: 120_000, page: '/marketing-digital',
+    id: 'campanas', name: 'Campañas en Meta', line: 'contenido', setup: 150_000, monthly: 120_000, page: '/marketing-digital',
     summary: 'Anuncios en Instagram y Facebook que se miden: sabes cuánto te cuesta cada contacto.',
     includes: ['Estrategia de campaña', 'Creatividades (fotos y videos generados con IA)', 'Públicos y segmentación', 'Optimización continua', 'Reporte mensual de costo por contacto'],
     excludes: ['Pauta en Meta (la pagas directo)', 'Grabación presencial (se cotiza aparte)'],
+  },
+  google: {
+    id: 'google', name: 'Campañas en Google Ads', line: 'contenido', setup: 150_000, monthly: 140_000, page: '/marketing-digital',
+    summary: 'Aparece cuando te buscan en Google: anuncios en búsqueda y mapas para gente que ya quiere comprar.',
+    includes: ['Investigación de palabras clave', 'Anuncios de búsqueda y de Google Maps', 'Medición de llamadas, formularios y WhatsApp', 'Optimización continua', 'Reporte mensual de costo por contacto'],
+    excludes: ['Pauta en Google (la pagas directo)'],
   },
   // ---------- Agentes de IA y automatización ----------
   starter: {

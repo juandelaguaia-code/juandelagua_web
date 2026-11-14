@@ -42,7 +42,7 @@ const proceso = [
 ];
 
 const faq: FaqItem[] = [
-  { q: '¿Cuánto cuesta?', a: `Los precios están publicados: Plan Base ${clp(PLANES.base.setup)} + IVA (pago único), Gestión de campañas Meta ${desde(PLANES.campanas)}, Plan Crecer ${desde(PLANES.crecer)} y Plan Escalar ${desde(PLANES.escalar)}. El diagnóstico de 15 minutos es gratis.` },
+  { q: '¿Cuánto cuesta?', a: `Los precios están publicados: Plan Base ${clp(PLANES.base.setup)} + IVA (pago único), campañas en Meta ${desde(PLANES.campanas)}, campañas en Google Ads ${desde(PLANES.google)}, Plan Crecer ${desde(PLANES.crecer)} y Plan Escalar ${desde(PLANES.escalar)}. El diagnóstico de 15 minutos es gratis.` },
   FAQ_PRECIOS[1],
   FAQ_PRECIOS[2],
   { q: '¿La inversión en publicidad está incluida?', a: 'No. La inversión en publicidad se paga directamente a Meta, Google o LinkedIn con un medio de pago de la empresa, lo que permite controlar en todo momento cuánto se gasta. Los honorarios se indican por separado en la propuesta.' },
@@ -71,7 +71,7 @@ const faq: FaqItem[] = [
   ]}
 >
   <PageHero eyebrow="Marketing">
-    <Fragment slot="title">Marketing orientado a <em>generar clientes</em>.</Fragment>
+    <Fragment slot="title">Marketing orientado a <em>generar clientes</em></Fragment>
     <Fragment slot="lead"><p>Campañas, contenido y sitios web para pymes en Chile, medidos desde el primer día: cada mes sabes cuánto te cuesta cada contacto. Todo parte con un diagnóstico gratis de 15 minutos.</p></Fragment>
     <DiagnosticoButton />
     <a class="btn btn--ghost" href="#planes">Ver ofertas y precios</a>

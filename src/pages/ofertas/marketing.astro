@@ -6,23 +6,24 @@ import CtaBand from '../../components/CtaBand.astro';
 import Wave from '../../components/Wave.astro';
 import DiagnosticoButton from '../../components/DiagnosticoButton.astro';
 import OtrasOfertas from '../../components/ofertas/OtrasOfertas.astro';
-import { PLANES, CONTENIDO_ORDER, APARTE, CONTENIDO_IA, planServiceSchema, clp } from '../../data/planes';
+import ComboHighlight from '../../components/ofertas/ComboHighlight.astro';
+import { PLANES, CONTENIDO_ORDER, APARTE, CONTENIDO_IA, planServiceSchema } from '../../data/planes';
 
 const msg = 'Hola Juan, vengo desde tu sitio web y me interesan los planes de marketing.';
 ---
 
 <Base
-  title="Marketing para pymes: campañas Meta y contenido, precios"
-  description="Gestión de campañas Meta desde $120.000/mes y planes de contenido con reporte mensual de costo por contacto. Fotos y videos generados con IA. Precios en pesos + IVA."
+  title="Marketing para pymes: contenido y campañas en Meta y Google"
+  description="Planes de contenido, campañas en Meta y Google Ads con reporte mensual de costo por contacto. Fotos y videos generados con IA. Precios en pesos + IVA."
   breadcrumbs={[{ name: 'Ofertas', path: '/ofertas' }, { name: 'Marketing', path: '/ofertas/marketing' }]}
   waMessage={msg}
-  schema={[...CONTENIDO_ORDER, 'campanas' as const].map((id) => planServiceSchema(PLANES[id]))}
+  schema={[...CONTENIDO_ORDER, 'campanas' as const, 'google' as const].map((id) => planServiceSchema(PLANES[id]))}
 >
   <PageHero eyebrow="Ofertas · Marketing">
-    <Fragment slot="title">Marketing que <em>trae clientes</em>, no solo likes.</Fragment>
-    <Fragment slot="lead"><p>Campañas y contenido con un objetivo claro, medidos desde el primer día. Cada mes sabes qué funcionó, qué no y cuánto te costó cada contacto.</p></Fragment>
+    <Fragment slot="title">Marketing que <em>trae clientes</em>, no solo likes</Fragment>
+    <Fragment slot="lead"><p>Contenido y campañas con un objetivo claro, medidos desde el primer día. Cada mes sabes qué funcionó, qué no y cuánto te costó cada contacto.</p></Fragment>
     <DiagnosticoButton />
-    <a class="btn btn--ghost" href="/marketing-digital">Ver cómo trabajo</a>
+    <a class="btn btn--ghost" href="#publicidad">Ver publicidad en Meta y Google</a>
   </PageHero>
   <Wave from="var(--perla)" to="var(--bruma)" />
 
@@ -30,30 +31,42 @@ const msg = 'Hola Juan, vengo desde tu sitio web y me interesan los planes de ma
   <section class="section bg-bruma" id="contenido">
     <div class="container">
       <div class="section-head">
-        <p class="eyebrow" data-reveal>Marketing y contenido</p>
-        <h2 data-reveal style="--d:80ms">Que te vean, te entiendan y <em>te escriban</em>.</h2>
-        <p class="lead" data-reveal style="--d:160ms">Publicar por publicar no vende. Aquí cada pieza tiene un objetivo y cada mes ves qué trajo clientes y qué no. Crecer y Escalar tienen cupo limitado porque son horas reales de trabajo.</p>
+        <p class="eyebrow" data-reveal>Contenido y presencia</p>
+        <h2 data-reveal style="--d:80ms">Que te vean, te entiendan y <em>te escriban</em></h2>
+        <p class="lead" data-reveal style="--d:160ms">Publicar por publicar no vende. Aquí cada pieza tiene un objetivo y cada mes ves qué trajo clientes. Crecer y Escalar tienen cupo limitado porque son horas reales de trabajo.</p>
       </div>
       <p class="note card offer-note" data-reveal>{CONTENIDO_IA}</p>
       <div class="grid grid-3">
         {CONTENIDO_ORDER.map((id, i) => <PlanCard plan={PLANES[id]} delay={i * 90} />)}
       </div>
-      <div class="grid grid-2 offer-extra">
+    </div>
+  </section>
+
+  <!-- PUBLICIDAD -->
+  <section class="section" id="publicidad">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Publicidad digital</p>
+        <h2 data-reveal style="--d:80ms">Anuncios que <em>traen clientes</em>, medidos peso a peso</h2>
+        <p class="lead" data-reveal style="--d:160ms">En Meta llegas a quien todavía no te conoce. En Google apareces justo cuando alguien busca lo que vendes. Puedes partir con uno y sumar el otro cuando funcione.</p>
+      </div>
+      <div class="grid grid-2">
         <PlanCard plan={PLANES.campanas} />
-        <div class="card" data-reveal style="--d:90ms">
-          <span class="num">¿Y si además respondes al instante?</span>
-          <h3>Campaña + agente</h3>
-          <p>{PLANES.combo.summary}</p>
-          <p class="price">{clp(PLANES.combo.monthly)}<small>/mes + IVA</small></p>
-          <a class="link-arrow" href="/ofertas/ia#combo">Ver la oferta estrella →</a>
-        </div>
+        <PlanCard plan={PLANES.google} delay={90} />
+      </div>
+      <div class="combo-wrap" id="combo">
+        <ComboHighlight />
       </div>
       <p class="note card offer-note" data-reveal style="margin-top:28px">{APARTE}</p>
     </div>
   </section>
+  <Wave from="var(--perla)" to="var(--bruma)" />
 
-  <Wave from="var(--bruma)" to="var(--perla)" />
-  <OtrasOfertas current="/ofertas/marketing" />
-  <Wave from="var(--perla)" to="var(--marino)" />
+  <OtrasOfertas current="/ofertas/marketing" bg="bruma" />
+  <Wave from="var(--bruma)" to="var(--marino)" />
   <CtaBand message={msg} title="¿Tu marketing está <em>trayendo clientes</em>?" text="Cuéntame qué has hecho y qué resultados has tenido. En 15 minutos te digo por dónde partir y cuánto tendrías que invertir." />
 </Base>
+
+<style>
+  .combo-wrap { margin-top: clamp(24px, 3vw, 40px); }
+</style>
