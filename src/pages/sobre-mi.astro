@@ -11,7 +11,7 @@ import c3 from '../assets/img/certificado-3.jpg';
 import c4 from '../assets/img/certificado-4.jpg';
 
 const description =
-  'Juan del Agua, consultor en IA y marketing en Chile. Estudiante de Ingeniería en Marketing Digital (Duoc UC, cursando) y certificado por Anthropic.';
+  'Juan del Agua Araneda Gattavara, consultor en IA y marketing en Chile. Estudiante de Ingeniería en Marketing Digital (Duoc UC, cursando) y certificado por Anthropic.';
 const certImgs = { 1: c1, 2: c2, 3: c3, 4: c4 };
 
 const profile = {
@@ -28,13 +28,13 @@ const profile = {
     <div class="container grid-intro">
       <div class="text">
         <p class="eyebrow rise">Sobre mí</p>
-        <h1 class="rise" style="--d:80ms"><em>Juan del Agua</em>.</h1>
+        <h1 class="rise" style="--d:80ms"><em>Juan del Agua</em> Araneda Gattavara.</h1>
         <div class="lead rise" style="--d:160ms">
-          <p>Consultor en inteligencia artificial y marketing, con base en Viña del Mar. Estoy cursando Ingeniería en Marketing Digital en Duoc UC y estoy certificado por Anthropic, la empresa creadora de Claude, con cuatro certificaciones de Anthropic Academy. Desarrollo soluciones con IA que funcionan en negocios reales.</p>
+          <p>Consultor en inteligencia artificial y marketing, con base en Viña del Mar. Desarrollo soluciones con IA que operan en negocios reales y estudio Ingeniería en Marketing Digital en Duoc UC (cursando).</p>
         </div>
       </div>
       <div class="photo rise" style="--d:120ms">
-        <Image src={retrato} alt="Retrato de Juan del Agua" widths={[360, 560, 720]} sizes="(min-width: 900px) 440px, 80vw" loading="eager" />
+        <Image src={retrato} alt="Retrato de Juan del Agua Araneda Gattavara" widths={[360, 560, 720]} sizes="(min-width: 900px) 440px, 80vw" loading="eager" />
       </div>
     </div>
   </section>
@@ -48,6 +48,14 @@ const profile = {
         <p>La IA ordena lo que pasa dentro de la empresa. El marketing, cómo llegan los clientes. Trabajo ambos frentes, con un proceso transparente: sabes qué se construye, por qué y cómo funciona, sin depender a ciegas de un proveedor.</p>
         <p>{SITE.signature}</p>
       </div>
+    </div>
+  </section>
+
+  <section class="section" id="manifiesto">
+    <div class="container prose manifesto">
+      <p class="eyebrow" data-reveal>Manifiesto</p>
+      {MANIFESTO.map((p) => <p data-reveal>{p}</p>)}
+      <p data-reveal><em>— Juan del Agua</em></p>
     </div>
   </section>
 
@@ -66,14 +74,6 @@ const profile = {
           </article>
         ))}
       </div>
-    </div>
-  </section>
-
-  <section class="section bg-bruma" id="manifiesto">
-    <div class="container prose manifesto">
-      <p class="eyebrow" data-reveal>Manifiesto</p>
-      {MANIFESTO.map((p) => <p data-reveal>{p}</p>)}
-      <p data-reveal><em>— Juan del Agua</em></p>
     </div>
   </section>
 

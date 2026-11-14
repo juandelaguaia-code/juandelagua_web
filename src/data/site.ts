@@ -87,18 +87,19 @@ export const COMMUNITY = {
 /** Valores de marca (Brand Book) */
 export const VALUES = [
   { name: 'Claridad estratégica', d: 'Antes de implementar, se entiende el problema. Cada decisión tiene un porqué y un plan medible.' },
-  { name: 'Autenticidad y cercanía', d: 'De tú a tú, sin lenguaje corporativo. Muestro el proceso real, tal como es.' },
+  { name: 'Autenticidad y cercanía', d: 'De tú a tú, sin lenguaje corporativo. Se muestra el proceso real, con los errores incluidos.' },
   { name: 'Pragmatismo realista', d: 'Lo más simple que funcione. Y si no conviene automatizar, se dice.' },
   { name: 'El buen vivir', d: 'El objetivo no es solo facturar más: es recuperar tiempo para la familia, el deporte, la salud y el ocio.' },
 ] as const;
 
 /** Manifiesto (texto literal del Brand Book) */
 export const MANIFESTO = [
-  'Hay un mar de información sobre IA: cada día aparece una herramienta, una promesa o un experto nuevo. Con tanto ruido, es fácil enredarse o no partir nunca.',
-  'Creo que la tecnología tiene que servir para algo concreto. Creo en el criterio por sobre la moda: no todo se automatiza, y decir cuándo no conviene también es parte del trabajo.',
-  'Creo en mostrar el proceso completo, con pantallas reales.',
-  'Y creo, sobre todo, que el objetivo no es solo facturar más: es devolverle al equipo su eficiencia, a la gerencia su tranquilidad y a cada persona tiempo para lo que importa cuando se apaga el computador.',
-  'Para eso estoy: para que avances con calma, acompañado por alguien que conoce la corriente. Y para que, al final del día, te quede tiempo para vivir.',
+  'Hay un mar de información sobre inteligencia artificial. Todos los días aparece una herramienta nueva, una promesa nueva, un experto nuevo. Con tanto ruido, la mayoría de las personas y empresas se enreda, se cansa o ni siquiera se atreve a partir.',
+  'Yo creo que la tecnología tiene que servir para algo concreto.',
+  'Creo en el criterio por sobre la moda. No todo se automatiza, y decir cuándo no conviene también es parte del trabajo.',
+  'Creo en mostrar el proceso completo, con pantallas reales y los errores incluidos.',
+  'Y creo, sobre todo, que el objetivo no es solo facturar más. Es devolverle al equipo su eficiencia, a la gerencia su tranquilidad y a cada persona el tiempo para lo que importa cuando se apaga el computador: la familia, el deporte, la salud, los amigos, el ocio.',
+  'Por eso hago lo que hago. Para que avances en este mar con calma, acompañado por alguien que conoce la corriente. Y para que, al final del día, te quede tiempo para vivir.',
 ] as const;
 
 /**
