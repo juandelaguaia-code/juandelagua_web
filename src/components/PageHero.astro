@@ -3,7 +3,8 @@
  * Portada de las páginas interiores (ofertas, blog, comunidad, consultoría, contacto…).
  *
  * El mar es el fondo de TODA la página, no solo de la portada: una capa fija detrás de todo
- * (imagen en celular, el video del mar de la home en computador) que se mueve solo al hacer scroll.
+ * (el video del mar de la home: 16:9 en computador y recorte vertical liviano en celular) que se mueve
+ * solo al hacer scroll. Mientras carga, o con ahorro de datos o movimiento reducido, queda la imagen.
  * En modo oscuro las secciones son semitransparentes para que el mar se vea de arriba a abajo
  * (reglas en global.css, "Páginas interiores"); en modo claro las secciones quedan opacas y el mar
  * se ve en la portada.
@@ -17,7 +18,7 @@ const { eyebrow } = Astro.props;
 
 <div class="mar-pagina" data-mar-pagina aria-hidden="true">
   <FondoMar class="mp-img" priority />
-  <video class="mp-video" muted playsinline preload="none" tabindex="-1" data-desktop={FONDO.video}></video>
+  <video class="mp-video" muted playsinline disablepictureinpicture disableremoteplayback preload="none" tabindex="-1" data-desktop={FONDO.video} data-mobile={FONDO.videoMobile}></video>
   <div class="mp-shade"></div>
 </div>
 
@@ -33,7 +34,7 @@ const { eyebrow } = Astro.props;
 <!-- Encabezado transparente sobre el mar desde el primer cuadro (Header.astro lo mantiene al bajar) -->
 <script is:inline>document.querySelector('[data-header]')?.classList.add('on-hero');</script>
 
-<!-- El mar avanza con el scroll de toda la página: video en computador, imagen que se desplaza en celular -->
+<!-- El mar avanza con el scroll de toda la página (video en computador y en celular) -->
 <script>
   import { pickSource, onGateChange, loadScrub, type Scrub } from '../scripts/scrub';
 
@@ -43,6 +44,7 @@ const { eyebrow } = Astro.props;
     const reduce = matchMedia('(prefers-reduced-motion: reduce)');
     let target = 0, shown = 0, raf = 0, last = 0, lastP = '';
     let ctrl: Scrub | null = null, loading: string | null = null, scrub: ((p: number) => void) | null = null;
+    const sources = { desktop: video.dataset.desktop!, mobile: video.dataset.mobile || undefined };
     const progress = () => {
       const max = document.documentElement.scrollHeight - innerHeight;
       return max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
@@ -62,12 +64,13 @@ const { eyebrow } = Astro.props;
     };
     const onScroll = () => { if (reduce.matches) return; target = progress(); if (!raf) raf = requestAnimationFrame(tick); };
     const arm = () => {
-      const url = pickSource({ desktop: video.dataset.desktop! });
+      const url = pickSource(sources);
       if (!url) { scrub = null; layer.classList.remove('video-ready'); return; }
       if (url === loading) { if (ctrl?.ready) { scrub = (p) => ctrl!.seek(p); layer.classList.add('video-ready'); } return; }
+      scrub = null; layer.classList.remove('video-ready');
       loading = url;
       ctrl = loadScrub(video, url, (s) => {
-        if (!pickSource({ desktop: video.dataset.desktop! })) return;
+        if (pickSource(sources) !== url) return;
         scrub = (p) => s.seek(p);
         s.seek(shown);
         layer.classList.add('video-ready');

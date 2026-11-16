@@ -109,3 +109,11 @@ Todo texto visible de este paquete va literal, y la página construida debe pasa
 - **Blog y comunidad con fondo:** la imagen del mar ahora es un archivo fijo (`public/fondo/`), igual en todo el sitio, así carga también en las páginas que arma el servidor. El video necesitaba permiso `blob:` en la política de seguridad para avanzar con el scroll en esas páginas.
 - **Contraste medido en cada página interior** sobre el peor píxel del video (arriba, a un tercio y a dos tercios de la página): 4,4:1 o más en todos los textos.
 - **Gran ola versión 2:** prompts nuevos en `docs/continuar-en-otra-sesion.md` (ola de abajo completa, sin columnas de bruma, mar del fondo con textura).
+
+## 12. Quinta ronda: gran ola versión 2 y video en celular
+
+- **Gran ola nueva** (generada por Juan con los prompts de la versión 2): la ola completa, sin columnas de bruma y con el mar del fondo con textura. Color de marca con mezcla 0,5 para conservar el carácter del grabado. Las líneas aparecen cuando la ola sube, cuando rompe y cuando el mar queda en calma (tramos 0,12, 0,42 y 0,72).
+- **Video con scroll también en celular:** la gran ola tiene una versión vertical que sigue a la ola mientras rompe (como una cámara que la acompaña), con el texto arriba, sobre el cielo. La portada y el fondo de las páginas interiores usan un recorte vertical del video del mar. Pesan entre 0,6 y 1 MB y se piden después de la carga; con movimiento reducido, ahorro de datos o 2G quedan las imágenes fijas.
+- **Fluidez medida** en un celular simulado con la CPU cuatro veces más lenta y 4G: el video sigue el scroll con unos 24 saltos por segundo y un desfase medio de 4 ms; la gran ola empieza a bajar a pantalla y media de distancia y queda lista antes de llegar.
+- **Contraste** de las tres líneas sobre el peor píxel de cada momento del video: 4,7:1 o más en computador, notebook, iPhone, Android y iPad.
+- **Caché del navegador:** los archivos con hash se guardan un año y los videos y el fondo una semana. Visitar otra página del sitio ya no vuelve a preguntar por cada archivo.

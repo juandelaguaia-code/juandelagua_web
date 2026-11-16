@@ -42,7 +42,7 @@ const th = (i: number) => (0.04 + i * 0.035).toFixed(3);
   <div class="hero-stage" data-stage>
     <div class="hero-visual">
       <FondoMar class="hero-bg" priority />
-      {scrub && <video class="hero-video" muted playsinline preload="none" aria-hidden="true" tabindex="-1" data-desktop={scrub.desktop} data-mobile={scrub.mobile}></video>}
+      {scrub && <video class="hero-video" muted playsinline disablepictureinpicture disableremoteplayback preload="none" aria-hidden="true" tabindex="-1" data-desktop={scrub.desktop} data-mobile={scrub.mobile}></video>}
       <div class="hero-shade" aria-hidden="true"></div>
       <div class="hero-glow" aria-hidden="true"></div>
       <div class="hero-sides" aria-hidden="true"></div>
@@ -202,6 +202,7 @@ const th = (i: number) => (0.04 + i * 0.035).toFixed(3);
       const url = pickSource(sources);
       if (!url) return off();
       if (url === loading) { if (ctrl?.ready) on(ctrl); return; }
+      off();
       loading = url;
       ctrl = loadScrub(video, url, (s) => { if (pickSource(sources) === url) on(s); }, off);
     };

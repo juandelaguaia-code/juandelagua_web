@@ -12,6 +12,8 @@ export const FONDO = {
   mobileAvif: set('mar-movil', [640, 900, 1152], 'avif'),
   mobileWebp: set('mar-movil', [640, 900, 1152], 'webp'),
   fallback: '/fondo/mar-1920.webp',
-  /** el mismo video de la portada: avanza con el scroll en computador (en celular, imagen fija) */
+  /** el mismo video de la portada: avanza con el scroll de toda la página */
   video: '/videos/mar-portada.mp4',
+  /** recorte vertical liviano del mismo video, para celular y tablet vertical */
+  videoMobile: '/videos/mar-portada-movil.mp4',
 } as const;

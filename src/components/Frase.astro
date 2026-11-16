@@ -5,40 +5,49 @@
  * Sin video: cada palabra emerge desde la línea del agua al entrar en pantalla.
  * Con el video de la gran ola: la sección se fija en pantalla y, al bajar, la ola se curva y rompe
  * mientras aparecen las tres líneas, una tras otra, hasta quedar el mar en calma. El video solo se
- * mueve con el scroll. Con movimiento reducido o en celular sin versión liviana: imagen final quieta
- * con las tres líneas visibles.
+ * mueve con el scroll, también en celular: ahí usa una versión vertical liviana que sigue a la ola
+ * mientras rompe, y el texto va arriba, sobre el cielo. Con movimiento reducido o ahorro de datos:
+ * imagen quieta con las tres líneas visibles.
  */
 import { getImage } from 'astro:assets';
+import { PORTRAIT_MEDIA } from '../scripts/scrub';
 
 interface Word { t: string; em?: boolean }
 interface Props {
   lines: Word[][];
   video?: { desktop: string; mobile?: string };
-  /** imagen fija nítida de la ola: se ve mientras carga el video, en celular y con movimiento reducido */
+  /** imagen fija nítida de la ola: se ve mientras carga el video y con movimiento reducido */
   poster?: ImageMetadata;
+  /** recorte vertical de la misma imagen, igual al primer cuadro de la versión para celular */
+  posterMobile?: ImageMetadata;
 }
-const { lines, video, poster } = Astro.props;
+const { lines, video, poster, posterMobile } = Astro.props;
 const label = lines.map((l) => l.map((w) => w.t).join(' ')).join(' ');
 const ola = !!(video && poster);
-const [pA, pW] = ola
+const vertical = ola && !!(posterMobile && video?.mobile);
+const [pA, pW, mA, mW] = ola
   ? await Promise.all([
       getImage({ src: poster!, format: 'avif', widths: [800, 1280, 1920], quality: 62 }),
       getImage({ src: poster!, format: 'webp', widths: [800, 1280, 1920], quality: 72 }),
+      vertical ? getImage({ src: posterMobile!, format: 'avif', widths: [420, 629], quality: 62 }) : null,
+      vertical ? getImage({ src: posterMobile!, format: 'webp', widths: [420, 629], quality: 72 }) : null,
     ])
-  : [null, null];
-// tramos de scroll de cada línea (puntos de partida; se ajustan con la prueba de scroll)
-const bands = [0.12, 0.42, 0.7];
+  : [null, null, null, null];
+// tramos de scroll de cada línea: la ola sube, rompe y el mar queda en calma con la última
+const bands = [0.12, 0.42, 0.72];
 ---
 
 {ola ? (
-  <section class="statement on-dark ola" data-ola>
+  <section class:list={['statement on-dark ola', { 'ola--vertical': vertical }]} data-ola>
     <p class="sr-only">{label}</p>
     <div class="ola-stage" data-ola-stage>
       <picture class="ola-poster" aria-hidden="true">
+        {vertical && <source media={PORTRAIT_MEDIA} type="image/avif" srcset={mA!.srcSet.attribute} sizes="100vw" />}
+        {vertical && <source media={PORTRAIT_MEDIA} type="image/webp" srcset={mW!.srcSet.attribute} sizes="100vw" />}
         <source type="image/avif" srcset={pA!.srcSet.attribute} sizes="100vw" />
-        <img src={pW!.src} srcset={pW!.srcSet.attribute} sizes="100vw" alt="" width="1920" height="1071" loading="lazy" decoding="async" />
+        <img src={pW!.src} srcset={pW!.srcSet.attribute} sizes="100vw" alt="" width="1920" height="1080" loading="lazy" decoding="async" />
       </picture>
-      <video class="ola-video" muted playsinline preload="none" aria-hidden="true" tabindex="-1" data-desktop={video!.desktop} data-mobile={video!.mobile}></video>
+      <video class="ola-video" muted playsinline disablepictureinpicture disableremoteplayback preload="none" aria-hidden="true" tabindex="-1" data-desktop={video!.desktop} data-mobile={video!.mobile}></video>
       <div class="ola-scrim" aria-hidden="true"></div>
       <div class="container ola-copy">
         <p class="statement-text" aria-hidden="true">
@@ -105,6 +114,8 @@ const bands = [0.12, 0.42, 0.7];
         const url = pickSource(sources);
         if (!motion || !url) { scrub = null; sec.classList.remove('video-ready'); return; }
         if (url === loading) { if (ctrl?.ready) { scrub = (p) => ctrl!.seek(p); sec.classList.add('video-ready'); } return; }
+        // otra fuente (p. ej. al girar el celular): la imagen vuelve mientras carga la nueva
+        scrub = null; sec.classList.remove('video-ready');
         loading = url;
         ctrl = loadScrub(video, url, (s) => {
           if (pickSource(sources) !== url) return;
@@ -114,11 +125,12 @@ const bands = [0.12, 0.42, 0.7];
         }, () => { scrub = null; sec.classList.remove('video-ready'); });
       };
 
-      // El video empieza a bajar cuando la sección está cerca (no compite con la portada).
+      // El video empieza a bajar cuando la sección está a pantalla y media (no compite con la portada
+      // y queda listo antes de llegar, incluso bajando rápido).
       new IntersectionObserver(([e]) => {
         onScreen = e.isIntersecting;
         if (onScreen) { if (!loading) arm(); onScroll(); }
-      }, { rootMargin: '60% 0px 60% 0px' }).observe(sec);
+      }, { rootMargin: '150% 0px 150% 0px' }).observe(sec);
       onGateChange(arm);
       sec.classList.toggle('ola--anim', !reduce.matches);
       addEventListener('scroll', onScroll, { passive: true });
@@ -149,13 +161,23 @@ const bands = [0.12, 0.42, 0.7];
   .ola-scrim {
     position: absolute; inset: 0;
     background:
-      radial-gradient(70% 55% at 22% 50%, rgba(8, 25, 42, 0.78) 0%, rgba(8, 25, 42, 0.5) 55%, rgba(8, 25, 42, 0) 100%),
-      linear-gradient(90deg, rgba(8, 25, 42, 0.88) 0%, rgba(8, 25, 42, 0.72) 34%, rgba(8, 25, 42, 0.28) 62%, rgba(8, 25, 42, 0) 86%);
+      radial-gradient(75% 60% at 24% 50%, rgba(8, 25, 42, 0.82) 0%, rgba(8, 25, 42, 0.58) 55%, rgba(8, 25, 42, 0) 100%),
+      linear-gradient(90deg, rgba(8, 25, 42, 0.88) 0%, rgba(8, 25, 42, 0.76) 36%, rgba(8, 25, 42, 0.42) 62%, rgba(8, 25, 42, 0.1) 84%, rgba(8, 25, 42, 0) 96%);
   }
-  /* Celular: encuadre hacia el mar calmo (la cresta queda al borde derecho) y sombra pareja detrás del texto */
+  /* Celular sin versión vertical: encuadre hacia el mar calmo y sombra pareja detrás del texto */
   @media (max-width: 760px) {
-    .ola-poster img, .ola-video { object-position: 57% 50%; }
-    .ola-scrim { background: radial-gradient(130% 62% at 32% 46%, rgba(8, 25, 42, 0.86) 0%, rgba(8, 25, 42, 0.62) 58%, rgba(8, 25, 42, 0.3) 100%); }
+    .ola:not(.ola--vertical) :is(.ola-poster img, .ola-video) { object-position: 57% 50%; }
+    .ola:not(.ola--vertical) .ola-scrim { background: radial-gradient(130% 62% at 32% 46%, rgba(8, 25, 42, 0.86) 0%, rgba(8, 25, 42, 0.62) 58%, rgba(8, 25, 42, 0.3) 100%); }
+  }
+  /* Pantallas verticales (celular y tablet): video vertical que sigue a la ola; el texto va arriba,
+     sobre el cielo, y la ola queda viva en la mitad de abajo */
+  @media (orientation: portrait) and (max-width: 1024px), (orientation: portrait) and (pointer: coarse) {
+    .ola--vertical :is(.ola-poster img, .ola-video) { object-position: 50% 50%; }
+    .ola--vertical .ola-stage { align-items: start; }
+    .ola--vertical .ola-copy { padding-top: calc(var(--header-h) + clamp(24px, 6svh, 72px)); }
+    .ola--vertical .ola-scrim {
+      background: linear-gradient(180deg, rgba(8, 25, 42, 0.9) 0%, rgba(8, 25, 42, 0.84) 30%, rgba(8, 25, 42, 0.62) 47%, rgba(8, 25, 42, 0.18) 64%, rgba(8, 25, 42, 0) 80%);
+    }
   }
   .ola-copy { position: relative; }
   /* más compacta que la versión sin video: las tres líneas caben en la mitad calma del cuadro */

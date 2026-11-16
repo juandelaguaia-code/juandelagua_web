@@ -16,6 +16,7 @@ import marFondo from '../assets/img/mar-fondo.jpg';
 // Videos y olas generados con Higgsfield (ajustados a la paleta de la marca)
 import olasFrente from '../assets/img/olas-frente.png';
 import granOla from '../assets/img/gran-ola.jpg';
+import granOlaMovil from '../assets/img/gran-ola-movil.jpg';
 // Fuentes del nombre de la portada: se precargan para que aparezca de inmediato con su tipografía
 import serifNormal from '@fontsource-variable/newsreader/files/newsreader-latin-wght-normal.woff2?url';
 import serifItalic from '@fontsource-variable/newsreader/files/newsreader-latin-wght-italic.woff2?url';
@@ -60,7 +61,7 @@ const marCombo = await getImage({ src: marFondo, format: 'webp', width: 1600, qu
   <link slot="head" rel="preload" href={serifItalic} as="font" type="font/woff2" crossorigin />
 
   <!-- PORTADA: el nombre en grande, Juan sube desde el mar y aparece la propuesta -->
-  <HeroMar video={{ desktop: '/videos/mar-portada.mp4' }} front={olasFrente} />
+  <HeroMar video={{ desktop: '/videos/mar-portada.mp4', mobile: '/videos/mar-portada-movil.mp4' }} front={olasFrente} />
   <Wave from="var(--marino)" to="var(--perla)" />
 
   <!-- SITUACIONES: lista editorial con una corriente que se dibuja al bajar -->
@@ -90,7 +91,7 @@ const marCombo = await getImage({ src: marFondo, format: 'webp', width: 1600, qu
 
   <!-- FRASE CENTRAL sobre la gran ola: rompe y se calma mientras aparecen las tres líneas (solo con scroll) -->
   <Wave from="var(--perla)" to="var(--marino)" />
-  <Frase lines={statement} video={{ desktop: '/videos/gran-ola.mp4' }} poster={granOla} />
+  <Frase lines={statement} video={{ desktop: '/videos/gran-ola-2.mp4', mobile: '/videos/gran-ola-2-movil.mp4' }} poster={granOla} posterMobile={granOlaMovil} />
   <Wave from="var(--marino)" to="var(--bruma)" />
 
   <!-- SERVICIOS -->

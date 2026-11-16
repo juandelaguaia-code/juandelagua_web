@@ -351,3 +351,9 @@ html:not([data-theme='light']) body:has(.mar-pagina) .cta-band { background-colo
 html:not([data-theme='light']) body:has(.mar-pagina) .cta-mar { display: none; }
 html:not([data-theme='light']) body:has(.mar-pagina) .site-footer { background-color: rgba(11, 32, 51, 0.86); }
 html[data-theme='light'] body:has(.mar-pagina) main > section:not(.page-hero):not(.on-dark):not(.bg-bruma) { background-color: var(--bg); }
+
+/* Videos que avanzan con el scroll: nunca muestran controles del navegador (Safari en iPhone puede
+   dibujar un botón de reproducir cuando el teléfono está en modo de ahorro de batería) */
+video[data-desktop]::-webkit-media-controls,
+video[data-desktop]::-webkit-media-controls-start-playback-button,
+video[data-desktop]::-webkit-media-controls-overlay-play-button { display: none !important; -webkit-appearance: none; }

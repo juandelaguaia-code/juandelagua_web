@@ -30,13 +30,14 @@ npm run preview    # sirve el build
 | Imagen del fondo de mar (la misma en todo el sitio) | `public/fondo/` (AVIF y WebP fijos), definida en `src/data/fondo.ts` y usada con `src/components/FondoMar.astro`. Se regenera con `node scripts/fondo-estatico.mjs` |
 | Color de marca para imágenes y videos nuevos (Higgsfield) | `python3 scripts/color-marca.py` (LUT para ffmpeg o imagen directa) |
 | Frase central de la home (sobre la gran ola, avanza con el scroll) | `src/components/Frase.astro` |
-| Videos que avanzan con el scroll (mar de la portada y gran ola) | `public/videos/mar-portada.mp4`, `public/videos/gran-ola.mp4` (generados con Higgsfield, ajustados a la paleta y codificados con un cuadro clave cada 8 para que el salto sea fluido). Lógica en `src/scripts/scrub.ts`. En celular y con movimiento reducido se ven imágenes fijas (`gran-ola.jpg`, `mar-fondo*.jpg`) |
+| Videos que avanzan con el scroll (mar de la portada y gran ola) | `public/videos/mar-portada.mp4` y `gran-ola-2.mp4` (computador) más `mar-portada-movil.mp4` y `gran-ola-2-movil.mp4` (versiones verticales livianas para celular y tablet vertical). Generados con Higgsfield, ajustados a la paleta y codificados con un cuadro clave cada 8 para que el salto sea fluido. Lógica en `src/scripts/scrub.ts`. Con movimiento reducido, ahorro de datos o 2G se ven imágenes fijas (`gran-ola*.jpg`, `public/fondo/`). Al reemplazar un video se le cambia el nombre (caché de una semana) |
 | Olas del frente de la portada (PNG transparente) | `src/assets/img/olas-frente.png` |
 | Modo oscuro (por defecto) y claro: colores por tema | `src/styles/global.css` (`:root` y `:root[data-theme='dark']`); el botón está en `src/components/Header.astro` y la preferencia se aplica antes de pintar en `src/layouts/Base.astro` |
 | Animaciones ligadas al scroll (nada se mueve solo) | `src/scripts/fx.ts` |
 | Uniones suaves entre secciones | `src/components/Wave.astro` |
 | Decisiones de diseño de la home | `docs/paquete-diseno-home.md` |
 | Seguir el trabajo en otra sesión (estado, pasos para cambiar videos, pruebas y prompt listo para pegar) | `docs/continuar-en-otra-sesion.md` |
+| Caché del navegador y compresión | `deploy/server.mjs`: `/_astro/*` un año, `/videos/*` y `/fondo/*` una semana; HTML, CSS, JS y SVG con brotli o gzip |
 | Imagen para compartir (OG) y favicon | `public/og.jpg` (captura de la portada a 1200×630), `public/favicon.svg` → el apple-touch-icon se regenera con `node scripts/make-images.mjs` |
 
 ## Páginas

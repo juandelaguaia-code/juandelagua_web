@@ -41,7 +41,25 @@ const redirect = (res, location, status = 301) => { res.writeHead(status, { Loca
 // Las imágenes y fuentes ya vienen comprimidas y se envían tal cual.
 const compress = compression({ threshold: 1024 });
 
-const server = http.createServer((req, res) => compress(req, res, () => route(req, res)));
+// Caché del navegador. Los archivos de /_astro llevan un hash en el nombre (si cambian, cambia el nombre):
+// se guardan un año sin volver a preguntar. Videos y fondo de mar: una semana (al reemplazarlos se les
+// cambia el nombre, p. ej. gran-ola-2.mp4). Solo en respuestas correctas: un 404 nunca queda guardado.
+const CACHE = [
+  [/^\/_astro\//, 'public, max-age=31536000, immutable'],
+  [/^\/(videos|fondo)\//, 'public, max-age=604800'],
+];
+function cacheHeaders(req, res) {
+  const path = (req.url ?? '/').split('?')[0];
+  const cc = CACHE.find(([r]) => r.test(path))?.[1];
+  if (!cc) return;
+  const writeHead = res.writeHead.bind(res);
+  res.writeHead = (status, ...rest) => {
+    if (status === 200 || status === 206 || status === 304) res.setHeader('Cache-Control', cc);
+    return writeHead(status, ...rest);
+  };
+}
+
+const server = http.createServer((req, res) => compress(req, res, () => { cacheHeaders(req, res); route(req, res); }));
 
 function route(req, res) {
   const host = String(req.headers['x-forwarded-host'] ?? req.headers.host ?? '').split(',')[0].trim().split(':')[0].toLowerCase();
