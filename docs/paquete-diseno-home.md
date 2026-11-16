@@ -96,5 +96,9 @@ Todo texto visible de este paquete va literal, y la página construida debe pasa
 - **Sin olas hechas con código.** Se quitaron el patrón de líneas del fondo, las olas de las uniones entre secciones, las olas animadas de la portada y el botón de mantener presionado. Las uniones son degradados suaves.
 - **El agua es imagen y video generados.** La portada usa el mar pintado (Higgsfield) en dos capas: detrás de Juan y otra vez delante de él en la franja de abajo, para que siga emergiendo del agua. Se mueve solo al hacer scroll.
 - **El mismo fondo marino** en la portada de ofertas, blog, comunidad y el resto de las páginas interiores (PageHero), con las mismas versiones de imagen que la home (quedan en caché).
-- **Pendiente, generado por Juan con sus generaciones ilimitadas** (Higgsfield no las permite desde Claude Code): el video del mar de la portada (avanza y retrocede con el scroll), la imagen y el video de la gran ola para la frase central, y la franja de olas del frente con fondo transparente.
+- **Videos generados por Juan** con sus generaciones ilimitadas de Higgsfield (no se permiten desde Claude Code), ajustados a la paleta Marino, Corriente y Perla:
+  - **Mar de la portada:** avanza y retrocede con el scroll mientras Juan sube; las olas del frente (PNG transparente) le tapan la cintura con un borde nítido. Se pide recién cuando la página terminó de cargar.
+  - **Gran ola:** la frase central se fija en pantalla; la ola se curva, rompe y se calma mientras aparecen "Menos trabajo manual", "Marketing con resultados" y "Recupera tiempo para vivir mejor". Contraste medido sobre el peor cuadro: 7:1 o más.
+  - **Celular y movimiento reducido:** imágenes fijas nítidas que se mueven con el scroll (sin descargar video).
+
 

@@ -27,7 +27,9 @@ npm run preview    # sirve el build
 | Fotos | `src/assets/img/` (Astro las optimiza a AVIF/WebP). Portada: `juan-agua.png` (recorte con fondo transparente) y `mar-fondo.jpg` / `mar-fondo-movil.jpg` (fondo de agua generado con Higgsfield y ajustado a la paleta). Quién está detrás / Sobre mí: `juan-retrato-recorte.png` (sin fondo, sobre un arco turquesa) |
 | Portada de la home (nombre, Juan que sube desde el mar y propuesta) | `src/components/HeroMar.astro` |
 | Portada con el mar en las páginas interiores (ofertas, blog, comunidad…) | `src/components/PageHero.astro` |
-| Frase central de la home | `src/components/Frase.astro` |
+| Frase central de la home (sobre la gran ola, avanza con el scroll) | `src/components/Frase.astro` |
+| Videos que avanzan con el scroll (mar de la portada y gran ola) | `public/videos/mar-portada.mp4`, `public/videos/gran-ola.mp4` (generados con Higgsfield, ajustados a la paleta y codificados con un cuadro clave cada 8 para que el salto sea fluido). Lógica en `src/scripts/scrub.ts`. En celular y con movimiento reducido se ven imágenes fijas (`gran-ola.jpg`, `mar-fondo*.jpg`) |
+| Olas del frente de la portada (PNG transparente) | `src/assets/img/olas-frente.png` |
 | Modo oscuro (por defecto) y claro: colores por tema | `src/styles/global.css` (`:root` y `:root[data-theme='dark']`); el botón está en `src/components/Header.astro` y la preferencia se aplica antes de pintar en `src/layouts/Base.astro` |
 | Animaciones ligadas al scroll (nada se mueve solo) | `src/scripts/fx.ts` |
 | Uniones suaves entre secciones | `src/components/Wave.astro` |

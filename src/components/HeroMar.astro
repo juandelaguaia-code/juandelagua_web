@@ -77,7 +77,7 @@ const th = (i: number) => (0.04 + i * 0.035).toFixed(3);
       <!-- El mismo mar, otra vez delante de Juan en la franja de abajo: así sube desde el agua. -->
       {front ? (
         <div class="hero-front hero-front--png" aria-hidden="true">
-          <Picture src={front} formats={['avif', 'webp']} fallbackFormat="webp" widths={[960, 1600, 2400]} sizes="100vw" alt="" decoding="async" />
+          <Picture src={front} formats={['avif', 'webp']} fallbackFormat="webp" widths={[960, 1600, 2000]} sizes="100vw" alt="" decoding="async" />
         </div>
       ) : (
         <div class="hero-front" aria-hidden="true">
@@ -223,7 +223,9 @@ const th = (i: number) => (0.04 + i * 0.035).toFixed(3);
       ctrl = loadScrub(video, url, (s) => { if (pickSource(sources) === url) on(s); }, off);
     };
     onGateChange(arm);
-    arm();
+    // El video se pide recién cuando la página terminó de cargar: no compite con el nombre ni con la foto.
+    if (document.readyState === 'complete') arm();
+    else addEventListener('load', arm, { once: true });
   }
 </script>
 
@@ -277,7 +279,7 @@ const th = (i: number) => (0.04 + i * 0.035).toFixed(3);
   /* baja 8svh más allá del borde y sube como máximo 2svh: el borde inferior nunca queda a la vista */
   .hero-front.hero-front--png :global(img) {
     top: auto; inset-inline: 0;
-    position: absolute; left: 0; right: 0; bottom: -8svh; width: 100%; height: max(56vw, 40svh);
+    position: absolute; left: 0; right: 0; bottom: -6svh; width: 100%; height: max(19.4vw, 20svh);
     object-fit: cover; object-position: 50% 100%; transform: translate3d(0, calc(var(--p, 1) * -2svh), 0);
   }
 
