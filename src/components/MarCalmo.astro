@@ -1,0 +1,150 @@
+---
+/**
+ * Frase central + el momento interactivo del sitio: "Calma el mar".
+ * Mientras el visitante mantiene presionado el botón, las líneas enredadas (el ruido) se ordenan en
+ * una corriente tranquila. Si suelta antes, vuelve con suavidad. Al completarlo aparece el
+ * enlace al diagnóstico. Sin JavaScript o con movimiento reducido se muestra directo el estado final.
+ */
+import { calmPath, LINES, W, H } from '../lib/calma';
+import { diagnosticoHref } from '../data/site';
+
+interface Word { t: string; em?: boolean }
+interface Props { lines: Word[][] }
+const { lines } = Astro.props;
+const label = lines.map((l) => l.map((w) => w.t).join(' ')).join(' ');
+---
+
+<section class="statement on-dark is-calm" data-calm>
+  <div class="calm-sea" aria-hidden="true">
+    <svg viewBox={`0 0 ${W * 2} ${H}`} preserveAspectRatio="none" focusable="false">
+      {Array.from({ length: LINES }, (_, i) => <path id={`cl${i}`} class:list={['cl', { 'cl--a': i % 3 === 0 }]} d={calmPath(i, 1, 60)} />)}
+      {Array.from({ length: LINES }, (_, i) => <use href={`#cl${i}`} x={W} />)}
+    </svg>
+  </div>
+  <div class="container statement-inner">
+    <p class="statement-text" data-rise aria-label={label}>
+      {lines.map((line, li) => (
+        <span class="rise-line" aria-hidden="true">
+          {line.map((w, wi) => (
+            <><span class="rise-mask"><span class:list={['rise-word', { accent: w.em }]} style={`--i:${li * 4 + wi}`}>{w.t}</span></span>{' '}</>
+          ))}
+        </span>
+      ))}
+    </p>
+
+    <div class="calm">
+      <div class="calm-ask">
+        <button type="button" class="calm-btn" data-calm-btn aria-label="Mantén presionado para calmar el mar">
+          <svg class="calm-ring" viewBox="0 0 64 64" aria-hidden="true">
+            <circle cx="32" cy="32" r="28" class="calm-track" />
+            <circle cx="32" cy="32" r="28" class="calm-prog" pathLength="100" />
+          </svg>
+          <svg class="calm-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10c2-2 4-2 6 0s4 2 6 0 4-2 6 0M3 15c2-2 4-2 6 0s4 2 6 0 4-2 6 0" /></svg>
+        </button>
+        <p class="calm-text">Hay un mar de información sobre IA. <strong>Mantén presionado</strong> para calmarlo.</p>
+      </div>
+      <div class="calm-done" data-calm-done>
+        <p class="calm-text">Así se siente avanzar con alguien que conoce la corriente.</p>
+        <a class="btn btn--agua" href={diagnosticoHref()} data-diagnostico>Agenda tu diagnóstico gratis</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { calmPath, LINES } from '../lib/calma';
+
+  const sec = document.querySelector<HTMLElement>('[data-calm]');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (sec && !reduce.matches) {
+    const paths = [...sec.querySelectorAll<SVGPathElement>('path.cl')];
+    const btn = sec.querySelector<HTMLButtonElement>('[data-calm-btn]')!;
+    const done = sec.querySelector<HTMLElement>('[data-calm-done]')!;
+    let k = 0, holding = false, finished = false, raf = 0, last = 0, drawn = -1;
+
+    const draw = () => {
+      const q = Math.round(k * 400) / 400;
+      if (q === drawn) return;
+      drawn = q;
+      for (let i = 0; i < LINES; i++) paths[i].setAttribute('d', calmPath(i, q));
+      sec.style.setProperty('--k', q.toFixed(3));
+    };
+    const frame = (now: number) => {
+      const dt = Math.min(0.05, (now - (last || now)) / 1000);
+      last = now;
+      k += holding ? dt / 1.5 : -dt / 0.9;
+      if (k >= 1) { k = 1; draw(); finish(); return; }
+      if (k <= 0 && !holding) { k = 0; draw(); raf = 0; last = 0; return; }
+      if (k < 0) k = 0;
+      draw();
+      raf = requestAnimationFrame(frame);
+    };
+    const start = () => { if (!raf && !finished) { last = 0; raf = requestAnimationFrame(frame); } };
+    const finish = () => {
+      finished = true; holding = false; raf = 0;
+      const hadFocus = document.activeElement === btn;
+      sec.classList.add('is-calm');
+      if (hadFocus) done.querySelector<HTMLElement>('a')?.focus({ preventScroll: true });
+    };
+    const hold = (on: boolean) => { if (finished) return; holding = on; sec.classList.toggle('is-holding', on); start(); };
+
+    // Estado inicial con JavaScript: el mar enredado y el botón listo.
+    sec.classList.remove('is-calm');
+    k = 0; draw();
+
+    btn.addEventListener('pointerdown', (e) => { e.preventDefault(); btn.setPointerCapture?.(e.pointerId); hold(true); });
+    for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture']) btn.addEventListener(ev, () => hold(false));
+    btn.addEventListener('contextmenu', (e) => e.preventDefault());
+    btn.addEventListener('keydown', (e) => { if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) { e.preventDefault(); hold(true); } });
+    btn.addEventListener('keyup', (e) => { if (e.key === ' ' || e.key === 'Enter') hold(false); });
+    btn.addEventListener('blur', () => hold(false));
+
+    // Si activan movimiento reducido con la página abierta: estado final, sin pedir nada.
+    reduce.addEventListener('change', (e) => { if (e.matches && !finished) { k = 1; draw(); finish(); } });
+  }
+</script>
+
+<style>
+  .statement { position: relative; overflow: hidden; padding: clamp(88px, 12vw, 168px) 0 clamp(72px, 9vw, 120px); isolation: isolate; }
+  .statement .container { position: relative; }
+  .calm-sea { position: absolute; inset: 8% 0; z-index: -1; pointer-events: none; overflow: hidden; }
+  .calm-sea svg { position: absolute; top: 0; left: 0; width: 200%; height: 100%; }
+  @media (prefers-reduced-motion: no-preference) { .calm-sea svg { animation: calm-drift 80s linear infinite; } }
+  @keyframes calm-drift { to { transform: translate3d(-50%, 0, 0); } }
+  .cl { fill: none; stroke: var(--perla); stroke-width: 1.1px; vector-effect: non-scaling-stroke; stroke-opacity: calc(0.1 + var(--k, 1) * 0.05); }
+  .cl--a { stroke: var(--corriente-soft); stroke-opacity: calc(0.3 + var(--k, 1) * 0.14); stroke-width: 1.4px; }
+
+  /* Una línea por idea, a todo el ancho */
+  .statement-text { font-family: var(--serif); font-size: clamp(2.3rem, 0.6rem + 5vw, 5rem); line-height: 1.04; letter-spacing: -0.025em; display: grid; gap: 0.06em; }
+  .rise-line { display: block; }
+  @media (min-width: 900px) { .rise-line { white-space: nowrap; } }
+  .rise-word.accent { font-style: italic; color: var(--corriente-soft); }
+
+  .calm { position: relative; margin-top: clamp(40px, 6vw, 72px); min-height: 72px; }
+  .calm-ask, .calm-done { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 22px; transition: opacity 0.6s var(--ease), transform 0.6s var(--ease); }
+  .calm-done { position: absolute; inset: 0 auto auto 0; }
+  .calm-text { max-width: 38ch; font-size: var(--fs-lg); line-height: 1.45; color: rgba(245, 243, 236, 0.8); }
+  .calm-text strong { color: var(--perla); font-weight: 600; }
+  .is-calm .calm-ask { opacity: 0; transform: translate3d(0, -10px, 0); pointer-events: none; visibility: hidden; transition: opacity 0.4s var(--ease), transform 0.4s var(--ease), visibility 0s 0.4s; }
+  .statement:not(.is-calm) .calm-done { opacity: 0; transform: translate3d(0, 12px, 0); pointer-events: none; visibility: hidden; }
+  .is-calm .calm-done { position: relative; transition-delay: 0.15s; }
+
+  .calm-btn {
+    position: relative; flex: none; width: 72px; height: 72px; border-radius: 50%; border: 0; padding: 0; cursor: pointer;
+    background: rgba(245, 243, 236, 0.06); color: var(--perla);
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; touch-action: none;
+    transition: transform 0.4s var(--ease), background-color 0.3s;
+  }
+  .calm-btn:hover { background: rgba(92, 200, 189, 0.14); }
+  .is-holding .calm-btn { transform: scale(0.94); background: rgba(92, 200, 189, 0.2); }
+  .calm-ring { position: absolute; inset: 0; transform: rotate(-90deg); }
+  .calm-ring circle { fill: none; stroke-width: 2.5; }
+  .calm-track { stroke: rgba(245, 243, 236, 0.18); }
+  .calm-prog { stroke: var(--corriente-soft); stroke-linecap: round; stroke-dasharray: 100; stroke-dashoffset: calc(100 - var(--k, 1) * 100); }
+  .calm-ico { position: absolute; inset: 0; margin: auto; width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+  /* Pulso suave para invitar a tocarlo (se detiene fuera de pantalla con body.paused o movimiento reducido) */
+  @media (prefers-reduced-motion: no-preference) {
+    .statement:not(.is-calm):not(.is-holding) .calm-btn::after { content: ''; position: absolute; inset: -6px; border-radius: 50%; border: 1.5px solid rgba(92, 200, 189, 0.5); animation: calm-pulse 3.4s var(--ease) -1.2s infinite; }
+  }
+  @keyframes calm-pulse { 0% { transform: scale(0.92); opacity: 0.9; } 70%, 100% { transform: scale(1.25); opacity: 0; } }
+</style>

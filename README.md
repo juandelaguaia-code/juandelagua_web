@@ -24,9 +24,13 @@ npm run preview    # sirve el build
 | Colores, tipografía, botones, tarjetas | `src/styles/global.css` |
 | Cada página | `src/pages/*.astro` (la ruta = el nombre del archivo) |
 | SEO global, schema (JSON-LD), Open Graph | `src/layouts/Base.astro` |
-| Fotos | `src/assets/img/` (Astro las optimiza a AVIF/WebP) |
-| Animaciones de agua ligadas al scroll | `src/scripts/fx.ts`, `src/components/Wave.astro`, `src/components/WaterCanvas.astro` |
-| Imagen para compartir (OG) y favicon | `public/og.jpg`, `public/favicon.svg` → regenerar con `node scripts/make-images.mjs` |
+| Fotos | `src/assets/img/` (Astro las optimiza a AVIF/WebP). Portada: `juan-agua.png` (recorte con fondo transparente) y `mar-fondo.jpg` / `mar-fondo-movil.jpg` (fondo de agua generado con Higgsfield y ajustado a la paleta) |
+| Portada (nombre, Juan que sube desde el mar y propuesta) | `src/components/HeroMar.astro` |
+| Olas que fluyen (portada y uniones entre secciones) | `src/lib/waves.ts`, `src/components/WavePlane.astro`, `WaveGroup.astro`, `WaveDefs.astro`, `Wave.astro` |
+| Momento interactivo "Calma el mar" | `src/components/MarCalmo.astro`, `src/lib/calma.ts` |
+| Animaciones ligadas al scroll y pausa fuera de pantalla | `src/scripts/fx.ts` (las otras páginas usan además `src/components/WaterCanvas.astro`) |
+| Decisiones de diseño de la home | `docs/paquete-diseno-home.md` |
+| Imagen para compartir (OG) y favicon | `public/og.jpg` (captura de la portada a 1200×630), `public/favicon.svg` → el apple-touch-icon se regenera con `node scripts/make-images.mjs` |
 
 ## Páginas
 
@@ -118,6 +122,7 @@ Se leen al arrancar el contenedor: cambiar una variable solo requiere reiniciar,
 - Open Graph + Twitter Card con `og.jpg` (1200×630); los artículos usan su portada.
 - Schema.org: `Person`, `ProfessionalService`, `Service` con `Offer`/`AggregateOffer` en CLP, `FAQPage`, `HowTo`, `BreadcrumbList`, `ProfilePage`, `ContactPage`, `Blog`, `BlogPosting`.
 - Imágenes responsivas AVIF/WebP, fuentes self-hosted (sin Google Fonts), sin JS pesado.
+- Compresión brotli/gzip en `deploy/server.mjs` (HTML, CSS, JS, JSON y SVG viajan unas 4 veces más livianos).
 - La comunidad y las cuentas son `noindex` y están fuera del sitemap.
 
 ## Subir a GitHub

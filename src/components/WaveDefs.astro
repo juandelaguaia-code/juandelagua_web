@@ -1,0 +1,17 @@
+---
+/**
+ * Formas de ola compartidas por todas las uniones entre secciones (Wave.astro) de una página.
+ * Se dibujan una sola vez aquí y cada unión las reutiliza con <use>: el HTML no crece con cada ola.
+ * Sin display:none a propósito (algunos navegadores dejan de resolver las referencias).
+ */
+import WaveGroup from './WaveGroup.astro';
+---
+
+<svg class="wv-defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <WaveGroup id="wd-back-0" h={120} w={{ seed: 901, humps: 2, base: 50, amp: 15 }} />
+    <WaveGroup id="wd-back-1" h={120} w={{ seed: 902, humps: 3, base: 56, amp: 11 }} />
+    <WaveGroup id="wd-front-0" h={120} w={{ seed: 903, humps: 2, base: 80, amp: 13 }} stripes={2} gap={8} />
+    <WaveGroup id="wd-front-1" h={120} w={{ seed: 904, humps: 3, base: 86, amp: 9 }} stripes={2} gap={8} />
+  </defs>
+</svg>

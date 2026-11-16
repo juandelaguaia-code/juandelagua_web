@@ -1,0 +1,52 @@
+---
+/**
+ * Un plano de olas: dos capas que se cruzan en direcciones opuestas a distinta velocidad,
+ * dentro de un "oleaje" que sube y baja. Como el borde visible es la unión de las dos crestas,
+ * la forma cambia todo el tiempo: el agua fluye en vez de deslizarse tiesa.
+ * Todo se mueve con transform (lo hace la tarjeta gráfica). Estilos en global.css (.wv-*).
+ *
+ * Liviano: cada capa define UN período (WaveGroup) y lo repite con <use>. Con `shared`, usa las
+ * formas comunes de WaveDefs.astro y no agrega ningún trazo al HTML.
+ */
+import WaveGroup from './WaveGroup.astro';
+import { PERIOD, PERIODS, type WaveShape } from '../lib/waves';
+
+interface Props {
+  class?: string;
+  /** alto del viewBox */
+  h?: number;
+  a?: WaveShape;
+  b?: WaveShape;
+  /** prefijo de formas compartidas (WaveDefs.astro), en vez de a/b */
+  shared?: string;
+  /** franjas paralelas bajo la cresta, como en el fondo de agua de la marca */
+  stripes?: number;
+  gap?: number;
+  /** segundos por período de cada capa */
+  dur?: [number, number];
+  /** segundos del oleaje (sube y baja) */
+  bob?: number;
+  /** 0..1, desfase para que no todas las olas partan iguales */
+  phase?: number;
+}
+
+const { class: cls = '', h = 160, a, b, shared, stripes = 0, gap = 10, dur = [30, 42], bob = 8, phase = 0.3 } = Astro.props;
+const vb = `0 0 ${PERIOD * PERIODS} ${h}`;
+const layers = shared
+  ? [0, 1].map((li) => ({ li, id: `${shared}-${li}`, w: undefined as WaveShape | undefined }))
+  : ([a, b].filter(Boolean) as WaveShape[]).map((w, li) => ({ li, id: `wv${w.seed}`, w }));
+const xs = Array.from({ length: PERIODS }, (_, i) => i * PERIOD);
+---
+
+<div class:list={['wv-plane', cls]} style={`--bob:${bob}s;--bob-d:${(-phase * bob).toFixed(2)}s`} aria-hidden="true">
+  <div class="wv-bob">
+    {layers.map(({ w, li, id }) => (
+      <div class:list={['wv-layer', { 'wv-rev': li === 1 }]} style={`--dur:${dur[li]}s;--dur-d:${(-((phase + li * 0.37) % 1) * dur[li]).toFixed(2)}s`}>
+        <svg viewBox={vb} preserveAspectRatio="none" focusable="false">
+          {w && <defs><WaveGroup id={id} w={w} h={h} stripes={stripes} gap={gap} /></defs>}
+          {xs.map((x) => <use href={`#${id}`} x={x} />)}
+        </svg>
+      </div>
+    ))}
+  </div>
+</div>

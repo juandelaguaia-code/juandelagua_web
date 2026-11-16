@@ -12,6 +12,7 @@ process.env.ASTRO_NODE_AUTOSTART = 'disabled';
 const { handler } = await import('../dist/server/entry.mjs');
 import http from 'node:http';
 import fs from 'node:fs';
+import compression from 'compression';
 
 const PORT = Number(process.env.PORT ?? 4321);
 const HOST = process.env.HOST ?? '0.0.0.0';
@@ -36,7 +37,13 @@ const pageWithFolder = (path) => {
 
 const redirect = (res, location, status = 301) => { res.writeHead(status, { Location: location, 'Cache-Control': 'no-cache' }); res.end(); };
 
-const server = http.createServer((req, res) => {
+// Compresión (brotli o gzip según el navegador) de HTML, CSS, JS, JSON y SVG: cada página viaja ~4 veces más liviana.
+// Las imágenes y fuentes ya vienen comprimidas y se envían tal cual.
+const compress = compression({ threshold: 1024 });
+
+const server = http.createServer((req, res) => compress(req, res, () => route(req, res)));
+
+function route(req, res) {
   const host = String(req.headers['x-forwarded-host'] ?? req.headers.host ?? '').split(',')[0].trim().split(':')[0].toLowerCase();
   const url = new URL(req.url ?? '/', 'http://x');
   const path = url.pathname;
@@ -56,6 +63,6 @@ const server = http.createServer((req, res) => {
     if (pageWithFolder(path)) req.url = `${path}.html${url.search}`;
   }
   handler(req, res);
-});
+}
 
 server.listen(PORT, HOST, () => console.log(`[server] escuchando en http://${HOST}:${PORT} (comunidad: ${COMMUNITY_HOST})`));

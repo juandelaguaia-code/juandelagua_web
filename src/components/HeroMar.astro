@@ -1,0 +1,353 @@
+---
+/**
+ * Portada "Emerges del mar".
+ *
+ * Al abrir: "Juan del Agua" en grande sobre el mar (fondo pintado con Higgsfield a partir del
+ * fondo de agua de la marca y ajustado a los colores oficiales). Al bajar: Juan sube desde detrás
+ * de las olas hasta el centro y aparece la propuesta con el botón del diagnóstico.
+ *
+ * Todo el movimiento es transform/opacity. El script de abajo solo escribe tres variables
+ * (--p, --rise, --settle) y se detiene cuando llega. Sin JavaScript o con movimiento reducido,
+ * la portada se muestra quieta en su estado final (Juan ya en el centro).
+ */
+import { getImage, Picture } from 'astro:assets';
+import WavePlane from './WavePlane.astro';
+import fondo from '../assets/img/mar-fondo.jpg';
+import fondoMovil from '../assets/img/mar-fondo-movil.jpg';
+import juan from '../assets/img/juan-agua.png';
+import { diagnosticoHref } from '../data/site';
+
+const [dA, dW, mA, mW] = await Promise.all([
+  // Tope 1920 px: el fondo va bajo sombras, y en pantallas retina ahorra 40 KB sin que se note
+  getImage({ src: fondo, format: 'avif', widths: [1280, 1920], quality: 60 }),
+  getImage({ src: fondo, format: 'webp', widths: [1280, 1920], quality: 70 }),
+  getImage({ src: fondoMovil, format: 'avif', widths: [640, 900, 1152], quality: 60 }),
+  getImage({ src: fondoMovil, format: 'webp', widths: [640, 900, 1152], quality: 70 }),
+]);
+
+const name1 = 'Juan';
+const name2 = 'del Agua';
+const h2Words: { t: string; em?: boolean }[] = [
+  { t: 'Tu' }, { t: 'operación' }, { t: 'y' }, { t: 'tus' }, { t: 'ventas,' },
+  { t: 'con', em: true }, { t: 'un', em: true }, { t: 'solo', em: true }, { t: 'responsable', em: true },
+];
+const plain = h2Words.filter((w) => !w.em);
+const accent = h2Words.filter((w) => w.em);
+const th = (i: number) => (0.04 + i * 0.035).toFixed(3);
+---
+
+<section class="hero on-dark" data-hero aria-labelledby="hero-title">
+  <div class="hero-stage" data-stage>
+    <div class="hero-visual">
+      <picture class="hero-bg" aria-hidden="true">
+        <source media="(orientation: portrait)" type="image/avif" srcset={mA.srcSet.attribute} sizes="100vw" />
+        <source media="(orientation: portrait)" type="image/webp" srcset={mW.srcSet.attribute} sizes="100vw" />
+        <source type="image/avif" srcset={dA.srcSet.attribute} sizes="100vw" />
+        <img src={dW.src} srcset={dW.srcSet.attribute} sizes="100vw" alt="" width="1920" height="1072" fetchpriority="high" decoding="async" />
+      </picture>
+      <div class="hero-shade" aria-hidden="true"></div>
+      <div class="hero-glow" aria-hidden="true"></div>
+      <div class="hero-sides" aria-hidden="true"></div>
+
+      <div class="hero-sea hero-sea--back" data-wave aria-hidden="true">
+        <WavePlane class="sea-far" h={200} a={{ seed: 41, humps: 3, base: 70, amp: 18 }} b={{ seed: 42, humps: 4, base: 78, amp: 14 }} stripes={3} gap={11} dur={[64, 82]} bob={11} phase={0.15} />
+        <WavePlane class="sea-mid" h={200} a={{ seed: 43, humps: 2, base: 112, amp: 26 }} b={{ seed: 44, humps: 3, base: 120, amp: 20 }} stripes={3} gap={12} dur={[44, 58]} bob={9} phase={0.55} />
+      </div>
+
+      <h1 class="hero-title" id="hero-title">
+        <span class="hero-kicker">Consultoría en IA y marketing para empresas en Chile</span>
+        <span class="sr-only">Juan del Agua</span>
+        <span class="hero-name" aria-hidden="true">
+          <span class="hero-w hero-w1">{[...name1].map((c, i) => <span class="ch" style={`--i:${i}`}>{c}</span>)}</span>
+          {' '}
+          <em class="hero-w hero-w2">{[...name2].map((c, i) => <span class="ch" style={`--i:${i + name1.length + 1}`}>{c === ' ' ? ' ' : c}</span>)}</em>
+        </span>
+      </h1>
+
+      <div class="hero-juan">
+        <Picture src={juan} formats={['avif', 'webp']} fallbackFormat="webp" widths={[360, 540, 691]} sizes="(min-width: 1100px) 46vh, 80vw" alt="Juan del Agua, consultor en inteligencia artificial y marketing en Chile" loading="eager" decoding="async" />
+      </div>
+
+      <div class="hero-sea hero-sea--front" data-wave aria-hidden="true">
+        <WavePlane class="sea-front" h={200} a={{ seed: 45, humps: 2, base: 96, amp: 30 }} b={{ seed: 46, humps: 3, base: 108, amp: 24 }} stripes={4} gap={13} dur={[30, 40]} bob={7} phase={0.8} />
+      </div>
+      <span class="hero-cue" aria-hidden="true"><span>Desliza</span><i></i></span>
+    </div>
+
+    <div class="hero-copy">
+      <div class="hero-copy-a">
+        <p class="eyebrow hc" style="--th:0">IA y marketing con criterio</p>
+        <h2 class="hero-h2">
+          <span class="sr-only">Tu operación y tus ventas, con un solo responsable</span>
+          <span aria-hidden="true">{plain.map((w, i) => <><span class="w" style={`--th:${th(i)}`}>{w.t}</span>{' '}</>)}<em>{accent.map((w, i) => <><span class="w" style={`--th:${th(i + plain.length)}`}>{w.t}</span>{i < accent.length - 1 ? ' ' : ''}</>)}</em></span>
+        </h2>
+        <p class="lead hc" style="--th:.4">Para empresas donde el equipo cotiza a mano, las consultas esperan horas y nadie sabe qué campaña trae ventas. Diagnostico, armo un piloto y mido lo que cambia.</p>
+      </div>
+      <div class="hero-copy-b">
+        <a class="btn btn--agua hero-cta hc" style="--th:.46" href={diagnosticoHref()} data-diagnostico>Agenda tu diagnóstico gratis</a>
+        <p class="hero-note hc" style="--th:.52">15 minutos por videollamada. Te llevas 3 oportunidades concretas, trabajemos juntos o no.</p>
+        <a class="btn btn--ghost hc" style="--th:.56" href="/ofertas">Ver ofertas y precios</a>
+        <ul class="hero-proof hc" style="--th:.62">
+          <li><a href="/sobre-mi#certificaciones">Certificado por <strong>Anthropic</strong></a></li>
+          <li>Piloto antes de la inversión grande</li>
+          <li>Cuentas y datos a nombre de tu empresa</li>
+          <li>Todo Chile, remoto o presencial</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="hero-track" aria-hidden="true"></div>
+</section>
+
+<!-- Va en línea, justo después del HTML de la portada: corre antes del primer pintado y no hay salto. -->
+<script is:inline>
+(() => {
+  const hero = document.querySelector('[data-hero]');
+  if (!hero) return;
+  const stage = hero.querySelector('[data-stage]');
+  const track = hero.querySelector('.hero-track');
+  const copy = hero.querySelector('.hero-copy');
+  const visual = hero.querySelector('.hero-visual');
+  const header = document.querySelector('[data-header]');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const wide = matchMedia('(min-width: 1100px) and (min-height: 600px)');
+  const clamp = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
+  const smooth = (t) => t * t * (3 - 2 * t);
+  const out = (t) => 1 - Math.pow(1 - t, 3);
+  const cache = {};
+  const put = (k, v) => { const s = v.toFixed(3); if (cache[k] !== s) { cache[k] = s; stage.style.setProperty(k, s); } };
+  let on = false, raf = 0, last = 0, onScreen = true, hidden = null;
+  let tP = 0, sP = 0, tS = 0, sS = 0;
+
+  function targets() {
+    const vh = innerHeight;
+    const len = track.offsetHeight || 1;
+    tP = clamp(-hero.getBoundingClientRect().top / len);
+    // En celular el bloque de texto va debajo del mar: aparece a medida que entra en pantalla.
+    tS = wide.matches ? 0 : clamp((vh - copy.getBoundingClientRect().top) / (vh * 0.42));
+  }
+  function apply() {
+    put('--p', sP);
+    put('--rise', out(clamp(sP / 0.72)));
+    const settle = wide.matches ? smooth(clamp((sP - 0.56) / 0.36)) : sS;
+    put('--settle', settle);
+    const h = settle < 0.12;
+    if (h !== hidden) { hidden = h; hero.classList.toggle('copy-hidden', h); }
+  }
+  function tick(now) {
+    const dt = Math.min(100, now - (last || now));
+    last = now;
+    const k = 1 - Math.pow(1 - 0.14, dt / 16.667);
+    sP += (tP - sP) * k;
+    sS += (tS - sS) * k;
+    if (Math.abs(tP - sP) < 0.0005 && Math.abs(tS - sS) < 0.0005) { sP = tP; sS = tS; raf = 0; last = 0; }
+    else raf = requestAnimationFrame(tick);
+    apply();
+  }
+  function onScroll() {
+    if (!on) return;
+    targets();
+    if (!raf && onScreen) raf = requestAnimationFrame(tick);
+  }
+  function enable() {
+    if (on) return;
+    on = true;
+    hero.classList.add('hero--anim');
+    targets(); sP = tP; sS = tS; apply();
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', onScroll);
+  }
+  function disable() {
+    if (!on) return;
+    on = false;
+    removeEventListener('scroll', onScroll);
+    removeEventListener('resize', onScroll);
+    if (raf) cancelAnimationFrame(raf);
+    raf = 0; last = 0; hidden = null;
+    hero.classList.remove('hero--anim', 'copy-hidden');
+    for (const k of ['--p', '--rise', '--settle']) { stage.style.removeProperty(k); delete cache[k]; }
+  }
+  const mode = () => (reduce.matches ? disable() : enable());
+  reduce.addEventListener('change', mode);
+  wide.addEventListener('change', () => { hidden = null; onScroll(); });
+  mode();
+
+  // El encabezado se vuelve oscuro y transparente mientras está sobre el mar.
+  let dark = null, hq = false;
+  const syncHeader = () => {
+    hq = false;
+    // Toda la portada es oscura (en celular incluye el bloque de texto bajo el mar)
+    const d = hero.getBoundingClientRect().bottom > (header ? header.offsetHeight : 68);
+    if (d !== dark) { dark = d; header && header.classList.toggle('on-hero', d); }
+  };
+  addEventListener('scroll', () => { if (!hq) { hq = true; requestAnimationFrame(syncHeader); } }, { passive: true });
+  syncHeader();
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([e]) => { onScreen = e.isIntersecting; if (onScreen) onScroll(); }).observe(hero);
+  }
+})();
+</script>
+
+<style>
+  .hero {
+    --juan-h: 80svh;
+    --sea-front: 24svh;
+    --sea-back: 46svh;
+    --title-lift: 23svh;
+    --title-shrink: 0.1;
+    position: relative; isolation: isolate;
+    margin-top: calc(-1 * var(--header-h));
+    background: var(--marino); color: var(--perla);
+  }
+  .hero-stage { position: relative; }
+  .hero--anim .hero-stage { position: sticky; top: 0; }
+  .hero--anim .hero-track { height: 120vh; }
+  .hero-visual { position: relative; height: 100svh; min-height: 540px; overflow: hidden; contain: paint; }
+
+  /* Fondo pintado + sombras para que el nombre y el texto se lean siempre */
+  .hero-bg, .hero-bg img { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .hero-bg img { object-fit: cover; object-position: 50% 62%; }
+  .hero-shade {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(120% 70% at 50% 18%, rgba(8, 25, 42, 0.55), rgba(8, 25, 42, 0) 70%),
+      linear-gradient(180deg, rgba(8, 25, 42, 0.9) 0%, rgba(11, 35, 56, 0.74) 34%, rgba(14, 42, 67, 0.4) 62%, rgba(14, 42, 67, 0.22) 100%);
+  }
+  .hero-glow {
+    position: absolute; left: 50%; bottom: 6svh; width: min(110svh, 120vw); aspect-ratio: 1; z-index: 2;
+    transform: translateX(-50%);
+    background: radial-gradient(closest-side, rgba(92, 200, 189, 0.2), rgba(92, 200, 189, 0.07) 55%, rgba(92, 200, 189, 0));
+    opacity: var(--rise, 1);
+  }
+
+  /* El mar */
+  .hero-sea { position: absolute; left: 0; right: 0; bottom: 0; pointer-events: none; }
+  /* Los dos mares bajan más allá del borde: al moverse con el scroll nunca dejan una franja vacía. */
+  .hero-sea--back { bottom: -4svh; height: calc(var(--sea-back) + 4svh); z-index: 1; transform: translate3d(0, calc(var(--p, 1) * 3svh), 0); }
+  .hero-sea--front { bottom: -4svh; height: calc(var(--sea-front) + 4svh); z-index: 4; transform: translate3d(0, calc(var(--p, 1) * -1.5svh), 0); }
+  .hero-sea--front::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 28%; background: var(--marino); }
+
+  /* El nombre */
+  .hero-title {
+    position: absolute; inset-inline: 0; top: 44%; z-index: 2; margin: 0;
+    padding-inline: var(--gutter); text-align: center; color: var(--perla);
+    font-weight: 400; line-height: 1;
+    transform: translate3d(0, calc(-50% - var(--rise, 1) * var(--title-lift)), 0) scale(calc(1 - var(--rise, 1) * var(--title-shrink)));
+  }
+  .hero-kicker {
+    display: block; margin: 0 auto clamp(12px, 2.2svh, 26px); max-width: 34ch;
+    font-family: var(--sans); font-size: clamp(0.72rem, 0.68rem + 0.2vw, 0.84rem); font-weight: 600;
+    letter-spacing: 0.2em; line-height: 1.6; text-transform: uppercase; color: var(--corriente-soft);
+  }
+  @media (min-width: 761px) { .hero-kicker { max-width: none; } }
+  .hero-name {
+    display: block; font-family: var(--serif); font-weight: 420;
+    font-size: clamp(3.4rem, min(13.4vw, 25svh), 15rem); line-height: 0.92; letter-spacing: -0.035em;
+    text-shadow: 0 2px 30px rgba(5, 15, 28, 0.35);
+  }
+  .hero-w { display: inline-block; padding: 0.04em 0.08em 0.16em; margin: -0.04em -0.08em -0.16em; overflow: hidden; vertical-align: top; }
+  .hero-w2 { font-style: italic; font-weight: 380; color: var(--corriente-soft); padding-right: 0.16em; margin-right: -0.16em; }
+  .ch { display: inline-block; }
+  @media (prefers-reduced-motion: no-preference) {
+    .ch { animation: ch-in 1.25s var(--ease) both; animation-delay: calc(120ms + var(--i) * 48ms); }
+  }
+  @keyframes ch-in { from { opacity: 0.01; transform: translate3d(0, 0.9em, 0); } to { opacity: 1; transform: none; } }
+
+  /* Juan */
+  .hero-juan {
+    position: absolute; left: 50%; bottom: -4svh; z-index: 3;
+    height: var(--juan-h); aspect-ratio: 691 / 1227;
+    transform: translate3d(-50%, calc((1 - var(--rise, 1)) * (var(--juan-h) + 6svh)), 0);
+  }
+  .hero-juan :global(picture), .hero-juan :global(img) { display: block; width: 100%; height: 100%; }
+  .hero-juan :global(img) { object-fit: contain; object-position: 50% 100%; }
+
+  .hero-cue {
+    position: absolute; left: 50%; bottom: calc(var(--sea-front) * 0.42); z-index: 6;
+    display: grid; justify-items: center; gap: 10px; transform: translateX(-50%);
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: rgba(245, 243, 236, 0.8);
+    opacity: calc(1 - var(--p, 1) * 7);
+  }
+  .hero-cue i { display: block; width: 1.5px; height: 40px; background: linear-gradient(rgba(245, 243, 236, 0), rgba(245, 243, 236, 0.9)); transform-origin: 50% 0; }
+  @media (prefers-reduced-motion: no-preference) { .hero-cue i { animation: cue 2.6s var(--ease) infinite; } }
+  @keyframes cue { 0% { transform: scaleY(0); opacity: 1; } 60% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(1); opacity: 0; } }
+
+  /* El texto de llegada */
+  .hero-copy { position: relative; z-index: 6; }
+  .hero-copy-a, .hero-copy-b { display: grid; gap: 18px; align-content: start; }
+  .hero-h2 { font-size: clamp(2rem, 1.3rem + 2.6vw, 2.75rem); line-height: 1.08; text-wrap: balance; }
+  .hero-h2 em { font-style: italic; color: var(--corriente-soft); }
+  .hero-h2 .w { display: inline-block; }
+  .hero-copy .lead { color: rgba(245, 243, 236, 0.84); font-size: var(--fs-base); line-height: 1.6; }
+  .hero-copy .eyebrow { color: var(--corriente-soft); }
+  .hero-cta { width: 100%; min-height: 56px; font-size: var(--fs-base); }
+  .hero-copy-b .btn--ghost { width: 100%; }
+  .hero-note { font-size: var(--fs-xs); line-height: 1.5; color: rgba(245, 243, 236, 0.72); margin-top: -8px; }
+  .hero-proof { list-style: none; padding: 0; display: grid; gap: 8px; margin-top: 6px; font-size: var(--fs-sm); color: rgba(245, 243, 236, 0.8); }
+  .hero-proof li { display: flex; align-items: baseline; gap: 10px; }
+  .hero-proof li::before { content: ''; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--corriente); transform: translateY(-2px); }
+  .hero-proof strong { color: var(--perla); font-family: var(--serif); font-size: 1.15em; font-weight: 500; }
+  .hero-proof a { color: inherit; text-decoration: underline; text-decoration-color: rgba(92, 200, 189, 0.5); text-underline-offset: 4px; }
+  .hero-proof a:hover { color: var(--perla); }
+
+  /* Cada pieza entra con --settle (scroll): reversible al subir. */
+  .hero--anim .hc, .hero--anim .hero-h2 .w {
+    --kc: clamp(0, (var(--settle, 1) - var(--th, 0)) * 3.2, 1);
+    opacity: var(--kc);
+    transform: translate3d(0, calc((1 - var(--kc)) * 20px), 0);
+  }
+  .hero--anim .btn.hc:hover { transform: translate3d(0, -2px, 0); }
+  .hero--anim.copy-hidden .hero-copy { pointer-events: none; }
+  .hero--anim .hero-copy:focus-within .hc, .hero--anim .hero-copy:focus-within .hero-h2 .w { --kc: 1; }
+
+  /* Celular y tablet: el texto va debajo del mar */
+  @media (max-width: 1099px), (max-height: 599px) {
+    .hero {
+      --juan-h: min(70svh, calc(min(80vw, 400px) / 0.5632));
+      --sea-front: 15svh;
+      --sea-back: 34svh;
+      --title-lift: 17svh;
+    }
+    .hero--anim .hero-track { height: 95vh; }
+    .hero-sides { display: none; }
+    .hero-copy { padding: clamp(36px, 7vw, 64px) var(--gutter) clamp(56px, 10vw, 88px); display: grid; gap: 28px; max-width: 640px; margin-inline: auto; }
+    .hero-copy-a { text-align: left; }
+  }
+  @media (max-width: 760px) {
+    /* En celular el nombre (en dos líneas) se achica al subir y queda sobre la cabeza de Juan */
+    .hero { --juan-h: min(66svh, calc(min(78vw, 380px) / 0.5632)); --title-lift: 19svh; --title-shrink: 0.38; }
+    .hero-name { font-size: min(24vw, 15svh); line-height: 0.95; }
+    .hero--anim .hero-kicker { opacity: calc(1 - var(--rise, 1) * 1.4); }
+    .hero-w2 { display: block; width: fit-content; margin-inline: auto; }
+    .hero-title { top: 42%; }
+  }
+
+  /* Computador: el texto flanquea a Juan dentro del mar */
+  @media (min-width: 1100px) and (min-height: 600px) {
+    .hero-copy {
+      position: absolute; inset: 0; pointer-events: none;
+      display: grid; grid-template-columns: minmax(0, 1fr) calc(var(--juan-h) * 0.5632) minmax(0, 1fr);
+      column-gap: clamp(28px, 3vw, 56px); align-items: center;
+      padding: calc(var(--header-h) + 20svh) clamp(28px, 4vw, 72px) 25svh;
+    }
+    .hero-copy > * { pointer-events: auto; }
+    .hero-copy-a { grid-column: 1; max-width: 460px; justify-self: start; }
+    .hero-copy-b { grid-column: 3; max-width: 340px; width: 100%; justify-self: end; }
+    .hero-copy-a, .hero-copy-b { text-shadow: 0 1px 2px rgba(5, 15, 28, 0.7), 0 6px 24px rgba(5, 15, 28, 0.55); }
+    .hero-copy .btn { text-shadow: none; }
+    /* Sombra de dos lados: una elipse detrás de cada columna de texto. Va detrás de Juan (z 2),
+       así él queda iluminado y el texto siempre se lee (contraste medido sobre el peor píxel). */
+    .hero-sides {
+      position: absolute; inset: 0; z-index: 2; pointer-events: none;
+      -webkit-mask-image: linear-gradient(180deg, transparent 22%, #000 36%);
+      mask-image: linear-gradient(180deg, transparent 22%, #000 36%);
+      background:
+        radial-gradient(ellipse 31% 42% at 18% 52%, rgba(8, 25, 42, 0.86) 0%, rgba(8, 25, 42, 0.7) 58%, rgba(8, 25, 42, 0) 100%),
+        radial-gradient(ellipse 27% 42% at 84% 52%, rgba(8, 25, 42, 0.86) 0%, rgba(8, 25, 42, 0.7) 58%, rgba(8, 25, 42, 0) 100%);
+      opacity: var(--settle, 1);
+    }
+  }
+
+  @media (pointer: coarse) { .hero-proof a { padding-block: 10px; } }
+</style>

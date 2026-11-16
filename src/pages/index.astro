@@ -1,18 +1,21 @@
 ---
-import { Picture, Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import CtaBand from '../components/CtaBand.astro';
 import Faq from '../components/Faq.astro';
 import Wave from '../components/Wave.astro';
-import WaterCanvas from '../components/WaterCanvas.astro';
+import HeroMar from '../components/HeroMar.astro';
+import MarCalmo from '../components/MarCalmo.astro';
 import LatestPosts from '../components/LatestPosts.astro';
 import ComboFlow from '../components/ComboFlow.astro';
-import DiagnosticoButton from '../components/DiagnosticoButton.astro';
-import { CERTIFICATIONS, COMMUNITY, SITE, OFERTAS } from '../data/site';
+import { CERTIFICATIONS, COMMUNITY, SITE, OFERTAS, diagnosticoHref } from '../data/site';
 import { PLANES, clp } from '../data/planes';
 import { FAQ_HOME, faqSchema } from '../data/faq';
-import hero from '../assets/img/juan-hero.jpg';
 import retrato from '../assets/img/juan-retrato.jpg';
+import marFondo from '../assets/img/mar-fondo.jpg';
+// Fuentes del nombre de la portada: se precargan para que aparezca de inmediato con su tipografía
+import serifNormal from '@fontsource-variable/newsreader/files/newsreader-latin-wght-normal.woff2?url';
+import serifItalic from '@fontsource-variable/newsreader/files/newsreader-latin-wght-italic.woff2?url';
 
 const dolores = [
   { t: 'Tu equipo hace a mano lo mismo todos los días', d: 'Copiar datos de un correo a una planilla, armar la misma cotización, mandar el mismo recordatorio. Son horas de gente capaz en tareas que no necesitan criterio.' },
@@ -45,69 +48,46 @@ const statement = [
 ];
 
 const DESC = SITE.description;
+// El mar pintado vuelve detrás de la oferta estrella (misma imagen que la portada: ya está en caché)
+const marCombo = await getImage({ src: marFondo, format: 'webp', width: 1600, quality: 64 });
 ---
 
-<Base title="Juan del Agua | Consultoría en IA y marketing en Chile" description={DESC} schema={faqSchema(FAQ_HOME)}>
-  <!-- HERO -->
-  <section class="hero on-dark" data-fx-exit>
-    <div class="hero-photo">
-      <Picture src={hero} formats={['avif', 'webp']} widths={[640, 960, 1280, 1672]} sizes="(min-width: 960px) 60vw, 100vw" alt="Juan del Agua, consultor en inteligencia artificial y marketing en Chile" loading="eager" fetchpriority="high" />
-    </div>
-    <WaterCanvas class="hero-water" lines={10} opacity={0.7} />
-    <div class="container hero-inner">
-      <!-- La línea pequeña va dentro del h1 para que el título principal incluya las palabras clave -->
-      <h1 class="rise"><span class="eyebrow hero-kicker">Consultoría en IA y marketing para empresas en Chile</span><span>Tu operación y tus ventas,</span> <span><em>con un solo responsable</em></span></h1>
-      <p class="lead rise" style="--d:160ms">Para empresas donde el equipo cotiza a mano, las consultas esperan horas y nadie sabe qué campaña trae ventas. Diagnostico, armo un piloto y mido lo que cambia.</p>
-      <div class="btn-row rise" style="--d:240ms">
-        <DiagnosticoButton />
-        <a class="btn btn--ghost" href="/ofertas">Ver ofertas y precios</a>
-      </div>
-      <ul class="hero-proof rise" style="--d:320ms">
-        <li><a href="/sobre-mi#certificaciones">Certificado por <strong>Anthropic</strong></a></li>
-        <li>Piloto antes de la inversión grande</li>
-        <li>Cuentas y datos a nombre de tu empresa</li>
-        <li>Todo Chile, remoto o presencial</li>
-      </ul>
-    </div>
-  </section>
+<Base title="Juan del Agua | Consultoría en IA y marketing en Chile" description={DESC} schema={faqSchema(FAQ_HOME)} heroDark>
+  <link slot="head" rel="preload" href={serifNormal} as="font" type="font/woff2" crossorigin />
+  <link slot="head" rel="preload" href={serifItalic} as="font" type="font/woff2" crossorigin />
+
+  <!-- PORTADA: el nombre en grande, Juan sube desde el mar y aparece la propuesta -->
+  <HeroMar />
   <Wave from="var(--marino)" to="var(--perla)" />
 
-  <!-- SITUACIONES -->
+  <!-- SITUACIONES: lista editorial con una corriente que se dibuja al bajar -->
   <section class="section" id="situaciones">
-    <div class="container">
-      <div class="section-head">
+    <div class="container pains">
+      <div class="pains-head">
         <p class="eyebrow" data-reveal>Lo que más veo en las empresas</p>
         <h2 data-reveal style="--d:80ms">¿Te suena <em>alguna</em>?</h2>
         <p class="lead" data-reveal style="--d:160ms">Son las cuatro situaciones que más se repiten cuando converso con gerentes y dueños de pymes. Casi siempre tienen la misma raíz: herramientas y proveedores que no conversan entre sí.</p>
       </div>
-      <div class="grid grid-4">
+      <div class="pains-body" data-fx data-fx-range="1.1">
+      <span class="pains-current" aria-hidden="true"></span>
+      <ol class="pains-list">
         {dolores.map((p, i) => (
-          <article class="card pain" data-reveal style={`--d:${i * 90}ms`}>
-            <span class="num">0{i + 1}</span>
-            <h3>{p.t}</h3>
-            <p>{p.d}</p>
-          </article>
+          <li class="pain" data-reveal style={`--d:${i * 70}ms`}>
+            <span class="pain-n" aria-hidden="true">0{i + 1}</span>
+            <div>
+              <h3>{p.t}</h3>
+              <p>{p.d}</p>
+            </div>
+          </li>
         ))}
+      </ol>
       </div>
     </div>
   </section>
 
-  <!-- FRASE QUE SE LLENA DE AGUA -->
+  <!-- FRASE CENTRAL + el momento interactivo: mantener presionado para calmar el mar -->
   <Wave from="var(--perla)" to="var(--marino)" />
-  <section class="statement on-dark">
-    <WaterCanvas lines={7} opacity={0.35} />
-    <div class="container">
-      <p class="statement-text" data-rise aria-label={statement.map((l) => l.map((w) => w.t).join(' ')).join(' ')}>
-        {statement.map((line, li) => (
-          <span class="rise-line" aria-hidden="true">
-            {line.map((w, wi) => (
-              <><span class="rise-mask"><span class:list={['rise-word', { accent: w.em }]} style={`--i:${li * 4 + wi}`}>{w.t}</span></span>{' '}</>
-            ))}
-          </span>
-        ))}
-      </p>
-    </div>
-  </section>
+  <MarCalmo lines={statement} />
   <Wave from="var(--marino)" to="var(--bruma)" />
 
   <!-- SERVICIOS -->
@@ -133,7 +113,7 @@ const DESC = SITE.description;
 
   <!-- OFERTA ESTRELLA -->
   <section class="section on-dark combo-sec" id="campana-agente">
-    <WaterCanvas lines={7} opacity={0.35} />
+    <img class="combo-mar" src={marCombo.src} alt="" width={marCombo.attributes.width} height={marCombo.attributes.height} loading="lazy" decoding="async" aria-hidden="true" />
     <div class="container combo">
       <div class="combo-text">
         <p class="eyebrow" data-reveal>Oferta estrella · Campaña + agente</p>
@@ -149,7 +129,7 @@ const DESC = SITE.description;
   </section>
   <Wave from="var(--marino)" to="var(--perla)" />
 
-  <!-- ESCALERA -->
+  <!-- ESCALERA: cinco escalones que suben como la marea -->
   <section class="section" id="como-partir">
     <div class="container">
       <div class="section-head">
@@ -157,16 +137,25 @@ const DESC = SITE.description;
         <h2 data-reveal style="--d:80ms">Partes acotado y <em>creces cuando funciona</em></h2>
         <p class="lead" data-reveal style="--d:160ms">Los precios están publicados en pesos + IVA, para que compares antes de hablar conmigo.</p>
       </div>
-      <div class="grid grid-5">
+      <div class="ladder-wrap" data-fx data-fx-range="1">
+      <span class="ladder-tide" aria-hidden="true"></span>
+      <ol class="ladder">
         {escalera.map((e, i) => (
-          <a class="card" href={e.href} data-reveal style={`--d:${i * 70}ms`}>
-            <span class="num">{e.n}</span>
-            <h3>{e.t}</h3>
-            <p>{e.d}</p>
-          </a>
+          <li class="rung" style={`--i:${i}`} data-reveal>
+            <a href={e.href}>
+              <span class="num">{e.n}</span>
+              <h3>{e.t}</h3>
+              <p>{e.d}</p>
+              <span class="rung-go" aria-hidden="true">→</span>
+            </a>
+          </li>
         ))}
+      </ol>
       </div>
-      <p data-reveal style="margin-top:28px"><a class="link-arrow" href="/ofertas">Ver todas las ofertas y precios →</a></p>
+      <div class="ladder-cta" data-reveal>
+        <a class="btn btn--agua" href={diagnosticoHref()} data-diagnostico>Agenda tu diagnóstico gratis</a>
+        <a class="link-arrow" href="/ofertas">Ver todas las ofertas y precios →</a>
+      </div>
     </div>
   </section>
 
@@ -226,56 +215,33 @@ const DESC = SITE.description;
 </Base>
 
 <style>
-  /* HERO */
-  .hero { position: relative; overflow: hidden; display: block; padding: 46svh 0 64px; isolation: isolate; }
-  /* overflow: hidden mantiene la foto dentro del degradado mientras se agranda al hacer scroll */
-  .hero-photo { position: absolute; inset: 0 0 auto 0; height: 60svh; z-index: -2; overflow: hidden; }
-  .hero-photo :global(picture) { display: block; height: 100%; }
-  .hero-photo :global(img) {
-    width: 100%; height: 100%; object-fit: cover; object-position: 28% 18%;
-    transform-origin: 50% 30%;
-    transform: scale(calc(1 + var(--x, 0) * 0.12));
-    filter: blur(calc(var(--x, 0) * 4px)) saturate(calc(1 - var(--x, 0) * 0.4));
-  }
-  .hero-photo::after {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(180deg, rgba(14, 42, 67, 0) 40%, rgba(14, 42, 67, 0.7) 72%, var(--marino) 94%);
-  }
-  .hero :global(.hero-water) { z-index: -1; }
-  .hero-inner { display: grid; gap: 22px; opacity: calc(1 - var(--x, 0) * 0.9); transform: translateY(calc(var(--x, 0) * -40px)); }
-  .hero h1 { font-size: clamp(2.5rem, 1.4rem + 3.8vw, 4.75rem); }
-  .hero h1 span { display: block; text-wrap: pretty; }
-  .hero h1 .hero-kicker { display: flex; font-family: var(--sans); line-height: 1.4; margin-bottom: 22px; text-wrap: wrap; }
-  .hero-proof { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 12px; font-size: var(--fs-sm); color: rgba(245, 243, 236, 0.72); }
-  .hero-proof li { display: flex; align-items: center; gap: 8px; }
-  .hero-proof li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--corriente); }
-  .hero-proof strong { color: var(--perla); font-family: var(--serif); font-size: 1.2em; font-weight: 500; }
-  .hero-proof a { color: inherit; text-decoration: underline; text-decoration-color: rgba(92, 200, 189, 0.5); text-underline-offset: 4px; transition: color 0.2s, text-decoration-color 0.2s; }
-  .hero-proof a:hover { color: var(--perla); text-decoration-color: var(--corriente-soft); }
-
+  /* SITUACIONES: título fijo a la izquierda, lista editorial a la derecha */
+  .pains { display: grid; gap: clamp(32px, 5vw, 56px); }
+  .pains-head { display: grid; gap: 20px; align-content: start; }
+  .pains-head h2 { max-width: 12ch; }
   @media (min-width: 960px) {
-    .hero { display: grid; align-items: center; padding: 72px 0 96px; min-height: min(92vh, 800px); }
-    .hero-photo { inset: 0 0 0 42%; height: auto; }
-    .hero-photo :global(img) { object-position: 25% 30%; }
-    .hero-photo::after { background: linear-gradient(90deg, var(--marino) 0%, rgba(14, 42, 67, 0.6) 22%, rgba(14, 42, 67, 0) 55%), linear-gradient(0deg, rgba(14, 42, 67, 0.6), transparent 35%); }
-    .hero-inner > * { max-width: 620px; }
+    .pains { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(48px, 6vw, 104px); align-items: start; }
+    .pains-head { position: sticky; top: calc(var(--header-h) + 48px); }
   }
-
-  /* SITUACIONES */
-  .pain h3 { font-size: clamp(1.35rem, 1.1rem + 0.7vw, 1.65rem); }
-  .pain p { font-size: var(--fs-base); }
-
-  /* FRASE */
-  .statement { position: relative; overflow: hidden; padding: clamp(80px, 12vw, 160px) 0; }
-  .statement .container { position: relative; }
-  /* Una línea por idea, a todo el ancho */
-  .statement-text { font-family: var(--serif); font-size: clamp(2.3rem, 0.6rem + 5vw, 5rem); line-height: 1.04; letter-spacing: -0.025em; display: grid; gap: 0.06em; }
-  .rise-line { display: block; }
-  @media (min-width: 900px) { .rise-line { white-space: nowrap; } }
-  .rise-word.accent { font-style: italic; color: var(--corriente-soft); }
+  .pains-body { position: relative; }
+  .pains-list { list-style: none; padding: 0; display: grid; }
+  .pains-current {
+    position: absolute; left: 27px; top: 10px; bottom: 34px; width: 2px; border-radius: 2px;
+    background: linear-gradient(var(--corriente), rgba(30, 158, 147, 0.12));
+    transform-origin: 50% 0; transform: scaleY(var(--p, 1));
+  }
+  .pain { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: clamp(16px, 2.4vw, 32px); padding: clamp(22px, 3vw, 36px) 0; border-bottom: 1px solid var(--linea); }
+  .pain:first-child { padding-top: 0; }
+  .pain:last-child { border-bottom: 0; }
+  .pain-n {
+    position: relative; z-index: 1; display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%;
+    background: var(--perla); border: 1.5px solid rgba(30, 158, 147, 0.5);
+    font-family: var(--serif); font-style: italic; font-size: 1.35rem; color: var(--corriente-ink);
+  }
+  .pain h3 { font-size: clamp(1.35rem, 1.1rem + 0.8vw, 1.8rem); margin-bottom: 8px; }
+  .pain p { color: var(--piedra); max-width: 56ch; }
 
   /* SERVICIOS */
-
   .svc { gap: 18px; }
   .svc h3 { font-size: clamp(1.35rem, 1.1rem + 0.7vw, 1.75rem); }
   .svc .tag { justify-self: start; }
@@ -283,6 +249,47 @@ const DESC = SITE.description;
   .svc--main.card { border-color: transparent; }
   .svc--main .checklist li { color: rgba(245, 243, 236, 0.86); }
   .svc .link-arrow { margin-top: 6px; justify-self: start; }
+
+  /* OFERTA ESTRELLA: sobre el mar pintado */
+  .combo-sec { position: relative; overflow: hidden; isolation: isolate; }
+  .combo-mar { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 70%; z-index: -1; }
+  .combo-sec::after {
+    content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    background: linear-gradient(90deg, rgba(14, 42, 67, 0.97) 0%, rgba(14, 42, 67, 0.9) 42%, rgba(14, 42, 67, 0.72) 100%);
+  }
+  @media (max-width: 899px) { .combo-sec::after { background: rgba(14, 42, 67, 0.9); } }
+  .combo { position: relative; display: grid; gap: 40px; align-items: center; }
+  @media (min-width: 900px) { .combo { grid-template-columns: 1fr 1.1fr; gap: 72px; } }
+  .combo-text { display: grid; gap: 20px; }
+  .combo .price small { color: rgba(245, 243, 236, 0.7); }
+
+  /* ESCALERA: cada escalón un poco más alto, con la marea subiendo detrás */
+  .ladder-wrap { position: relative; }
+  .ladder { list-style: none; padding: 0; display: grid; gap: 14px; position: relative; z-index: 1; }
+  @media (min-width: 640px) and (max-width: 1019px) { .ladder { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1020px) {
+    .ladder { grid-template-columns: repeat(5, 1fr); align-items: end; }
+    .rung a { min-height: calc(236px + var(--i) * 30px); }
+  }
+  .rung a {
+    position: relative; display: grid; align-content: start; gap: 10px; height: 100%;
+    padding: clamp(20px, 2.2vw, 26px); border-radius: var(--radius-lg); text-decoration: none;
+    background: #fbfaf6; border: 1px solid rgba(30, 158, 147, 0.32);
+    box-shadow: inset 0 3px 0 var(--corriente), 0 18px 40px -28px rgba(14, 42, 67, 0.35);
+    transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease), border-color 0.3s;
+  }
+  .rung a:hover { transform: translateY(-4px); border-color: rgba(30, 158, 147, 0.6); box-shadow: inset 0 3px 0 var(--corriente), 0 28px 54px -30px rgba(14, 42, 67, 0.5); }
+  .rung .num { font-family: var(--serif); font-style: italic; font-size: 1.05rem; color: var(--corriente-ink); }
+  .rung h3 { font-size: clamp(1.2rem, 1.05rem + 0.5vw, 1.45rem); }
+  .rung p { color: var(--piedra); font-size: var(--fs-sm); }
+  .rung-go { align-self: end; margin-top: 4px; font-weight: 600; color: var(--corriente-ink); transition: transform 0.3s var(--ease); }
+  .rung a:hover .rung-go { transform: translateX(4px); }
+  .ladder-tide {
+    position: absolute; left: -3%; right: -3%; bottom: -28px; height: 78%; border-radius: 48px; z-index: 0; pointer-events: none;
+    background: linear-gradient(180deg, rgba(30, 158, 147, 0), rgba(30, 158, 147, 0.09) 38%, rgba(30, 158, 147, 0.16));
+    transform-origin: 50% 100%; transform: scaleY(var(--p, 1));
+  }
+  .ladder-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; margin-top: clamp(36px, 4vw, 52px); }
 
   /* SOBRE MÍ */
   .about { display: grid; gap: 40px; align-items: center; }
@@ -298,16 +305,4 @@ const DESC = SITE.description;
   .certs a:hover span { color: var(--corriente-ink); }
 
   .faq-wrap { max-width: 920px; }
-
-  /* OFERTA ESTRELLA */
-  .combo-sec { position: relative; overflow: hidden; }
-  .combo { position: relative; display: grid; gap: 40px; align-items: center; }
-  @media (min-width: 900px) { .combo { grid-template-columns: 1fr 1.1fr; gap: 72px; } }
-  .combo-text { display: grid; gap: 20px; }
-  .combo .price small { color: rgba(245, 243, 236, 0.7); }
-
-  /* ESCALERA */
-  @media (min-width: 760px) and (max-width: 1019px) { .grid-5 { grid-template-columns: repeat(2, 1fr); } }
-  @media (min-width: 1020px) { .grid-5 { grid-template-columns: repeat(5, 1fr); } }
-  .grid-5 h3 { font-size: clamp(1.2rem, 1.05rem + 0.5vw, 1.45rem); }
 </style>

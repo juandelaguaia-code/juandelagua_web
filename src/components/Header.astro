@@ -2,13 +2,15 @@
 import { NAV, SITE, COMMUNITY, waLink, diagnosticoHref } from '../data/site';
 import { cleanPath } from '../data/path';
 import SocialLinks from './SocialLinks.astro';
+interface Props { onHero?: boolean }
+const { onHero = false } = Astro.props;
 const path = cleanPath(Astro.url.pathname);
 // En comunidad.juandelagua.com, "Inicio" lleva al sitio principal (los demás enlaces redirigen solos)
 const home = Astro.locals.community ? SITE.url : '/';
 const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
 ---
 
-<header class="site-header" data-header>
+<header class:list={['site-header', { 'on-hero': onHero }]} data-header>
   <div class="container bar">
     <a href={home} class="wordmark" aria-label="Juan del Agua, inicio">
       Juan <em>del Agua</em>
@@ -73,6 +75,27 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
     transition: border-color 0.3s;
   }
   .site-header.is-scrolled { border-bottom-color: var(--linea); }
+  /* Sobre la portada oscura (la home): transparente, con texto claro. Si se abre el menú vuelve a ser sólido. */
+  .site-header.on-hero:not(:has([aria-expanded='true'])) {
+    background: linear-gradient(180deg, rgba(8, 25, 42, 0.62), rgba(8, 25, 42, 0));
+    -webkit-backdrop-filter: none; backdrop-filter: none; border-bottom-color: transparent;
+  }
+  /* Apenas se baja, sobre lo oscuro: vidrio azul (el nombre gigante nunca se cruza con el menú) */
+  .site-header.on-hero.is-scrolled:not(:has([aria-expanded='true'])) {
+    background: rgba(8, 25, 42, 0.74);
+    -webkit-backdrop-filter: saturate(1.2) blur(14px); backdrop-filter: saturate(1.2) blur(14px);
+    border-bottom-color: rgba(245, 243, 236, 0.08);
+  }
+  .on-hero:not(:has([aria-expanded='true'])) .wordmark { color: var(--perla); }
+  .on-hero:not(:has([aria-expanded='true'])) .wordmark em { color: var(--corriente-soft); }
+  .on-hero .nav-desktop > ul > li > a { color: rgba(245, 243, 236, 0.9); }
+  .on-hero .nav-desktop > ul > li > a:hover { background: rgba(245, 243, 236, 0.1); }
+  .on-hero .nav-desktop > ul > li > a[aria-current='page'] { color: var(--corriente-soft); }
+  .on-hero .cta-desktop.btn--ghost { --fg: var(--perla); }
+  .on-hero .cta-desktop.btn--ghost:hover { --bg: var(--perla); --fg: var(--marino); border-color: var(--perla); }
+  .on-hero:not(:has([aria-expanded='true'])) .burger i { background: var(--perla); }
+  .on-hero :global(.social-desktop a) { color: rgba(245, 243, 236, 0.9); }
+  .on-hero :global(.social-desktop a:hover) { background: rgba(245, 243, 236, 0.1); color: var(--perla); }
   .bar { height: var(--header-h); display: flex; align-items: center; gap: 24px; }
   .wordmark {
     font-family: var(--serif); font-size: 1.45rem; font-weight: 500; letter-spacing: -0.01em;

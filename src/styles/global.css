@@ -214,22 +214,65 @@ p { text-wrap: pretty; }
 .prose th { font-weight: 600; background: var(--bruma); }
 
 /* ---------- animaciones de entrada ---------- */
+/* Solo transform y opacity: las mueve la tarjeta gráfica y no cuestan nada al hacer scroll en el celular. */
 /* .rise: contenido sobre el pliegue, anima solo con CSS (no espera JS, no afecta LCP) */
 @media (prefers-reduced-motion: no-preference) {
   .rise { animation: rise 1.1s var(--ease) both; animation-delay: var(--d, 0ms); }
 }
-@keyframes rise { from { opacity: 0; transform: translateY(22px); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+@keyframes rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
 
 /* ---------- agua ligada al scroll (ver src/scripts/fx.ts) ---------- */
-/* Emerger: el bloque sube desde una "línea de agua", pasa de borroso a nítido. */
+/* Emerger: el bloque sube desde una "línea de agua" mientras aparece. */
 .fx [data-reveal] {
   --q: min(1, var(--p, 1));
   opacity: calc(var(--q) * 1.2 - 0.1);
-  transform: translate3d(0, calc((1 - var(--q)) * 56px), 0);
-  filter: blur(calc((1 - var(--q)) * 7px));
-  clip-path: inset(-80px -80px calc((1 - var(--q)) * 55%) -80px);
-  will-change: transform, opacity;
+  transform: translate3d(0, calc((1 - var(--q)) * 44px), 0);
 }
+
+/* Pestaña oculta: todo se detiene (animation-play-state no se hereda, por eso el selector universal). */
+body.paused *, body.paused *::before, body.paused *::after { animation-play-state: paused !important; }
+
+/* ---------- olas vectoriales (WavePlane.astro) ----------
+   Cada plano = dos capas que se cruzan en sentidos opuestos dentro de un oleaje que sube y baja.
+   El SVG trae 3 períodos y la capa se desplaza exactamente uno (-33,33 % de su ancho): bucle sin costura. */
+.wv-plane { position: absolute; left: 0; right: 0; bottom: 0; height: 100%; pointer-events: none; }
+.wv-bob { position: absolute; inset: 0; transform-origin: 50% 100%; animation: wv-bob var(--bob) ease-in-out var(--bob-d) infinite alternate; }
+.wv-layer { position: absolute; top: 0; bottom: 0; left: 0; width: 150%; animation: wv-drift var(--dur) linear var(--dur-d) infinite; }
+.wv-rev { animation-direction: reverse; }
+.wv-layer svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.wv-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+.wv-fill { fill: var(--fill); }
+.wv-crest, .wv-stripe { fill: none; stroke-linecap: butt; }
+/* vector-effect no se hereda: va en el trazo original (las <use> lo clonan) */
+.wv-line { vector-effect: non-scaling-stroke; }
+.wv-crest { stroke: var(--crest); stroke-width: var(--crest-w, 1.5px); stroke-opacity: var(--crest-o, 0.6); }
+.wv-stripe { stroke: var(--stripe, var(--crest)); stroke-width: var(--stripe-w, 1px); stroke-opacity: var(--stripe-o, 0.3); }
+@keyframes wv-drift { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-33.3333%, 0, 0); } }
+@keyframes wv-bob { from { transform: scaleY(0.88); } to { transform: scaleY(1.07); } }
+/* En pantallas angostas cada período ocupa más ancho: las crestas no se amontonan. */
+@media (max-width: 1100px) { .wv-layer { width: 225%; } }
+@media (max-width: 560px) { .wv-layer { width: 300%; } }
+/* Fuera de pantalla (fx.ts agrega .is-off) y con movimiento reducido: quietas. */
+.is-off .wv-bob, .is-off .wv-layer { animation-name: none; }
+@media (prefers-reduced-motion: reduce) { .wv-bob, .wv-layer { animation: none; } }
+
+/* Mar de la portada (HeroMar.astro): lejano translúcido, medio con líneas turquesa, frente Marino con espuma Perla */
+.sea-far { --fill: #17506c; --crest: var(--corriente-soft); --crest-o: 0.5; --stripe: var(--corriente-soft); --stripe-o: 0.24; }
+.sea-mid { --fill: #12395a; --crest: var(--corriente-soft); --crest-o: 0.62; --crest-w: 1.6px; --stripe: var(--corriente-soft); --stripe-o: 0.3; }
+.sea-front { --fill: var(--marino); --crest: var(--perla); --crest-o: 0.78; --crest-w: 2px; --stripe: var(--corriente-soft); --stripe-o: 0.34; }
+
+/* Unión entre secciones (Wave.astro) */
+.wave { position: relative; height: clamp(64px, 9vw, 140px); margin: -1px 0; background: var(--from); overflow: hidden; }
+.wave .wave-back { --fill: var(--to); --crest: var(--corriente); --crest-o: 0.5; opacity: 0.42; }
+.wave .wave-front { --fill: var(--to); --crest: var(--corriente); --crest-o: 0.55; --stripe: var(--marino); --stripe-o: 0.09; }
+.wave--to-dark .wave-back { --crest: var(--corriente-soft); --crest-o: 0.6; opacity: 0.5; }
+.wave--to-dark .wave-front { --crest: var(--perla); --crest-o: 0.34; --stripe: var(--corriente-soft); --stripe-o: 0.22; }
+.wave.flip { transform: scaleY(-1); background: var(--to); }
+.wave.flip .wv-plane { --fill: var(--from); }
+
+/* Fondo del sitio: líneas de olas muy suaves, fijas detrás de las secciones claras (Base.astro). */
+.mar-fijo { position: fixed; inset: 0; z-index: -1; pointer-events: none; background-repeat: repeat; background-size: 960px auto; background-position: 50% 0; }
+@media (max-width: 560px) { .mar-fijo { background-size: 620px auto; } }
 
 /* Barra de progreso tipo "nivel de agua" */
 .tide-bar { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 60; pointer-events: none;
@@ -242,11 +285,11 @@ p { text-wrap: pretty; }
 .rise-word { display: inline-block; }
 .fx [data-rise] .rise-word {
   transform: translate3d(0, 105%, 0) skewY(5deg);
-  opacity: 0; filter: blur(8px);
-  transition: transform 1.3s var(--ease), opacity 0.9s var(--ease), filter 1.1s var(--ease);
+  opacity: 0;
+  transition: transform 1.3s var(--ease), opacity 0.9s var(--ease);
   transition-delay: calc(var(--i, 0) * 85ms);
 }
-.fx [data-rise].is-in .rise-word { transform: none; opacity: 1; filter: none; }
+.fx [data-rise].is-in .rise-word { transform: none; opacity: 1; }
 
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .skip-link { position: absolute; left: 12px; top: -60px; z-index: 100; background: var(--marino); color: var(--perla); padding: 10px 16px; border-radius: 8px; text-decoration: none; }
