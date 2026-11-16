@@ -35,7 +35,42 @@
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --header-h: 68px;
 
+  /* Roles de color por tema. Claro aquí; el sitio arranca en oscuro (data-theme en <html>, Base.astro). */
+  --bg: var(--perla);
+  --bg-alt: var(--bruma);
+  --surface: #fbfaf6;
+  --strong: var(--marino);
+  --field-bg: #fff;
+  --header-bg: rgba(245, 243, 236, 0.82);
+  --hover: rgba(14, 42, 67, 0.06);
+  --shadow-rgb: 14, 42, 67;
+  --btn-bg: var(--marino);
+  --btn-fg: var(--perla);
+
   color-scheme: light;
+}
+
+/* Tema oscuro (por defecto). Los tonos de texto y fondo se reasignan; Marino, Perla y Corriente no cambian. */
+:root[data-theme='dark'] {
+  --tinta: #e8e6df;
+  --piedra: #a7b3be;
+  --bruma: #112e48;
+  --corriente-ink: #5cc8bd;
+  --linea: rgba(245, 243, 236, 0.14);
+  --bg: #0b2033;
+  --surface: #12304b;
+  --strong: var(--perla);
+  --field-bg: rgba(255, 255, 255, 0.06);
+  --header-bg: rgba(11, 32, 51, 0.82);
+  --hover: rgba(245, 243, 236, 0.08);
+  --shadow-rgb: 0, 0, 0;
+  --btn-bg: var(--perla);
+  --btn-fg: var(--marino);
+  color-scheme: dark;
+}
+/* Cambio de tema suave (Base.astro agrega la clase solo durante el cambio) */
+html.tema-cambiando, html.tema-cambiando *, html.tema-cambiando *::before, html.tema-cambiando *::after {
+  transition: background-color 0.45s var(--ease), color 0.45s var(--ease), border-color 0.45s var(--ease), fill 0.45s var(--ease) !important;
 }
 
 /* ---------- reset ---------- */
@@ -48,7 +83,7 @@ body {
   font-size: var(--fs-base);
   line-height: 1.65;
   color: var(--tinta);
-  background-color: var(--perla);
+  background-color: var(--bg);
   /* grano sutil de papel */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.07 0 0 0 0 0.09 0 0 0 0 0.12 0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   -webkit-font-smoothing: antialiased;
@@ -116,7 +151,7 @@ p { text-wrap: pretty; }
 
 /* ---------- botones ---------- */
 .btn {
-  --bg: var(--marino); --fg: var(--perla);
+  --bg: var(--btn-bg); --fg: var(--btn-fg);
   display: inline-flex; align-items: center; justify-content: center; gap: 0.6em;
   min-height: 50px; padding: 0.8em 1.4em;
   font-family: var(--sans); font-size: var(--fs-sm); font-weight: 600; letter-spacing: 0.01em;
@@ -126,12 +161,12 @@ p { text-wrap: pretty; }
   transition: transform 0.35s var(--ease), background-color 0.25s, color 0.25s, border-color 0.25s, box-shadow 0.35s var(--ease);
   cursor: pointer;
 }
-.btn:hover { transform: translateY(-2px); box-shadow: 0 12px 28px -14px rgba(14, 42, 67, 0.55); }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 12px 28px -14px rgba(var(--shadow-rgb), 0.55); }
 .btn svg { width: 1.15em; height: 1.15em; flex: none; }
 .btn--agua { --bg: var(--corriente); --fg: #fff; }
 .btn--agua:hover { --bg: #178a80; }
-.btn--ghost { --bg: transparent; --fg: var(--marino); border-color: currentColor; }
-.btn--ghost:hover { --bg: var(--marino); --fg: var(--perla); border-color: var(--marino); }
+.btn--ghost { --bg: transparent; --fg: var(--strong); border-color: currentColor; }
+.btn--ghost:hover { --bg: var(--strong); --fg: var(--bg); border-color: var(--strong); }
 .on-dark .btn--ghost { --fg: var(--perla); }
 .on-dark .btn--ghost:hover { --bg: var(--perla); --fg: var(--marino); border-color: var(--perla); }
 .btn-row { display: flex; flex-wrap: wrap; gap: 12px; }
@@ -148,15 +183,15 @@ p { text-wrap: pretty; }
 .card {
   position: relative; display: grid; align-content: start; gap: 14px;
   padding: clamp(22px, 3vw, 34px);
-  background: #fbfaf6;
-  border: 1px solid rgba(18, 24, 31, 0.1); border-radius: var(--radius-lg);
-  box-shadow: 0 1px 2px rgba(14, 42, 67, 0.04), 0 14px 34px -24px rgba(14, 42, 67, 0.28);
+  background: var(--surface);
+  border: 1px solid var(--linea); border-radius: var(--radius-lg);
+  box-shadow: 0 1px 2px rgba(var(--shadow-rgb), 0.04), 0 14px 34px -24px rgba(var(--shadow-rgb), 0.28);
   transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease), border-color 0.3s;
 }
 .card:where(a) { text-decoration: none; }
 /* Las tarjetas que son enlace se distinguen sin pasar el mouse: borde y acento agua visibles. */
-.card:where(a):not(.on-dark) { border-color: rgba(30, 158, 147, 0.35); box-shadow: inset 0 3px 0 var(--corriente), 0 1px 2px rgba(14, 42, 67, 0.04), 0 18px 40px -26px rgba(14, 42, 67, 0.35); }
-.card:where(a):hover { transform: translateY(-4px); box-shadow: inset 0 3px 0 var(--corriente), 0 28px 54px -30px rgba(14, 42, 67, 0.5); border-color: rgba(30, 158, 147, 0.6); }
+.card:where(a):not(.on-dark) { border-color: rgba(30, 158, 147, 0.35); box-shadow: inset 0 3px 0 var(--corriente), 0 1px 2px rgba(var(--shadow-rgb), 0.04), 0 18px 40px -26px rgba(var(--shadow-rgb), 0.35); }
+.card:where(a):hover { transform: translateY(-4px); box-shadow: inset 0 3px 0 var(--corriente), 0 28px 54px -30px rgba(var(--shadow-rgb), 0.5); border-color: rgba(30, 158, 147, 0.6); }
 .on-dark .card { background: rgba(255, 255, 255, 0.04); border-color: var(--linea-dark); box-shadow: none; }
 .card h3 { font-size: clamp(1.35rem, 1.1rem + 0.8vw, 1.75rem); }
 .card p { color: var(--piedra); font-size: var(--fs-sm); }
@@ -232,47 +267,8 @@ p { text-wrap: pretty; }
 /* Pestaña oculta: todo se detiene (animation-play-state no se hereda, por eso el selector universal). */
 body.paused *, body.paused *::before, body.paused *::after { animation-play-state: paused !important; }
 
-/* ---------- olas vectoriales (WavePlane.astro) ----------
-   Cada plano = dos capas que se cruzan en sentidos opuestos dentro de un oleaje que sube y baja.
-   El SVG trae 3 períodos y la capa se desplaza exactamente uno (-33,33 % de su ancho): bucle sin costura. */
-.wv-plane { position: absolute; left: 0; right: 0; bottom: 0; height: 100%; pointer-events: none; }
-.wv-bob { position: absolute; inset: 0; transform-origin: 50% 100%; animation: wv-bob var(--bob) ease-in-out var(--bob-d) infinite alternate; }
-.wv-layer { position: absolute; top: 0; bottom: 0; left: 0; width: 150%; animation: wv-drift var(--dur) linear var(--dur-d) infinite; }
-.wv-rev { animation-direction: reverse; }
-.wv-layer svg { display: block; width: 100%; height: 100%; overflow: visible; }
-.wv-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
-.wv-fill { fill: var(--fill); }
-.wv-crest, .wv-stripe { fill: none; stroke-linecap: butt; }
-/* vector-effect no se hereda: va en el trazo original (las <use> lo clonan) */
-.wv-line { vector-effect: non-scaling-stroke; }
-.wv-crest { stroke: var(--crest); stroke-width: var(--crest-w, 1.5px); stroke-opacity: var(--crest-o, 0.6); }
-.wv-stripe { stroke: var(--stripe, var(--crest)); stroke-width: var(--stripe-w, 1px); stroke-opacity: var(--stripe-o, 0.3); }
-@keyframes wv-drift { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-33.3333%, 0, 0); } }
-@keyframes wv-bob { from { transform: scaleY(0.88); } to { transform: scaleY(1.07); } }
-/* En pantallas angostas cada período ocupa más ancho: las crestas no se amontonan. */
-@media (max-width: 1100px) { .wv-layer { width: 225%; } }
-@media (max-width: 560px) { .wv-layer { width: 300%; } }
-/* Fuera de pantalla (fx.ts agrega .is-off) y con movimiento reducido: quietas. */
-.is-off .wv-bob, .is-off .wv-layer { animation-name: none; }
-@media (prefers-reduced-motion: reduce) { .wv-bob, .wv-layer { animation: none; } }
-
-/* Mar de la portada (HeroMar.astro): lejano translúcido, medio con líneas turquesa, frente Marino con espuma Perla */
-.sea-far { --fill: #17506c; --crest: var(--corriente-soft); --crest-o: 0.5; --stripe: var(--corriente-soft); --stripe-o: 0.24; }
-.sea-mid { --fill: #12395a; --crest: var(--corriente-soft); --crest-o: 0.62; --crest-w: 1.6px; --stripe: var(--corriente-soft); --stripe-o: 0.3; }
-.sea-front { --fill: var(--marino); --crest: var(--perla); --crest-o: 0.78; --crest-w: 2px; --stripe: var(--corriente-soft); --stripe-o: 0.34; }
-
-/* Unión entre secciones (Wave.astro) */
-.wave { position: relative; height: clamp(64px, 9vw, 140px); margin: -1px 0; background: var(--from); overflow: hidden; }
-.wave .wave-back { --fill: var(--to); --crest: var(--corriente); --crest-o: 0.5; opacity: 0.42; }
-.wave .wave-front { --fill: var(--to); --crest: var(--corriente); --crest-o: 0.55; --stripe: var(--marino); --stripe-o: 0.09; }
-.wave--to-dark .wave-back { --crest: var(--corriente-soft); --crest-o: 0.6; opacity: 0.5; }
-.wave--to-dark .wave-front { --crest: var(--perla); --crest-o: 0.34; --stripe: var(--corriente-soft); --stripe-o: 0.22; }
-.wave.flip { transform: scaleY(-1); background: var(--to); }
-.wave.flip .wv-plane { --fill: var(--from); }
-
-/* Fondo del sitio: líneas de olas muy suaves, fijas detrás de las secciones claras (Base.astro). */
-.mar-fijo { position: fixed; inset: 0; z-index: -1; pointer-events: none; background-repeat: repeat; background-size: 960px auto; background-position: 50% 0; }
-@media (max-width: 560px) { .mar-fijo { background-size: 620px auto; } }
+/* Unión entre secciones (Wave.astro): un degradado suave de un fondo al otro, sin formas dibujadas. */
+.wave { height: clamp(40px, 5vw, 80px); margin: -1px 0; background: linear-gradient(180deg, var(--from), var(--to)); }
 
 /* Barra de progreso tipo "nivel de agua" */
 .tide-bar { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 60; pointer-events: none;
@@ -301,7 +297,7 @@ body.paused *, body.paused *::before, body.paused *::after { animation-play-stat
 .form label { display: grid; gap: 6px; font-size: var(--fs-sm); font-weight: 600; }
 .form .hint { font-weight: 400; font-size: var(--fs-xs); color: var(--piedra); }
 .form input:not([type='checkbox']):not([type='radio']), .form select, .form textarea {
-  font: inherit; font-weight: 400; width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--linea); background: #fff; color: var(--tinta);
+  font: inherit; font-weight: 400; width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--linea); background: var(--field-bg); color: var(--tinta);
 }
 .form textarea { min-height: 140px; resize: vertical; }
 .form .check { display: flex; gap: 10px; align-items: flex-start; font-weight: 400; }
@@ -310,10 +306,11 @@ body.paused *, body.paused *::before, body.paused *::after { animation-play-stat
 .flash { padding: 12px 16px; border-radius: var(--radius); font-size: var(--fs-sm); margin-bottom: 16px; }
 .flash--ok { background: rgba(30, 158, 147, 0.12); color: var(--corriente-ink); }
 .flash--error { background: rgba(180, 50, 50, 0.1); color: #8a2323; }
+[data-theme='dark'] .flash--error { background: rgba(220, 90, 90, 0.14); color: #f2b0b0; }
 .btn--sm { min-height: 40px; padding: 0.5em 1em; }
 .btn--link { background: none; border: 0; padding: 0; color: var(--corriente-ink); font: inherit; font-size: var(--fs-sm); cursor: pointer; text-decoration: underline; }
 .inline-form { display: inline; }
-.avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--bruma); flex: none; display: inline-grid; place-items: center; font-weight: 600; color: var(--marino); overflow: hidden; }
+.avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--bruma); flex: none; display: inline-grid; place-items: center; font-weight: 600; color: var(--strong); overflow: hidden; }
 .avatar--lg { width: 96px; height: 96px; font-size: 2rem; }
 .avatar--sm { width: 28px; height: 28px; font-size: var(--fs-xs); }
 .md { overflow-wrap: anywhere; }

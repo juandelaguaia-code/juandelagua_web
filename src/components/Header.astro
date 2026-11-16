@@ -35,6 +35,10 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
       </ul>
     </nav>
     <SocialLinks class="social-desktop" />
+    <button class="theme-toggle" type="button" data-theme-toggle aria-label="Activar modo claro" title="Activar modo claro">
+      <svg class="ico-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" /><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6" /></svg>
+      <svg class="ico-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" /></svg>
+    </button>
     <a class="account-link" href="/comunidad/feed" data-account hidden><span class="avatar avatar--sm" data-account-avatar aria-hidden="true"></span><span class="account-count" data-account-label></span></a>
     <a class="btn btn--ghost btn--sm cta-desktop" href={COMMUNITY.url}>Comunidad</a>
     <a class="btn btn--agua btn--sm cta-desktop" href={diagnosticoHref()}>Diagnóstico gratis</a>
@@ -68,7 +72,7 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
 <style>
   .site-header {
     position: sticky; top: 0; z-index: 50;
-    background: rgba(245, 243, 236, 0.82);
+    background: var(--header-bg);
     -webkit-backdrop-filter: saturate(1.4) blur(14px);
     backdrop-filter: saturate(1.4) blur(14px);
     border-bottom: 1px solid transparent;
@@ -99,7 +103,7 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
   .bar { height: var(--header-h); display: flex; align-items: center; gap: 24px; }
   .wordmark {
     font-family: var(--serif); font-size: 1.45rem; font-weight: 500; letter-spacing: -0.01em;
-    text-decoration: none; color: var(--marino); white-space: nowrap; margin-right: auto;
+    text-decoration: none; color: var(--strong); white-space: nowrap; margin-right: auto;
   }
   .wordmark em { font-style: italic; font-weight: 400; color: var(--corriente-ink); }
   .nav-desktop ul { display: flex; gap: 4px; list-style: none; padding: 0; }
@@ -108,43 +112,55 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
     font-size: var(--fs-sm); font-weight: 500; text-decoration: none; color: var(--tinta);
     transition: background-color 0.2s, color 0.2s;
   }
-  .nav-desktop a:hover { background: rgba(14, 42, 67, 0.06); }
+  .nav-desktop a:hover { background: var(--hover); }
   .nav-desktop a[aria-current='page'] { color: var(--corriente-ink); }
   /* Ofertas: se despliega al pasar el cursor o con el teclado */
   .has-sub { position: relative; }
   .caret { font-size: 0.7em; margin-left: 2px; }
   .nav-desktop .submenu {
     position: absolute; left: 50%; top: 100%; width: 560px; padding: 10px; margin-top: 4px; translate: -50% 0;
-    list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; background: var(--perla); border: 1px solid var(--linea);
-    border-radius: var(--radius); box-shadow: 0 18px 40px -20px rgba(14, 42, 67, 0.45);
+    list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; background: var(--bg); border: 1px solid var(--linea);
+    border-radius: var(--radius); box-shadow: 0 18px 40px -20px rgba(var(--shadow-rgb), 0.45);
     opacity: 0; visibility: hidden; transform: translateY(-4px); transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
   }
   .nav-desktop .submenu::before { content: ''; position: absolute; left: 0; right: 0; top: -8px; height: 8px; }
   .nav-desktop .submenu a { border-radius: 12px; display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; white-space: normal; }
   .sub-text { display: grid; gap: 2px; }
-  .sub-text strong { font-weight: 600; color: var(--marino); }
+  .sub-text strong { font-weight: 600; color: var(--strong); }
   .sub-text small { font-size: var(--fs-xs); color: var(--piedra); line-height: 1.35; }
   .nav-desktop .sub-all { grid-column: 1 / -1; border-top: 1px solid var(--linea); padding-top: 4px; margin-top: 2px; }
   .nav-desktop .sub-all a { font-size: var(--fs-xs); font-weight: 600; color: var(--corriente-ink); padding: 8px 14px; }
   .has-sub:hover .submenu, .has-sub:focus-within .submenu { opacity: 1; visibility: visible; transform: none; }
   .bar .btn, .account-link { white-space: nowrap; flex: none; }
+  /* Botón de tema: sol en modo oscuro (pasa a claro), luna en modo claro */
+  .theme-toggle {
+    flex: none; display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border-radius: 50%;
+    border: 1px solid var(--linea); background: transparent; color: var(--strong); cursor: pointer;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s, transform 0.4s var(--ease);
+  }
+  .theme-toggle:hover { background: var(--hover); transform: rotate(-12deg); }
+  .theme-toggle svg { grid-area: 1 / 1; width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  :global(html:not([data-theme='light'])) .theme-toggle .ico-moon, :global(html[data-theme='light']) .theme-toggle .ico-sun { display: none; }
+  .on-hero:not(:has([aria-expanded='true'])) .theme-toggle { color: var(--perla); border-color: rgba(245, 243, 236, 0.3); }
+  .on-hero:not(:has([aria-expanded='true'])) .theme-toggle:hover { background: rgba(245, 243, 236, 0.1); }
+  @media (pointer: coarse) { .theme-toggle { width: 44px; height: 44px; } }
   .account-count:empty { display: none; }
   .btn--sm { min-height: 42px; padding: 0.6em 1.2em; }
   .menu-toggle { display: none; width: 46px; height: 46px; border: 0; background: transparent; cursor: pointer; border-radius: 12px; }
   .burger { display: grid; gap: 7px; width: 24px; margin: auto; }
-  .burger i { display: block; height: 2px; background: var(--marino); border-radius: 2px; transition: transform 0.35s var(--ease); }
+  .burger i { display: block; height: 2px; background: var(--strong); border-radius: 2px; transition: transform 0.35s var(--ease); }
   .menu-toggle[aria-expanded='true'] .burger i:first-child { transform: translateY(4.5px) rotate(45deg); }
   .menu-toggle[aria-expanded='true'] .burger i:last-child { transform: translateY(-4.5px) rotate(-45deg); }
 
   .menu-movil {
     position: fixed; inset: var(--header-h) 0 0 0; z-index: 49;
-    background: var(--perla); overflow-y: auto; padding: 24px 0 40px;
+    background: var(--bg); overflow-y: auto; padding: 24px 0 40px;
   }
   .menu-movil ul { list-style: none; padding: 0; margin-bottom: 28px; }
   .menu-movil li { border-bottom: 1px solid var(--linea); }
   .menu-movil a:not(.btn) {
     display: block; padding: 16px 0; text-decoration: none;
-    font-family: var(--serif); font-size: 1.6rem; color: var(--marino);
+    font-family: var(--serif); font-size: 1.6rem; color: var(--strong);
   }
   .menu-movil a[aria-current='page'] { color: var(--corriente-ink); font-style: italic; }
   .menu-movil .btn { width: 100%; margin-bottom: 10px; }
@@ -183,13 +199,43 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
     }).catch(() => {});
   }
 
+  // Tema: oscuro por defecto; el botón cambia a claro y lo recuerda (Base.astro lo aplica antes de pintar).
+  const tBtn = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+  const syncThemeLabel = () => {
+    const label = document.documentElement.dataset.theme === 'light' ? 'Activar modo oscuro' : 'Activar modo claro';
+    tBtn?.setAttribute('aria-label', label);
+    if (tBtn) tBtn.title = label;
+  };
+  syncThemeLabel();
+  tBtn?.addEventListener('click', () => {
+    const root = document.documentElement;
+    const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+    root.classList.add('tema-cambiando');
+    root.dataset.theme = next;
+    try { localStorage.setItem('tema', next); } catch {}
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', next === 'light' ? '#F5F3EC' : '#0B2033');
+    syncThemeLabel();
+    window.setTimeout(() => root.classList.remove('tema-cambiando'), 520);
+  });
+
   const header = document.querySelector<HTMLElement>('[data-header]');
   const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
   const menu = document.querySelector<HTMLElement>('[data-menu]');
 
-  const onScroll = () => header?.classList.toggle('is-scrolled', window.scrollY > 8);
+  // Sobre una portada oscura (home o el mar de las páginas interiores) el encabezado va transparente.
+  const darkTop = document.querySelector<HTMLElement>('[data-hero-dark]');
+  let wasScrolled: boolean | null = null, wasDark: boolean | null = null, queued = false;
+  const onScroll = () => {
+    queued = false;
+    const scrolled = window.scrollY > 8;
+    if (scrolled !== wasScrolled) { wasScrolled = scrolled; header?.classList.toggle('is-scrolled', scrolled); }
+    if (darkTop && header) {
+      const dark = darkTop.getBoundingClientRect().bottom > header.offsetHeight;
+      if (dark !== wasDark) { wasDark = dark; header.classList.toggle('on-hero', dark); }
+    }
+  };
   onScroll();
-  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(onScroll); } }, { passive: true });
 
   const setOpen = (open: boolean) => {
     if (!toggle || !menu) return;

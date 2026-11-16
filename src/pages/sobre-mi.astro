@@ -4,7 +4,7 @@ import Base from '../layouts/Base.astro';
 import CtaBand from '../components/CtaBand.astro';
 import Wave from '../components/Wave.astro';
 import { CERTIFICATIONS, SITE, VALUES, MANIFESTO } from '../data/site';
-import retrato from '../assets/img/juan-retrato.jpg';
+import retrato from '../assets/img/juan-retrato-recorte.png';
 import c1 from '../assets/img/certificado-1.jpg';
 import c2 from '../assets/img/certificado-2.jpg';
 import c3 from '../assets/img/certificado-3.jpg';
@@ -57,7 +57,7 @@ const profile = {
     <div class="container prose manifesto">
       <p class="eyebrow" data-reveal>Manifiesto</p>
       {MANIFESTO.map((p) => <p data-reveal>{p}</p>)}
-      <p data-reveal><em>— Juan del Agua</em></p>
+      <p data-reveal class="firma"><em>Juan del Agua</em></p>
     </div>
   </section>
 
@@ -109,7 +109,11 @@ const profile = {
   .grid-intro { display: grid; gap: 40px; align-items: center; }
   @media (min-width: 900px) { .grid-intro { grid-template-columns: 1.2fr 440px; gap: 72px; } }
   .text { display: grid; gap: 22px; }
-  .photo :global(img) { border-radius: 220px 220px var(--radius-lg) var(--radius-lg); aspect-ratio: 4 / 5; object-fit: cover; object-position: top; width: 100%; background: var(--bruma); }
+  .photo :global(img) {
+    border-radius: 220px 220px var(--radius-lg) var(--radius-lg); aspect-ratio: 4 / 5; object-fit: cover; object-position: top; width: 100%;
+    background: radial-gradient(120% 85% at 50% 16%, rgba(92, 200, 189, 0.6) 0%, rgba(30, 158, 147, 0.34) 36%, rgba(14, 42, 67, 0) 74%), var(--marino);
+    box-shadow: inset 0 0 0 1px rgba(245, 243, 236, 0.1);
+  }
   .story { display: grid; gap: 28px; align-items: end; }
   @media (min-width: 900px) { .story { grid-template-columns: 1fr 1.3fr; gap: 72px; } }
   .prose-ish { display: grid; gap: 0.9em; font-size: var(--fs-lg); line-height: 1.55; }
@@ -123,4 +127,7 @@ const profile = {
   .cert-verify { font-size: var(--fs-xs); font-weight: 600; color: var(--corriente-ink); }
   .cert:hover .cert-verify { text-decoration: underline; }
   .manifesto p:not(.eyebrow) { font-size: var(--fs-lg); line-height: 1.6; }
+  /* firma: una línea corta en vez de guion, como las etiquetas del sitio */
+  .manifesto .firma { display: flex; align-items: center; gap: 0.7em; color: var(--corriente-ink); }
+  .manifesto .firma::before { content: ''; width: 32px; height: 1.5px; background: currentColor; }
 </style>

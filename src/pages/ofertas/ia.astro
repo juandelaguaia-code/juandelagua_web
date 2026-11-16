@@ -7,7 +7,6 @@ import Wave from '../../components/Wave.astro';
 import DiagnosticoButton from '../../components/DiagnosticoButton.astro';
 import OtrasOfertas from '../../components/ofertas/OtrasOfertas.astro';
 import ComboFlow from '../../components/ComboFlow.astro';
-import WaterCanvas from '../../components/WaterCanvas.astro';
 import { PLANES, AUTOMATIZACION_ORDER, APARTE, planServiceSchema } from '../../data/planes';
 
 const msg = 'Hola Juan, vengo desde tu sitio web y me interesa un agente de IA para mi negocio.';
@@ -46,7 +45,6 @@ const msg = 'Hola Juan, vengo desde tu sitio web y me interesa un agente de IA p
 
   <Wave from="var(--bruma)" to="var(--marino)" />
   <section class="section on-dark" style="position:relative;overflow:hidden">
-    <WaterCanvas lines={7} opacity={0.35} />
     <div class="container combo">
       <div>
         <p class="eyebrow" data-reveal>Así funciona Campaña + agente</p>

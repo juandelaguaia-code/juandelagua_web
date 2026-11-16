@@ -11,7 +11,6 @@
  * la portada se muestra quieta en su estado final (Juan ya en el centro).
  */
 import { getImage, Picture } from 'astro:assets';
-import WavePlane from './WavePlane.astro';
 import fondo from '../assets/img/mar-fondo.jpg';
 import fondoMovil from '../assets/img/mar-fondo-movil.jpg';
 import juan from '../assets/img/juan-agua.png';
@@ -36,7 +35,7 @@ const accent = h2Words.filter((w) => w.em);
 const th = (i: number) => (0.04 + i * 0.035).toFixed(3);
 ---
 
-<section class="hero on-dark" data-hero aria-labelledby="hero-title">
+<section class="hero on-dark" data-hero data-hero-dark aria-labelledby="hero-title">
   <div class="hero-stage" data-stage>
     <div class="hero-visual">
       <picture class="hero-bg" aria-hidden="true">
@@ -49,10 +48,6 @@ const th = (i: number) => (0.04 + i * 0.035).toFixed(3);
       <div class="hero-glow" aria-hidden="true"></div>
       <div class="hero-sides" aria-hidden="true"></div>
 
-      <div class="hero-sea hero-sea--back" data-wave aria-hidden="true">
-        <WavePlane class="sea-far" h={200} a={{ seed: 41, humps: 3, base: 70, amp: 18 }} b={{ seed: 42, humps: 4, base: 78, amp: 14 }} stripes={3} gap={11} dur={[64, 82]} bob={11} phase={0.15} />
-        <WavePlane class="sea-mid" h={200} a={{ seed: 43, humps: 2, base: 112, amp: 26 }} b={{ seed: 44, humps: 3, base: 120, amp: 20 }} stripes={3} gap={12} dur={[44, 58]} bob={9} phase={0.55} />
-      </div>
 
       <h1 class="hero-title" id="hero-title">
         <span class="hero-kicker">Consultoría en IA y marketing para empresas en Chile</span>
@@ -68,8 +63,18 @@ const th = (i: number) => (0.04 + i * 0.035).toFixed(3);
         <Picture src={juan} formats={['avif', 'webp']} fallbackFormat="webp" widths={[360, 540, 691]} sizes="(min-width: 1100px) 46vh, 80vw" alt="Juan del Agua, consultor en inteligencia artificial y marketing en Chile" loading="eager" decoding="async" />
       </div>
 
-      <div class="hero-sea hero-sea--front" data-wave aria-hidden="true">
-        <WavePlane class="sea-front" h={200} a={{ seed: 45, humps: 2, base: 96, amp: 30 }} b={{ seed: 46, humps: 3, base: 108, amp: 24 }} stripes={4} gap={13} dur={[30, 40]} bob={7} phase={0.8} />
+      <!-- El mismo mar, otra vez delante de Juan en la franja de abajo: así sube desde el agua. -->
+      <div class="hero-front" aria-hidden="true">
+        <picture>
+          <source media="(orientation: portrait)" type="image/avif" srcset={mA.srcSet.attribute} sizes="100vw" />
+          <source media="(orientation: portrait)" type="image/webp" srcset={mW.srcSet.attribute} sizes="100vw" />
+          <source type="image/avif" srcset={dA.srcSet.attribute} sizes="100vw" />
+          <img src={dW.src} srcset={dW.srcSet.attribute} sizes="100vw" alt="" width="1920" height="1072" decoding="async" />
+        </picture>
+        <!-- mismas capas de luz que el fondo: las dos copias del mar calzan sin costura -->
+        <div class="hero-shade"></div>
+        <div class="hero-glow"></div>
+        <div class="hero-sides"></div>
       </div>
       <span class="hero-cue" aria-hidden="true"><span>Desliza</span><i></i></span>
     </div>
@@ -107,8 +112,6 @@ const th = (i: number) => (0.04 + i * 0.035).toFixed(3);
   const stage = hero.querySelector('[data-stage]');
   const track = hero.querySelector('.hero-track');
   const copy = hero.querySelector('.hero-copy');
-  const visual = hero.querySelector('.hero-visual');
-  const header = document.querySelector('[data-header]');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   const wide = matchMedia('(min-width: 1100px) and (min-height: 600px)');
   const clamp = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
@@ -172,16 +175,6 @@ const th = (i: number) => (0.04 + i * 0.035).toFixed(3);
   wide.addEventListener('change', () => { hidden = null; onScroll(); });
   mode();
 
-  // El encabezado se vuelve oscuro y transparente mientras está sobre el mar.
-  let dark = null, hq = false;
-  const syncHeader = () => {
-    hq = false;
-    // Toda la portada es oscura (en celular incluye el bloque de texto bajo el mar)
-    const d = hero.getBoundingClientRect().bottom > (header ? header.offsetHeight : 68);
-    if (d !== dark) { dark = d; header && header.classList.toggle('on-hero', d); }
-  };
-  addEventListener('scroll', () => { if (!hq) { hq = true; requestAnimationFrame(syncHeader); } }, { passive: true });
-  syncHeader();
 
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(([e]) => { onScreen = e.isIntersecting; if (onScreen) onScroll(); }).observe(hero);
@@ -192,8 +185,8 @@ const th = (i: number) => (0.04 + i * 0.035).toFixed(3);
 <style>
   .hero {
     --juan-h: 80svh;
-    --sea-front: 24svh;
-    --sea-back: 46svh;
+    --front-from: 73%;
+    --front-to: 86%;
     --title-lift: 23svh;
     --title-shrink: 0.1;
     position: relative; isolation: isolate;
@@ -221,12 +214,15 @@ const th = (i: number) => (0.04 + i * 0.035).toFixed(3);
     opacity: var(--rise, 1);
   }
 
-  /* El mar */
-  .hero-sea { position: absolute; left: 0; right: 0; bottom: 0; pointer-events: none; }
-  /* Los dos mares bajan más allá del borde: al moverse con el scroll nunca dejan una franja vacía. */
-  .hero-sea--back { bottom: -4svh; height: calc(var(--sea-back) + 4svh); z-index: 1; transform: translate3d(0, calc(var(--p, 1) * 3svh), 0); }
-  .hero-sea--front { bottom: -4svh; height: calc(var(--sea-front) + 4svh); z-index: 4; transform: translate3d(0, calc(var(--p, 1) * -1.5svh), 0); }
-  .hero-sea--front::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 28%; background: var(--marino); }
+  /* El mar: se mueve solo con el scroll (nada se anima por su cuenta) */
+  .hero-bg, .hero-front picture { transform: translate3d(0, calc(var(--p, 1) * -5svh), 0) scale(1.1); transform-origin: 50% 100%; }
+  .hero-front {
+    position: absolute; inset: 0; z-index: 4; pointer-events: none;
+    -webkit-mask-image: linear-gradient(180deg, transparent var(--front-from), #000 var(--front-to));
+    mask-image: linear-gradient(180deg, transparent var(--front-from), #000 var(--front-to));
+  }
+  .hero-front picture, .hero-front img { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .hero-front img { object-fit: cover; object-position: 50% 62%; }
 
   /* El nombre */
   .hero-title {
@@ -264,7 +260,7 @@ const th = (i: number) => (0.04 + i * 0.035).toFixed(3);
   .hero-juan :global(img) { object-fit: contain; object-position: 50% 100%; }
 
   .hero-cue {
-    position: absolute; left: 50%; bottom: calc(var(--sea-front) * 0.42); z-index: 6;
+    position: absolute; left: 50%; bottom: 7svh; z-index: 6;
     display: grid; justify-items: center; gap: 10px; transform: translateX(-50%);
     font-size: 0.72rem; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: rgba(245, 243, 236, 0.8);
     opacity: calc(1 - var(--p, 1) * 7);
@@ -305,8 +301,8 @@ const th = (i: number) => (0.04 + i * 0.035).toFixed(3);
   @media (max-width: 1099px), (max-height: 599px) {
     .hero {
       --juan-h: min(70svh, calc(min(80vw, 400px) / 0.5632));
-      --sea-front: 15svh;
-      --sea-back: 34svh;
+      --front-from: 79%;
+      --front-to: 90%;
       --title-lift: 17svh;
     }
     .hero--anim .hero-track { height: 95vh; }

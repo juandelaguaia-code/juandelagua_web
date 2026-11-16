@@ -83,14 +83,14 @@ const calc = (['starter', 'combo', 'campanas', 'google', 'crecer', 'escalar', 'l
   .chips { display: flex; flex-wrap: wrap; gap: 8px; }
   .chip { position: relative; }
   .chip input { position: absolute; opacity: 0; pointer-events: none; }
-  .chip span { display: grid; padding: 8px 14px; border-radius: 12px; border: 1.5px solid var(--linea); background: #fff; cursor: pointer; font-size: var(--fs-sm); font-weight: 600; line-height: 1.3; }
+  .chip span { display: grid; padding: 8px 14px; border-radius: 12px; border: 1.5px solid var(--linea); background: var(--surface); cursor: pointer; font-size: var(--fs-sm); font-weight: 600; line-height: 1.3; }
   .chip small { font-weight: 400; font-size: var(--fs-xs); color: var(--piedra); }
   .chip input:checked + span { border-color: var(--corriente); background: rgba(30, 158, 147, 0.1); color: var(--corriente-ink); }
   .chip input:focus-visible + span { outline: 2px solid var(--corriente); outline-offset: 2px; }
   .ticket { display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: center; }
   .ticket input[type='range'] { flex: 1 1 220px; accent-color: var(--corriente); }
   .money { display: flex; align-items: center; gap: 6px; font-weight: 600; }
-  .money input { font: inherit; width: 140px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--linea); background: #fff; }
+  .money input { font: inherit; width: 140px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--linea); background: var(--field-bg); color: var(--tinta); }
   .roi-result { display: grid; gap: 6px; padding: 18px 20px; border-radius: var(--radius); background: var(--marino); color: var(--perla); }
   .roi-result .big { font-family: var(--serif); font-size: var(--fs-xl); line-height: 1.2; }
   .roi-result [data-r-detail] { color: rgba(245, 243, 236, 0.8); font-size: var(--fs-sm); }

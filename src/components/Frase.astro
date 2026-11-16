@@ -1,0 +1,32 @@
+---
+/**
+ * Frase central de la home: cada palabra emerge desde la línea del agua al entrar en pantalla.
+ * Aquí irá el video de la gran ola (avanza con el scroll) cuando esté generado.
+ */
+interface Word { t: string; em?: boolean }
+interface Props { lines: Word[][] }
+const { lines } = Astro.props;
+const label = lines.map((l) => l.map((w) => w.t).join(' ')).join(' ');
+---
+
+<section class="statement on-dark">
+  <div class="container">
+    <p class="statement-text" data-rise aria-label={label}>
+      {lines.map((line, li) => (
+        <span class="rise-line" aria-hidden="true">
+          {line.map((w, wi) => (
+            <><span class="rise-mask"><span class:list={['rise-word', { accent: w.em }]} style={`--i:${li * 4 + wi}`}>{w.t}</span></span>{' '}</>
+          ))}
+        </span>
+      ))}
+    </p>
+  </div>
+</section>
+
+<style>
+  .statement { position: relative; overflow: hidden; padding: clamp(88px, 12vw, 168px) 0; }
+  .statement-text { font-family: var(--serif); font-size: clamp(2.3rem, 0.6rem + 5vw, 5rem); line-height: 1.04; letter-spacing: -0.025em; display: grid; gap: 0.06em; }
+  .rise-line { display: block; }
+  @media (min-width: 900px) { .rise-line { white-space: nowrap; } }
+  .rise-word.accent { font-style: italic; color: var(--corriente-soft); }
+</style>

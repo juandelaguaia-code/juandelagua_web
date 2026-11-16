@@ -1,23 +1,13 @@
 ---
 /**
- * Unión entre secciones: el color de la sección de abajo (`to`) sube como una ola sobre
- * la de arriba (`from`). Dos planos (lejano y cercano) de olas que fluyen; se detienen
- * fuera de pantalla (fx.ts) y quedan quietas con movimiento reducido.
- * Las formas son las compartidas de WaveDefs.astro (en Base.astro): cada unión cuesta unos pocos bytes.
+ * Unión entre secciones: un degradado suave del fondo de arriba (`from`) al de abajo (`to`).
+ * Sin olas dibujadas con código: el agua del sitio es imagen y video generados.
+ * Los colores de marca se traducen a los fondos del tema activo (claro u oscuro).
  */
-import WavePlane from './WavePlane.astro';
-
 interface Props { from: string; to: string; flip?: boolean; seed?: number }
-const { from, to, flip = false, seed } = Astro.props;
-
-// Desfase y velocidades distintos por unión, para que no se muevan todas al mismo compás.
-const g = globalThis as unknown as { __waveSeed?: number };
-g.__waveSeed = (g.__waveSeed ?? 0) + 1;
-const s = seed ?? g.__waveSeed * 11 + [...(from + to)].reduce((a, c) => a + c.charCodeAt(0), 0);
-const dark = /marino|tinta/.test(to);
+const { from, to } = Astro.props;
+const bg = (c: string) =>
+  c.includes('--perla') ? 'var(--bg)' : c.includes('--bruma') ? 'var(--bg-alt)' : c.includes('--marino') ? 'var(--marino)' : c;
 ---
 
-<div class:list={['wave', { flip, 'wave--to-dark': dark }]} style={`--from:${from};--to:${to}`} data-wave aria-hidden="true">
-  <WavePlane class="wave-back" h={120} shared="wd-back" dur={[44 + (s % 9), 58 + (s % 7)]} bob={9} phase={(s % 7) / 7} />
-  <WavePlane class="wave-front" h={120} shared="wd-front" dur={[28 + (s % 6), 38 + (s % 8)]} bob={7} phase={(s % 5) / 5} />
-</div>
+<div class="wave" style={`--from:${bg(from)};--to:${bg(to)}`} aria-hidden="true"></div>

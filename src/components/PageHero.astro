@@ -1,28 +1,63 @@
 ---
+/**
+ * Portada de las páginas interiores (ofertas, blog, comunidad, consultoría, contacto…):
+ * el mismo mar de la home (fondo generado con Higgsfield a partir del fondo de agua de la marca).
+ * Usa exactamente las mismas versiones de imagen que la home, así el navegador ya las tiene guardadas.
+ * El mar se mueve solo al hacer scroll (fx.ts escribe --x mientras la portada sale por arriba).
+ */
+import { getImage } from 'astro:assets';
+import fondo from '../assets/img/mar-fondo.jpg';
+import fondoMovil from '../assets/img/mar-fondo-movil.jpg';
+
 interface Props { eyebrow: string; dark?: boolean }
-const { eyebrow, dark = false } = Astro.props;
+const { eyebrow } = Astro.props;
+
+const [dA, dW, mA, mW] = await Promise.all([
+  getImage({ src: fondo, format: 'avif', widths: [1280, 1920], quality: 60 }),
+  getImage({ src: fondo, format: 'webp', widths: [1280, 1920], quality: 70 }),
+  getImage({ src: fondoMovil, format: 'avif', widths: [640, 900, 1152], quality: 60 }),
+  getImage({ src: fondoMovil, format: 'webp', widths: [640, 900, 1152], quality: 70 }),
+]);
 ---
 
-<section class:list={['page-hero', { 'on-dark': dark }]}>
+<section class="page-hero on-dark" data-hero-dark data-fx-exit>
+  <picture class="ph-mar" aria-hidden="true">
+    <source media="(orientation: portrait)" type="image/avif" srcset={mA.srcSet.attribute} sizes="100vw" />
+    <source media="(orientation: portrait)" type="image/webp" srcset={mW.srcSet.attribute} sizes="100vw" />
+    <source type="image/avif" srcset={dA.srcSet.attribute} sizes="100vw" />
+    <img src={dW.src} srcset={dW.srcSet.attribute} sizes="100vw" alt="" width="1920" height="1072" decoding="async" />
+  </picture>
+  <div class="ph-shade" aria-hidden="true"></div>
   <div class="container">
     <p class="eyebrow rise">{eyebrow}</p>
     <h1 class="rise" style="--d:80ms"><slot name="title" /></h1>
     <div class="lead rise" style="--d:160ms"><slot name="lead" /></div>
     <div class="actions rise" style="--d:240ms"><slot /></div>
   </div>
-  <svg class="current" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
-    <path d="M-20 80 C 220 20, 420 120, 720 70 S 1200 10, 1460 60" fill="none" stroke="currentColor" stroke-width="1.5" />
-    <path d="M-20 100 C 260 50, 460 130, 760 92 S 1220 40, 1460 86" fill="none" stroke="currentColor" stroke-width="1" opacity=".5" />
-  </svg>
 </section>
+<!-- Encabezado transparente sobre el mar desde el primer cuadro (Header.astro lo mantiene al bajar) -->
+<script is:inline>document.querySelector('[data-header]')?.classList.add('on-hero');</script>
 
 <style>
-  .page-hero { position: relative; padding: clamp(56px, 8vw, 112px) 0 clamp(72px, 9vw, 128px); overflow: hidden; }
-  .page-hero .container { position: relative; z-index: 1; display: grid; gap: 22px; }
-  h1 { max-width: 24ch; }
-  .lead { max-width: 72ch; }
-  .lead { display: grid; gap: 1em; }
+  .page-hero {
+    position: relative; isolation: isolate; overflow: hidden;
+    margin-top: calc(-1 * var(--header-h));
+    padding: calc(var(--header-h) + clamp(64px, 9vw, 128px)) 0 clamp(64px, 8vw, 112px);
+    min-height: min(72svh, 680px); display: grid; align-items: end;
+  }
+  .ph-mar, .ph-mar img { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -2; }
+  .ph-mar img { object-fit: cover; object-position: 50% 62%; transform: translate3d(0, calc(var(--x, 0) * 16%), 0) scale(1.12); transform-origin: 50% 0; }
+  /* sombra hacia el lado del texto: el título y la bajada siempre se leen */
+  .ph-shade {
+    position: absolute; inset: 0; z-index: -1;
+    background:
+      linear-gradient(90deg, rgba(8, 25, 42, 0.92) 0%, rgba(8, 25, 42, 0.78) 40%, rgba(8, 25, 42, 0.4) 100%),
+      linear-gradient(180deg, rgba(8, 25, 42, 0.6) 0%, rgba(8, 25, 42, 0.1) 35%, rgba(8, 25, 42, 0.55) 100%);
+  }
+  @media (max-width: 760px) { .ph-shade { background: linear-gradient(180deg, rgba(8, 25, 42, 0.78), rgba(8, 25, 42, 0.86)); } }
+  .page-hero .container { position: relative; display: grid; gap: 22px; }
+  h1 { max-width: 24ch; text-shadow: 0 2px 24px rgba(5, 15, 28, 0.45); }
+  .lead { max-width: 72ch; display: grid; gap: 1em; }
   .actions:empty { display: none; }
   .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
-  .current { position: absolute; left: 0; bottom: 8px; width: 100%; height: 90px; color: var(--corriente); opacity: 0.45; pointer-events: none; }
 </style>

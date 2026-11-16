@@ -89,3 +89,12 @@ Formulario: no hay formulario propio. El botón lleva a `/agendar` (agenda de Go
 ## 9. Regla de textos
 
 Todo texto visible de este paquete va literal, y la página construida debe pasar la revisión antes de mostrarse: cero guiones largos, cero palabras de relleno (leverage, seamless, empower, unlock, robust, actionable, data-driven, solutions) y la revisión de muletillas de IA en los párrafos.
+
+## 10. Segunda ronda (pedidos de Juan)
+
+- **Modo oscuro por defecto**, con un botón (sol y luna) en el encabezado para cambiar a claro. La elección queda guardada en el navegador del visitante y se aplica antes de pintar la página.
+- **Sin olas hechas con código.** Se quitaron el patrón de líneas del fondo, las olas de las uniones entre secciones, las olas animadas de la portada y el botón de mantener presionado. Las uniones son degradados suaves.
+- **El agua es imagen y video generados.** La portada usa el mar pintado (Higgsfield) en dos capas: detrás de Juan y otra vez delante de él en la franja de abajo, para que siga emergiendo del agua. Se mueve solo al hacer scroll.
+- **El mismo fondo marino** en la portada de ofertas, blog, comunidad y el resto de las páginas interiores (PageHero), con las mismas versiones de imagen que la home (quedan en caché).
+- **Pendiente, generado por Juan con sus generaciones ilimitadas** (Higgsfield no las permite desde Claude Code): el video del mar de la portada (avanza y retrocede con el scroll), la imagen y el video de la gran ola para la frase central, y la franja de olas del frente con fondo transparente.
+

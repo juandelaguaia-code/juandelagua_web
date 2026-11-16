@@ -8,8 +8,8 @@
  * La raíz recibe --scroll (progreso total de la página).
  *
  * Liviano a propósito: solo se miden los elementos cerca de la pantalla, lo que ya emergió
- * deja de medirse, cada variable se escribe solo si cambió, las olas se detienen fuera de
- * pantalla y todo se pausa cuando la pestaña no está visible.
+ * deja de medirse, cada variable se escribe solo si cambió y todo se pausa cuando la pestaña
+ * no está visible. Nada se mueve solo: el movimiento sigue al scroll.
  */
 
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -111,14 +111,6 @@ if (reduce) {
   );
   document.querySelectorAll('[data-rise]').forEach((el) => io.observe(el));
 
-  // Olas: se mueven solo cuando están cerca de la pantalla.
-  if ('IntersectionObserver' in window) {
-    const waves = new IntersectionObserver(
-      (entries) => entries.forEach((e) => e.target.classList.toggle('is-off', !e.isIntersecting)),
-      { rootMargin: '160px 0px' },
-    );
-    document.querySelectorAll('[data-wave]').forEach((el) => waves.observe(el));
-  }
 }
 
 // Pestaña oculta: se pausa todo lo que se mueve.

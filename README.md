@@ -24,11 +24,13 @@ npm run preview    # sirve el build
 | Colores, tipografía, botones, tarjetas | `src/styles/global.css` |
 | Cada página | `src/pages/*.astro` (la ruta = el nombre del archivo) |
 | SEO global, schema (JSON-LD), Open Graph | `src/layouts/Base.astro` |
-| Fotos | `src/assets/img/` (Astro las optimiza a AVIF/WebP). Portada: `juan-agua.png` (recorte con fondo transparente) y `mar-fondo.jpg` / `mar-fondo-movil.jpg` (fondo de agua generado con Higgsfield y ajustado a la paleta) |
-| Portada (nombre, Juan que sube desde el mar y propuesta) | `src/components/HeroMar.astro` |
-| Olas que fluyen (portada y uniones entre secciones) | `src/lib/waves.ts`, `src/components/WavePlane.astro`, `WaveGroup.astro`, `WaveDefs.astro`, `Wave.astro` |
-| Momento interactivo "Calma el mar" | `src/components/MarCalmo.astro`, `src/lib/calma.ts` |
-| Animaciones ligadas al scroll y pausa fuera de pantalla | `src/scripts/fx.ts` (las otras páginas usan además `src/components/WaterCanvas.astro`) |
+| Fotos | `src/assets/img/` (Astro las optimiza a AVIF/WebP). Portada: `juan-agua.png` (recorte con fondo transparente) y `mar-fondo.jpg` / `mar-fondo-movil.jpg` (fondo de agua generado con Higgsfield y ajustado a la paleta). Quién está detrás / Sobre mí: `juan-retrato-recorte.png` (sin fondo, sobre un arco turquesa) |
+| Portada de la home (nombre, Juan que sube desde el mar y propuesta) | `src/components/HeroMar.astro` |
+| Portada con el mar en las páginas interiores (ofertas, blog, comunidad…) | `src/components/PageHero.astro` |
+| Frase central de la home | `src/components/Frase.astro` |
+| Modo oscuro (por defecto) y claro: colores por tema | `src/styles/global.css` (`:root` y `:root[data-theme='dark']`); el botón está en `src/components/Header.astro` y la preferencia se aplica antes de pintar en `src/layouts/Base.astro` |
+| Animaciones ligadas al scroll (nada se mueve solo) | `src/scripts/fx.ts` |
+| Uniones suaves entre secciones | `src/components/Wave.astro` |
 | Decisiones de diseño de la home | `docs/paquete-diseno-home.md` |
 | Imagen para compartir (OG) y favicon | `public/og.jpg` (captura de la portada a 1200×630), `public/favicon.svg` → el apple-touch-icon se regenera con `node scripts/make-images.mjs` |
 

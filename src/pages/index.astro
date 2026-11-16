@@ -5,13 +5,13 @@ import CtaBand from '../components/CtaBand.astro';
 import Faq from '../components/Faq.astro';
 import Wave from '../components/Wave.astro';
 import HeroMar from '../components/HeroMar.astro';
-import MarCalmo from '../components/MarCalmo.astro';
+import Frase from '../components/Frase.astro';
 import LatestPosts from '../components/LatestPosts.astro';
 import ComboFlow from '../components/ComboFlow.astro';
 import { CERTIFICATIONS, COMMUNITY, SITE, OFERTAS, diagnosticoHref } from '../data/site';
 import { PLANES, clp } from '../data/planes';
 import { FAQ_HOME, faqSchema } from '../data/faq';
-import retrato from '../assets/img/juan-retrato.jpg';
+import retrato from '../assets/img/juan-retrato-recorte.png';
 import marFondo from '../assets/img/mar-fondo.jpg';
 // Fuentes del nombre de la portada: se precargan para que aparezca de inmediato con su tipografía
 import serifNormal from '@fontsource-variable/newsreader/files/newsreader-latin-wght-normal.woff2?url';
@@ -85,9 +85,9 @@ const marCombo = await getImage({ src: marFondo, format: 'webp', width: 1600, qu
     </div>
   </section>
 
-  <!-- FRASE CENTRAL + el momento interactivo: mantener presionado para calmar el mar -->
+  <!-- FRASE CENTRAL (aquí irá el video de la gran ola, que avanza con el scroll) -->
   <Wave from="var(--perla)" to="var(--marino)" />
-  <MarCalmo lines={statement} />
+  <Frase lines={statement} />
   <Wave from="var(--marino)" to="var(--bruma)" />
 
   <!-- SERVICIOS -->
@@ -235,7 +235,7 @@ const marCombo = await getImage({ src: marFondo, format: 'webp', width: 1600, qu
   .pain:last-child { border-bottom: 0; }
   .pain-n {
     position: relative; z-index: 1; display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%;
-    background: var(--perla); border: 1.5px solid rgba(30, 158, 147, 0.5);
+    background: var(--bg); border: 1.5px solid rgba(30, 158, 147, 0.5);
     font-family: var(--serif); font-style: italic; font-size: 1.35rem; color: var(--corriente-ink);
   }
   .pain h3 { font-size: clamp(1.35rem, 1.1rem + 0.8vw, 1.8rem); margin-bottom: 8px; }
@@ -274,11 +274,11 @@ const marCombo = await getImage({ src: marFondo, format: 'webp', width: 1600, qu
   .rung a {
     position: relative; display: grid; align-content: start; gap: 10px; height: 100%;
     padding: clamp(20px, 2.2vw, 26px); border-radius: var(--radius-lg); text-decoration: none;
-    background: #fbfaf6; border: 1px solid rgba(30, 158, 147, 0.32);
-    box-shadow: inset 0 3px 0 var(--corriente), 0 18px 40px -28px rgba(14, 42, 67, 0.35);
+    background: var(--surface); border: 1px solid rgba(30, 158, 147, 0.32);
+    box-shadow: inset 0 3px 0 var(--corriente), 0 18px 40px -28px rgba(var(--shadow-rgb), 0.35);
     transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease), border-color 0.3s;
   }
-  .rung a:hover { transform: translateY(-4px); border-color: rgba(30, 158, 147, 0.6); box-shadow: inset 0 3px 0 var(--corriente), 0 28px 54px -30px rgba(14, 42, 67, 0.5); }
+  .rung a:hover { transform: translateY(-4px); border-color: rgba(30, 158, 147, 0.6); box-shadow: inset 0 3px 0 var(--corriente), 0 28px 54px -30px rgba(var(--shadow-rgb), 0.5); }
   .rung .num { font-family: var(--serif); font-style: italic; font-size: 1.05rem; color: var(--corriente-ink); }
   .rung h3 { font-size: clamp(1.2rem, 1.05rem + 0.5vw, 1.45rem); }
   .rung p { color: var(--piedra); font-size: var(--fs-sm); }
@@ -294,8 +294,13 @@ const marCombo = await getImage({ src: marFondo, format: 'webp', width: 1600, qu
   /* SOBRE MÍ */
   .about { display: grid; gap: 40px; align-items: center; }
   @media (min-width: 900px) { .about { grid-template-columns: 420px 1fr; gap: 72px; } }
-  .about-photo { max-width: 420px; }
-  .about-photo :global(img) { border-radius: 200px 200px var(--radius-lg) var(--radius-lg); background: var(--perla); aspect-ratio: 4 / 5; object-fit: cover; object-position: top; width: 100%; }
+  /* Arco con brillo turquesa: la foto recortada (sin fondo blanco) se ve bien en modo oscuro y claro */
+  .about-photo {
+    max-width: 420px; overflow: hidden; border-radius: 200px 200px var(--radius-lg) var(--radius-lg);
+    background: radial-gradient(120% 85% at 50% 16%, rgba(92, 200, 189, 0.6) 0%, rgba(30, 158, 147, 0.34) 36%, rgba(14, 42, 67, 0) 74%), var(--marino);
+    box-shadow: inset 0 0 0 1px rgba(245, 243, 236, 0.1), 0 24px 50px -30px rgba(var(--shadow-rgb), 0.6);
+  }
+  .about-photo :global(img) { aspect-ratio: 4 / 5; object-fit: cover; object-position: top; width: 100%; }
   .about-text { display: grid; gap: 20px; }
   .certs { list-style: none; padding: 0; display: grid; gap: 10px; }
   @media (min-width: 560px) { .certs { grid-template-columns: 1fr 1fr; } }
