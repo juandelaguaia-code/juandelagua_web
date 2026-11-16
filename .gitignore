@@ -25,3 +25,7 @@ privado/
 
 # jetbrains setting folder
 .idea/
+
+# Python (scripts/color-marca.py)
+__pycache__/
+*.pyc
