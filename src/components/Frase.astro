@@ -178,6 +178,8 @@ const bands = [0.12, 0.42, 0.72];
     .ola--vertical .ola-scrim {
       background: linear-gradient(180deg, rgba(8, 25, 42, 0.9) 0%, rgba(8, 25, 42, 0.84) 30%, rgba(8, 25, 42, 0.62) 47%, rgba(8, 25, 42, 0.18) 64%, rgba(8, 25, 42, 0) 80%);
     }
+    /* al llegar, la ola se ve entera y viva; la sombra sube justo antes de la primera línea */
+    .ola--anim.ola--vertical .ola-scrim { opacity: clamp(0.3, calc(0.3 + (var(--p, 1) - 0.02) * 8.75), 1); }
   }
   .ola-copy { position: relative; }
   /* más compacta que la versión sin video: las tres líneas caben en la mitad calma del cuadro */
