@@ -21,7 +21,7 @@ Lo que quiero ahora: [escribe aquí el cambio]
 
 - **Home "Emerges del mar":** al abrir, "Juan del Agua" en grande sobre el mar. Al bajar, Juan sube desde detrás de las olas del frente hasta el centro (se ven los brazos cruzados) y aparece la propuesta con el botón del diagnóstico. El mar de fondo es un video que avanza y retrocede con el scroll.
 - **Frase central (gran ola versión 2):** la ola se curva, rompe y el mar queda en calma mientras aparecen "Menos trabajo manual", "Marketing con resultados" y "Recupera tiempo para vivir mejor". En celular y tablet vertical hay una versión vertical que sigue a la ola mientras rompe, con el texto arriba, sobre el cielo.
-- **Video también en celular:** la portada, la gran ola y el fondo de las páginas interiores avanzan con el scroll en el teléfono, con versiones verticales livianas (0,6 a 1 MB cada una) que se piden recién cuando la página terminó de cargar. Con movimiento reducido, ahorro de datos o conexión 2G se ven imágenes fijas.
+- **Video también en celular:** la portada, la gran ola y el fondo de las páginas interiores avanzan con el scroll en el teléfono, con versiones verticales livianas (0,6 a 1 MB cada una) que se piden recién cuando la página terminó de cargar. Con ahorro de datos o conexión 2G se ven imágenes fijas. Con "reducir movimiento" activado en el teléfono también avanza con el scroll (lo mueve la persona al bajar).
 - **Páginas interiores** (ofertas, blog, comunidad, contacto, consultor IA, agendar, casos, 404 y el resto que usa `PageHero`): el mar es el fondo de la página completa, de arriba hasta el pie, y avanza con el scroll de toda la página.
 - **Modo oscuro por defecto**, con botón sol y luna para pasar a claro. En modo claro las secciones son opacas y el mar se ve en la portada de cada página (a propósito: el texto oscuro necesita fondo claro).
 - **Notebooks:** con menos de 720 px de alto, el texto de la portada va debajo del mar. Entre 720 y 859 px el nombre se achica un poco más al llegar.
@@ -50,7 +50,7 @@ Lo que quiero ahora: [escribe aquí el cambio]
 2. **Publicar en main solo con el visto bueno de Juan.** EasyPanel despliega main solo; antes de eso se trabaja en la rama de la sesión.
 3. **Sin olas hechas con código.** El agua es imagen o video generado.
 4. **Nada se mueve solo:** el mar y la ola avanzan únicamente con el scroll. Solo se animan `transform` y `opacity`.
-5. **Celular con video liviano:** versión vertical de cada video (cerca de 1 MB), pedida después de la carga. Imagen fija con movimiento reducido, ahorro de datos o 2G.
+5. **Celular con video liviano:** versión vertical de cada video (cerca de 1 MB), pedida después de la carga. Como todo avanza solo con el scroll, funciona también con "reducir movimiento" activado (ahí las palabras aparecen sin desplazarse y el fondo no hace paralaje). Imagen fija solo con ahorro de datos o 2G.
 6. **Textos:** cero guiones largos y cero palabras de relleno (leverage, seamless, empower, unlock, robust, actionable, data-driven, solutions, testament, landscape, delve, elevate).
 7. **Contraste medido sobre el peor píxel:** 4,5:1 o más para texto normal; 3:1 para títulos grandes.
 
@@ -91,9 +91,10 @@ Para el **mar de la portada** el proceso es igual con mezcla 0,8 (`marca-80.cube
 2. Con Playwright (ya instalado) usa `waitUntil: 'load'`, no `networkidle`: el video se descarga como blob y la red nunca queda quieta.
 3. Revisa:
    - Portada en 1280 × 720, 1366 × 657 (texto debajo del mar), 1440 × 900 y 1920 × 1080: el nombre no choca con el texto, se ven los brazos de Juan sobre las olas del frente.
-   - iPhone 13, Pixel 7 y iPad vertical: la portada, la gran ola y las páginas interiores bajan la versión vertical y avanzan con el scroll. Con movimiento reducido no se descarga ningún video.
+   - iPhone 13, Pixel 7 y iPad vertical: la portada, la gran ola y las páginas interiores bajan la versión vertical y avanzan con el scroll, también con "reducir movimiento" activado. Con ahorro de datos no se descarga ningún video.
    - Celular lento simulado (CPU 4 veces más lenta y 4G): el video debe seguir el scroll sin saltos (la versión 2 da unos 24 saltos de video por segundo y la gran ola queda lista antes de llegar).
    - Ofertas, blog, comunidad y contacto en modo oscuro (mar de arriba a abajo) y en modo claro.
+   - En un teléfono real, abrir cualquier página con `?diagnostico` al final (por ejemplo `juandelagua.com/?diagnostico`): muestra si ese aparato recibe video o imagen, si tiene "reducir movimiento" o ahorro de datos, y los errores.
    - Consola sin errores (si aparece un error de "Content Security Policy" con `blob:`, revisa `media-src` en `src/middleware.ts`).
    - Sin desplazamiento lateral y contraste según la regla 7.
    - Peso en celular: unos 350 KB hasta que la página termina de cargar; recorriendo la home completa, unos 2 MB con los dos videos verticales.

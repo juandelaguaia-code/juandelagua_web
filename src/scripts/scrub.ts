@@ -3,13 +3,14 @@
  *
  * - Pantallas horizontales (computador, notebook, celular girado): versión 16:9.
  *   Pantallas verticales (celular, tablet vertical): versión vertical liviana, si el componente la tiene.
- * - Imagen fija con movimiento reducido, con "ahorro de datos" activado o con conexión 2G.
+ * - El video solo avanza cuando la persona hace scroll (nada se mueve solo), por eso funciona también
+ *   con "reducir movimiento" activado en el teléfono. Imagen fija con "ahorro de datos" o conexión 2G.
  * - El video se descarga completo como Blob: así el salto a cualquier cuadro funciona aunque el
  *   servidor no soporte descargas parciales (Range).
  * - Los saltos (seeks) nunca se pisan: si llega uno nuevo mientras otro está en curso, se guarda
  *   solo el último y se ejecuta al terminar. Un error libera el bloqueo para que nunca se congele.
- * - Quién ve qué se decide en vivo: rotar, cambiar el tamaño, activar movimiento reducido o el
- *   ahorro de datos re-evalúa (y la carga anterior se cancela y se libera de la memoria).
+ * - Quién ve qué se decide en vivo: rotar, cambiar el tamaño o activar el ahorro de datos re-evalúa
+ *   (y la carga anterior se cancela y se libera de la memoria).
  */
 
 /** Pantallas verticales: usan la versión vertical del video. */
@@ -19,7 +20,12 @@ export const PORTRAIT_GATES = [
 ];
 /** La misma condición, lista para un atributo `media` (p. ej. el <source> de la imagen vertical). */
 export const PORTRAIT_MEDIA = PORTRAIT_GATES.join(', ');
-const REDUCE = '(prefers-reduced-motion: reduce)';
+
+/** Escucha cambios de una media query (Safari antiguo solo tiene addListener). */
+export function listenMedia(m: MediaQueryList, fn: () => void) {
+  if (typeof m.addEventListener === 'function') m.addEventListener('change', fn);
+  else (m as MediaQueryList & { addListener(f: () => void): void }).addListener(fn);
+}
 
 type Conn = { saveData?: boolean; effectiveType?: string; addEventListener?: (t: string, f: () => void) => void };
 const conn = (): Conn | undefined => (navigator as Navigator & { connection?: Conn }).connection;
@@ -35,14 +41,14 @@ export const isPortrait = () => PORTRAIT_GATES.some((q) => matchMedia(q).matches
 
 /** Qué fuente corresponde ahora: null = imagen fija. */
 export function pickSource(src: ScrubSources): string | null {
-  if (matchMedia(REDUCE).matches || lite()) return null;
+  if (lite()) return null;
   return isPortrait() ? src.mobile ?? null : src.desktop;
 }
 
-/** Llama a `fn` cada vez que cambia alguna condición (rotación, tamaño, movimiento reducido, datos). */
+/** Llama a `fn` cada vez que cambia alguna condición (rotación, tamaño, ahorro de datos). */
 export function onGateChange(fn: () => void) {
-  const lists = [...PORTRAIT_GATES, REDUCE].map((q) => matchMedia(q));
-  lists.forEach((m) => m.addEventListener('change', fn));
+  const lists = PORTRAIT_GATES.map((q) => matchMedia(q));
+  lists.forEach((m) => listenMedia(m, fn));
   conn()?.addEventListener?.('change', fn);
   return lists; // se mantienen referenciadas a propósito
 }

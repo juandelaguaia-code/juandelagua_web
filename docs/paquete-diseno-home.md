@@ -117,3 +117,10 @@ Todo texto visible de este paquete va literal, y la página construida debe pasa
 - **Fluidez medida** en un celular simulado con la CPU cuatro veces más lenta y 4G: el video sigue el scroll con unos 24 saltos por segundo y un desfase medio de 4 ms; la gran ola empieza a bajar a pantalla y media de distancia y queda lista antes de llegar.
 - **Contraste** de las tres líneas sobre el peor píxel de cada momento del video: 4,7:1 o más en computador, notebook, iPhone, Android y iPad.
 - **Caché del navegador:** los archivos con hash se guardan un año y los videos y el fondo una semana. Visitar otra página del sitio ya no vuelve a preguntar por cada archivo.
+
+## 13. Ajuste tras la prueba en un teléfono real
+
+- En el teléfono de Juan la gran ola se veía quieta, con las tres líneas de una vez. La causa más probable es la opción "reducir movimiento" (o un modo de ahorro de batería que la activa): el sitio la respetaba mostrando todo fijo. Como la portada, la gran ola y el fondo solo avanzan cuando la persona baja, ahora funcionan también con esa opción; lo único que se apaga son los desplazamientos extra (palabras que suben, paralaje del fondo) y las animaciones que corren solas.
+- Texto de la gran ola un poco más grande en celular, con más aire entre líneas.
+- Compatibilidad con Safari antiguo (media queries y alto de pantalla).
+- Diagnóstico para teléfonos reales: cualquier página con `?diagnostico` al final muestra qué recibe ese aparato y si hubo errores.

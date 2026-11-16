@@ -6,8 +6,9 @@
  * Con el video de la gran ola: la sección se fija en pantalla y, al bajar, la ola se curva y rompe
  * mientras aparecen las tres líneas, una tras otra, hasta quedar el mar en calma. El video solo se
  * mueve con el scroll, también en celular: ahí usa una versión vertical liviana que sigue a la ola
- * mientras rompe, y el texto va arriba, sobre el cielo. Con movimiento reducido o ahorro de datos:
- * imagen quieta con las tres líneas visibles.
+ * mientras rompe, y el texto va arriba, sobre el cielo. Todo avanza solo cuando la persona baja, así que
+ * funciona igual con "reducir movimiento" activado (ahí las palabras aparecen sin desplazarse). Sin
+ * JavaScript: imagen quieta con las tres líneas visibles; con ahorro de datos: imagen en vez de video.
  */
 import { getImage } from 'astro:assets';
 import { PORTRAIT_MEDIA } from '../scripts/scrub';
@@ -84,7 +85,6 @@ const bands = [0.12, 0.42, 0.72];
     const sec = document.querySelector<HTMLElement>('[data-ola]');
     const stage = sec?.querySelector<HTMLElement>('[data-ola-stage]');
     const video = sec?.querySelector<HTMLVideoElement>('.ola-video');
-    const reduce = matchMedia('(prefers-reduced-motion: reduce)');
     if (sec && stage && video) {
       const track = sec.querySelector<HTMLElement>('.ola-track')!;
       const sources = { desktop: video.dataset.desktop!, mobile: video.dataset.mobile || undefined };
@@ -109,10 +109,8 @@ const bands = [0.12, 0.42, 0.72];
       const onScroll = () => { target = progress(); if (!raf && onScreen) raf = requestAnimationFrame(tick); };
 
       const arm = () => {
-        const motion = !reduce.matches;
-        sec.classList.toggle('ola--anim', motion);
         const url = pickSource(sources);
-        if (!motion || !url) { scrub = null; sec.classList.remove('video-ready'); return; }
+        if (!url) { scrub = null; sec.classList.remove('video-ready'); return; }
         if (url === loading) { if (ctrl?.ready) { scrub = (p) => ctrl!.seek(p); sec.classList.add('video-ready'); } return; }
         // otra fuente (p. ej. al girar el celular): la imagen vuelve mientras carga la nueva
         scrub = null; sec.classList.remove('video-ready');
@@ -132,7 +130,7 @@ const bands = [0.12, 0.42, 0.72];
         if (onScreen) { if (!loading) arm(); onScroll(); }
       }, { rootMargin: '150% 0px 150% 0px' }).observe(sec);
       onGateChange(arm);
-      sec.classList.toggle('ola--anim', !reduce.matches);
+      sec.classList.add('ola--anim');
       addEventListener('scroll', onScroll, { passive: true });
       addEventListener('resize', onScroll);
       target = shown = progress();
@@ -150,7 +148,7 @@ const bands = [0.12, 0.42, 0.72];
 
   /* --- La gran ola (con video) --- */
   .ola { padding: 0; overflow: visible; }
-  .ola-stage { position: relative; height: 100svh; min-height: 560px; overflow: hidden; display: grid; align-items: center; }
+  .ola-stage { position: relative; height: 100vh; height: 100svh; min-height: 560px; overflow: hidden; display: grid; align-items: center; }
   .ola--anim .ola-stage { position: sticky; top: 0; }
   .ola--anim .ola-track { height: 180vh; }
   .ola-poster, .ola-poster img, .ola-video { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -175,6 +173,7 @@ const bands = [0.12, 0.42, 0.72];
     .ola--vertical :is(.ola-poster img, .ola-video) { object-position: 50% 50%; }
     .ola--vertical .ola-stage { align-items: start; }
     .ola--vertical .ola-copy { padding-top: calc(var(--header-h) + clamp(24px, 6svh, 72px)); }
+    .ola--vertical .statement-text { font-size: clamp(2.25rem, 9.4vw, 3.4rem); gap: 0.16em; }
     .ola--vertical .ola-scrim {
       background: linear-gradient(180deg, rgba(8, 25, 42, 0.9) 0%, rgba(8, 25, 42, 0.84) 30%, rgba(8, 25, 42, 0.62) 47%, rgba(8, 25, 42, 0.18) 64%, rgba(8, 25, 42, 0) 80%);
     }
@@ -192,4 +191,5 @@ const bands = [0.12, 0.42, 0.72];
     opacity: var(--kc);
     transform: translate3d(0, calc((1 - var(--kc)) * 0.5em), 0);
   }
+  @media (prefers-reduced-motion: reduce) { .ola--anim .ola-w { transform: none; } }
 </style>

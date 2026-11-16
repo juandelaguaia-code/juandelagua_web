@@ -112,7 +112,6 @@ const th = (i: number) => (0.04 + i * 0.035).toFixed(3);
   const stage = hero.querySelector('[data-stage]');
   const track = hero.querySelector('.hero-track');
   const copy = hero.querySelector('.hero-copy');
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   const wide = matchMedia('(min-width: 1100px) and (min-height: 720px)');
   const clamp = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
   const smooth = (t) => t * t * (3 - 2 * t);
@@ -171,10 +170,11 @@ const th = (i: number) => (0.04 + i * 0.035).toFixed(3);
     hero.classList.remove('hero--anim', 'copy-hidden');
     for (const k of ['--p', '--rise', '--settle']) { stage.style.removeProperty(k); delete cache[k]; }
   }
-  const mode = () => (reduce.matches ? disable() : enable());
-  reduce.addEventListener('change', mode);
-  wide.addEventListener('change', () => { hidden = null; onScroll(); });
-  mode();
+  // Todo avanza solo con el scroll, así que se activa también con "reducir movimiento" en el teléfono
+  // (las animaciones que corren solas, como la entrada de las letras, siguen apagadas en ese caso).
+  const onWide = () => { hidden = null; onScroll(); };
+  if (typeof wide.addEventListener === 'function') wide.addEventListener('change', onWide); else wide.addListener(onWide);
+  enable();
 
 
   if ('IntersectionObserver' in window) {
@@ -228,7 +228,7 @@ const th = (i: number) => (0.04 + i * 0.035).toFixed(3);
   .hero-stage { position: relative; }
   .hero--anim .hero-stage { position: sticky; top: 0; }
   .hero--anim .hero-track { height: 120vh; }
-  .hero-visual { position: relative; height: 100svh; min-height: 540px; overflow: hidden; contain: paint; }
+  .hero-visual { position: relative; height: 100vh; height: 100svh; min-height: 540px; overflow: hidden; contain: paint; }
 
   /* Fondo pintado + sombras para que el nombre y el texto se lean siempre */
   .hero-visual :global(.hero-bg), .hero-visual :global(.hero-bg img) { position: absolute; inset: 0; width: 100%; height: 100%; }

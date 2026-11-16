@@ -41,7 +41,6 @@ const { eyebrow } = Astro.props;
   const layer = document.querySelector<HTMLElement>('[data-mar-pagina]');
   const video = layer?.querySelector<HTMLVideoElement>('.mp-video');
   if (layer && video) {
-    const reduce = matchMedia('(prefers-reduced-motion: reduce)');
     let target = 0, shown = 0, raf = 0, last = 0, lastP = '';
     let ctrl: Scrub | null = null, loading: string | null = null, scrub: ((p: number) => void) | null = null;
     const sources = { desktop: video.dataset.desktop!, mobile: video.dataset.mobile || undefined };
@@ -62,7 +61,7 @@ const { eyebrow } = Astro.props;
       else raf = requestAnimationFrame(tick);
       apply();
     };
-    const onScroll = () => { if (reduce.matches) return; target = progress(); if (!raf) raf = requestAnimationFrame(tick); };
+    const onScroll = () => { target = progress(); if (!raf) raf = requestAnimationFrame(tick); };
     const arm = () => {
       const url = pickSource(sources);
       if (!url) { scrub = null; layer.classList.remove('video-ready'); return; }
@@ -115,5 +114,5 @@ const { eyebrow } = Astro.props;
   .lead { max-width: 72ch; display: grid; gap: 1em; }
   .actions:empty { display: none; }
   .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
-  @media (prefers-reduced-motion: reduce) { .mar-pagina :global(.mp-img img) { transform: scale(1.1); } }
+  @media (prefers-reduced-motion: reduce) { .mar-pagina :global(.mp-img img), .mp-video { transform: scale(1.1); } }
 </style>

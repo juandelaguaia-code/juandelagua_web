@@ -170,5 +170,36 @@ const allSchema = [...baseSchema, ...(crumbSchema ? [crumbSchema] : []), ...extr
     <script>
       import '../scripts/fx.ts';
     </script>
+    <!-- Diagnóstico para probar en un teléfono real: abrir cualquier página con ?diagnostico al final.
+         Muestra qué decide el sitio en ese aparato (video o imagen, movimiento, datos) y si hubo errores. -->
+    <script is:inline>
+      (function () {
+        if (!/[?&]diagnostico\b/.test(location.search)) return;
+        var errs = [];
+        addEventListener('error', function (e) { errs.push(String(e.message || e.type).slice(0, 90)); });
+        addEventListener('unhandledrejection', function (e) { errs.push(String(e.reason).slice(0, 90)); });
+        function q(m) { try { return matchMedia(m).matches; } catch (e) { return 'n/d'; } }
+        function draw() {
+          var box = document.getElementById('jda-diag');
+          if (!box) { box = document.createElement('pre'); box.id = 'jda-diag'; box.style.cssText = 'position:fixed;left:8px;right:8px;bottom:8px;z-index:99999;margin:0;padding:10px 12px;font:11px/1.45 ui-monospace,Menlo,monospace;color:#f5f3ec;background:rgba(8,25,42,.92);border:1px solid #1e9e93;border-radius:10px;white-space:pre-wrap;pointer-events:none'; document.body.appendChild(box); }
+          var c = navigator.connection || {};
+          var lines = [
+            'pantalla ' + innerWidth + 'x' + innerHeight + ' @' + devicePixelRatio + 'x  vertical: ' + (q('(orientation: portrait) and (max-width: 1024px)') || q('(orientation: portrait) and (pointer: coarse)') ? 'sí' : 'no'),
+            'reducir movimiento: ' + (q('(prefers-reduced-motion: reduce)') ? 'SÍ' : 'no') + '  ahorro de datos: ' + (c.saveData ? 'SÍ' : 'no') + '  red: ' + (c.effectiveType || 'n/d'),
+            'svh: ' + (CSS.supports && CSS.supports('height', '100svh') ? 'sí' : 'NO') + '  scroll: ' + Math.round(scrollY)
+          ];
+          document.querySelectorAll('video[data-desktop]').forEach(function (v) {
+            var host = v.closest('[data-hero],[data-ola],[data-mar-pagina]');
+            var name = host ? (host.hasAttribute('data-hero') ? 'portada' : host.hasAttribute('data-ola') ? 'gran ola' : 'fondo') : 'video';
+            var anim = host && (host.classList.contains('hero--anim') || host.classList.contains('ola--anim') || host.hasAttribute('data-mar-pagina'));
+            lines.push(name + ': ' + (host && host.classList.contains('video-ready') ? 'video ' + v.videoWidth + 'x' + v.videoHeight + ' t=' + v.currentTime.toFixed(2) : 'imagen (estado ' + v.readyState + (v.error ? ', error ' + v.error.code : '') + ')') + '  animación: ' + (anim ? 'sí' : 'NO'));
+          });
+          lines.push('errores: ' + (errs.length ? errs.slice(-3).join(' | ') : 'ninguno'));
+          lines.push(navigator.userAgent.replace(/^Mozilla\/5\.0 /, '').slice(0, 120));
+          box.textContent = lines.join('\n');
+        }
+        addEventListener('load', function () { draw(); setInterval(draw, 500); });
+      })();
+    </script>
   </body>
 </html>
