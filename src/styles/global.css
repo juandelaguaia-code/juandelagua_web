@@ -339,3 +339,15 @@ body.paused *, body.paused *::before, body.paused *::after { animation-play-stat
 .offer-note { display: block; margin: 0 0 clamp(16px, 2.4vw, 28px); }
 .offer-launch { display: block; margin-top: 28px; }
 .offer-extra { margin-top: clamp(16px, 2.4vw, 28px); }
+
+/* ---------- Páginas interiores: el mar es el fondo de toda la página (PageHero.astro) ----------
+   Oscuro (por defecto): las secciones son semitransparentes y el mar se ve de arriba a abajo, sin cortes.
+   Claro: las secciones quedan opacas y el mar se ve en la portada. */
+html:not([data-theme='light']) body:has(.mar-pagina) main > section:not(.page-hero) { background-color: rgba(11, 32, 51, 0.5); }
+html:not([data-theme='light']) body:has(.mar-pagina) .bg-bruma { background-color: rgba(17, 46, 72, 0.66); }
+html:not([data-theme='light']) body:has(.mar-pagina) main .on-dark:not(.page-hero) { background-color: rgba(14, 42, 67, 0.66); }
+html:not([data-theme='light']) body:has(.mar-pagina) .wave { display: none; }
+html:not([data-theme='light']) body:has(.mar-pagina) .cta-band { background-color: transparent; }
+html:not([data-theme='light']) body:has(.mar-pagina) .cta-mar { display: none; }
+html:not([data-theme='light']) body:has(.mar-pagina) .site-footer { background-color: rgba(11, 32, 51, 0.86); }
+html[data-theme='light'] body:has(.mar-pagina) main > section:not(.page-hero):not(.on-dark):not(.bg-bruma) { background-color: var(--bg); }

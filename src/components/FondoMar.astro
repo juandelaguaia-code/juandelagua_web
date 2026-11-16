@@ -1,0 +1,13 @@
+---
+/** Imagen del fondo de mar (vertical en celular, horizontal en pantallas anchas). Ver src/data/fondo.ts */
+import { FONDO } from '../data/fondo';
+interface Props { class?: string; priority?: boolean; lazy?: boolean }
+const { class: cls, priority = false, lazy = false } = Astro.props;
+---
+
+<picture class={cls} aria-hidden="true">
+  <source media="(orientation: portrait)" type="image/avif" srcset={FONDO.mobileAvif} sizes="100vw" />
+  <source media="(orientation: portrait)" type="image/webp" srcset={FONDO.mobileWebp} sizes="100vw" />
+  <source type="image/avif" srcset={FONDO.desktopAvif} sizes="100vw" />
+  <img src={FONDO.fallback} srcset={FONDO.desktopWebp} sizes="100vw" alt="" width="1920" height="1072" decoding="async" fetchpriority={priority ? 'high' : undefined} loading={lazy ? 'lazy' : undefined} />
+</picture>

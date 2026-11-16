@@ -15,7 +15,10 @@ const CSP = [
   `script-src 'self' 'unsafe-inline' ${SITE.plausibleUrl} https://challenges.cloudflare.com`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https:",
-  "font-src 'self'",
+  // data: para el subconjunto cirílico de Plus Jakarta que Vite deja incrustado en el CSS
+  "font-src 'self' data:",
+  // blob: para el video del mar, que se descarga entero y se reproduce desde memoria (avanza con el scroll)
+  "media-src 'self' blob:",
   `connect-src 'self' ${SITE.plausibleUrl} https://*.supabase.co`,
   'frame-src https://www.youtube-nocookie.com https://www.youtube.com https://player.vimeo.com https://www.loom.com https://challenges.cloudflare.com',
   "frame-ancestors 'none'",

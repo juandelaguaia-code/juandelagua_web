@@ -1,32 +1,27 @@
 ---
 /**
- * Portada de las páginas interiores (ofertas, blog, comunidad, consultoría, contacto…):
- * el mismo mar de la home (fondo generado con Higgsfield a partir del fondo de agua de la marca).
- * Usa exactamente las mismas versiones de imagen que la home, así el navegador ya las tiene guardadas.
- * El mar se mueve solo al hacer scroll (fx.ts escribe --x mientras la portada sale por arriba).
+ * Portada de las páginas interiores (ofertas, blog, comunidad, consultoría, contacto…).
+ *
+ * El mar es el fondo de TODA la página, no solo de la portada: una capa fija detrás de todo
+ * (imagen en celular, el video del mar de la home en computador) que se mueve solo al hacer scroll.
+ * En modo oscuro las secciones son semitransparentes para que el mar se vea de arriba a abajo
+ * (reglas en global.css, "Páginas interiores"); en modo claro las secciones quedan opacas y el mar
+ * se ve en la portada.
  */
-import { getImage } from 'astro:assets';
-import fondo from '../assets/img/mar-fondo.jpg';
-import fondoMovil from '../assets/img/mar-fondo-movil.jpg';
+import FondoMar from './FondoMar.astro';
+import { FONDO } from '../data/fondo';
 
 interface Props { eyebrow: string; dark?: boolean }
 const { eyebrow } = Astro.props;
-
-const [dA, dW, mA, mW] = await Promise.all([
-  getImage({ src: fondo, format: 'avif', widths: [1280, 1920], quality: 60 }),
-  getImage({ src: fondo, format: 'webp', widths: [1280, 1920], quality: 70 }),
-  getImage({ src: fondoMovil, format: 'avif', widths: [640, 900, 1152], quality: 60 }),
-  getImage({ src: fondoMovil, format: 'webp', widths: [640, 900, 1152], quality: 70 }),
-]);
 ---
 
-<section class="page-hero on-dark" data-hero-dark data-fx-exit>
-  <picture class="ph-mar" aria-hidden="true">
-    <source media="(orientation: portrait)" type="image/avif" srcset={mA.srcSet.attribute} sizes="100vw" />
-    <source media="(orientation: portrait)" type="image/webp" srcset={mW.srcSet.attribute} sizes="100vw" />
-    <source type="image/avif" srcset={dA.srcSet.attribute} sizes="100vw" />
-    <img src={dW.src} srcset={dW.srcSet.attribute} sizes="100vw" alt="" width="1920" height="1072" decoding="async" />
-  </picture>
+<div class="mar-pagina" data-mar-pagina aria-hidden="true">
+  <FondoMar class="mp-img" priority />
+  <video class="mp-video" muted playsinline preload="none" tabindex="-1" data-desktop={FONDO.video}></video>
+  <div class="mp-shade"></div>
+</div>
+
+<section class="page-hero on-dark" data-hero-dark>
   <div class="ph-shade" aria-hidden="true"></div>
   <div class="container">
     <p class="eyebrow rise">{eyebrow}</p>
@@ -38,26 +33,84 @@ const [dA, dW, mA, mW] = await Promise.all([
 <!-- Encabezado transparente sobre el mar desde el primer cuadro (Header.astro lo mantiene al bajar) -->
 <script is:inline>document.querySelector('[data-header]')?.classList.add('on-hero');</script>
 
+<!-- El mar avanza con el scroll de toda la página: video en computador, imagen que se desplaza en celular -->
+<script>
+  import { pickSource, onGateChange, loadScrub, type Scrub } from '../scripts/scrub';
+
+  const layer = document.querySelector<HTMLElement>('[data-mar-pagina]');
+  const video = layer?.querySelector<HTMLVideoElement>('.mp-video');
+  if (layer && video) {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+    let target = 0, shown = 0, raf = 0, last = 0, lastP = '';
+    let ctrl: Scrub | null = null, loading: string | null = null, scrub: ((p: number) => void) | null = null;
+    const progress = () => {
+      const max = document.documentElement.scrollHeight - innerHeight;
+      return max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
+    };
+    const apply = () => {
+      const s = shown.toFixed(4);
+      if (s !== lastP) { lastP = s; layer.style.setProperty('--pg', s); }
+      scrub?.(shown);
+    };
+    const tick = (now: number) => {
+      const dt = Math.min(100, now - (last || now));
+      last = now;
+      shown += (target - shown) * (1 - Math.pow(1 - 0.12, dt / 16.667));
+      if (Math.abs(target - shown) < 0.0003) { shown = target; raf = 0; last = 0; }
+      else raf = requestAnimationFrame(tick);
+      apply();
+    };
+    const onScroll = () => { if (reduce.matches) return; target = progress(); if (!raf) raf = requestAnimationFrame(tick); };
+    const arm = () => {
+      const url = pickSource({ desktop: video.dataset.desktop! });
+      if (!url) { scrub = null; layer.classList.remove('video-ready'); return; }
+      if (url === loading) { if (ctrl?.ready) { scrub = (p) => ctrl!.seek(p); layer.classList.add('video-ready'); } return; }
+      loading = url;
+      ctrl = loadScrub(video, url, (s) => {
+        if (!pickSource({ desktop: video.dataset.desktop! })) return;
+        scrub = (p) => s.seek(p);
+        s.seek(shown);
+        layer.classList.add('video-ready');
+      }, () => { scrub = null; layer.classList.remove('video-ready'); });
+    };
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', onScroll);
+    onGateChange(arm);
+    target = shown = progress();
+    apply();
+    // El video se pide cuando la página ya cargó (no compite con el contenido)
+    if (document.readyState === 'complete') arm();
+    else addEventListener('load', arm, { once: true });
+  }
+</script>
+
 <style>
+  /* Capa fija detrás de toda la página */
+  .mar-pagina { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; background: var(--marino); }
+  .mar-pagina :global(.mp-img), .mar-pagina :global(.mp-img img), .mp-video { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .mar-pagina :global(.mp-img img), .mp-video {
+    object-fit: cover; object-position: 50% 62%;
+    transform: translate3d(0, calc(var(--pg, 0) * -5%), 0) scale(1.1); transform-origin: 50% 0;
+  }
+  .mp-video { opacity: 0; transition: opacity 0.8s var(--ease); }
+  .mar-pagina.video-ready .mp-video { opacity: 1; }
+  /* sombra pareja: el contenido de toda la página se lee sobre el mar */
+  .mp-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8, 25, 42, 0.56) 0%, rgba(8, 25, 42, 0.64) 45%, rgba(8, 25, 42, 0.72) 100%); }
+
   .page-hero {
-    position: relative; isolation: isolate; overflow: hidden;
+    position: relative; isolation: isolate;
     margin-top: calc(-1 * var(--header-h));
     padding: calc(var(--header-h) + clamp(64px, 9vw, 128px)) 0 clamp(64px, 8vw, 112px);
     min-height: min(72svh, 680px); display: grid; align-items: end;
   }
-  .ph-mar, .ph-mar img { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -2; }
-  .ph-mar img { object-fit: cover; object-position: 50% 62%; transform: translate3d(0, calc(var(--x, 0) * 16%), 0) scale(1.12); transform-origin: 50% 0; }
-  /* sombra hacia el lado del texto: el título y la bajada siempre se leen */
-  .ph-shade {
-    position: absolute; inset: 0; z-index: -1;
-    background:
-      linear-gradient(90deg, rgba(8, 25, 42, 0.92) 0%, rgba(8, 25, 42, 0.78) 40%, rgba(8, 25, 42, 0.4) 100%),
-      linear-gradient(180deg, rgba(8, 25, 42, 0.6) 0%, rgba(8, 25, 42, 0.1) 35%, rgba(8, 25, 42, 0.55) 100%);
-  }
-  @media (max-width: 760px) { .ph-shade { background: linear-gradient(180deg, rgba(8, 25, 42, 0.78), rgba(8, 25, 42, 0.86)); } }
+  .page-hero.on-dark { background: transparent; }
+  /* sombra hacia el lado del texto: el título y la bajada siempre se leen, también cuando llegan al borde derecho */
+  .ph-shade { position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(8, 25, 42, 0.8) 0%, rgba(8, 25, 42, 0.6) 45%, rgba(8, 25, 42, 0.4) 100%); }
+  @media (max-width: 760px) { .ph-shade { background: linear-gradient(180deg, rgba(8, 25, 42, 0.4), rgba(8, 25, 42, 0.62)); } }
   .page-hero .container { position: relative; display: grid; gap: 22px; }
   h1 { max-width: 24ch; text-shadow: 0 2px 24px rgba(5, 15, 28, 0.45); }
   .lead { max-width: 72ch; display: grid; gap: 1em; }
   .actions:empty { display: none; }
   .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+  @media (prefers-reduced-motion: reduce) { .mar-pagina :global(.mp-img img) { transform: scale(1.1); } }
 </style>

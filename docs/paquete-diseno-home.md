@@ -101,4 +101,11 @@ Todo texto visible de este paquete va literal, y la página construida debe pasa
   - **Gran ola:** la frase central se fija en pantalla; la ola se curva, rompe y se calma mientras aparecen "Menos trabajo manual", "Marketing con resultados" y "Recupera tiempo para vivir mejor". Contraste medido sobre el peor cuadro: 7:1 o más.
   - **Celular y movimiento reducido:** imágenes fijas nítidas que se mueven con el scroll (sin descargar video).
 
+## 11. Cuarta ronda (pedidos de Juan)
 
+- **Olas del frente más bajas:** la franja de olas delante de Juan ocupa cerca de un 20 % del alto de la pantalla (antes tapaba demasiado). Se recorta desde abajo, así queda la cresta nítida y se ven los brazos cruzados.
+- **Sin choques en notebooks:** el texto de llegada parte justo bajo el nombre ya achicado, calculado con el alto real de la pantalla. Entre 720 y 859 px de alto el nombre se achica un poco más; con menos de 720 px el texto va debajo del mar, como en tablet.
+- **Mar de página completa en todas las páginas interiores** (ofertas, blog, comunidad, contacto y el resto): una capa fija detrás de todo, de la portada hasta el pie. En computador es el mismo video de la portada y avanza con el scroll de toda la página; en celular es la imagen fija, que se desplaza un poco. En modo oscuro las secciones son semitransparentes para que el mar se vea entero; en modo claro quedan opacas.
+- **Blog y comunidad con fondo:** la imagen del mar ahora es un archivo fijo (`public/fondo/`), igual en todo el sitio, así carga también en las páginas que arma el servidor. El video necesitaba permiso `blob:` en la política de seguridad para avanzar con el scroll en esas páginas.
+- **Contraste medido en cada página interior** sobre el peor píxel del video (arriba, a un tercio y a dos tercios de la página): 4,4:1 o más en todos los textos.
+- **Gran ola versión 2:** prompts nuevos en `docs/continuar-en-otra-sesion.md` (ola de abajo completa, sin columnas de bruma, mar del fondo con textura).

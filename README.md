@@ -26,7 +26,9 @@ npm run preview    # sirve el build
 | SEO global, schema (JSON-LD), Open Graph | `src/layouts/Base.astro` |
 | Fotos | `src/assets/img/` (Astro las optimiza a AVIF/WebP). Portada: `juan-agua.png` (recorte con fondo transparente) y `mar-fondo.jpg` / `mar-fondo-movil.jpg` (fondo de agua generado con Higgsfield y ajustado a la paleta). Quién está detrás / Sobre mí: `juan-retrato-recorte.png` (sin fondo, sobre un arco turquesa) |
 | Portada de la home (nombre, Juan que sube desde el mar y propuesta) | `src/components/HeroMar.astro` |
-| Portada con el mar en las páginas interiores (ofertas, blog, comunidad…) | `src/components/PageHero.astro` |
+| Mar de fondo de página completa en las páginas interiores (ofertas, blog, comunidad…): capa fija detrás de todo, video que avanza con el scroll en computador e imagen en celular | `src/components/PageHero.astro` (+ reglas "Páginas interiores" en `src/styles/global.css`) |
+| Imagen del fondo de mar (la misma en todo el sitio) | `public/fondo/` (AVIF y WebP fijos), definida en `src/data/fondo.ts` y usada con `src/components/FondoMar.astro`. Se regenera con `node scripts/fondo-estatico.mjs` |
+| Color de marca para imágenes y videos nuevos (Higgsfield) | `python3 scripts/color-marca.py` (LUT para ffmpeg o imagen directa) |
 | Frase central de la home (sobre la gran ola, avanza con el scroll) | `src/components/Frase.astro` |
 | Videos que avanzan con el scroll (mar de la portada y gran ola) | `public/videos/mar-portada.mp4`, `public/videos/gran-ola.mp4` (generados con Higgsfield, ajustados a la paleta y codificados con un cuadro clave cada 8 para que el salto sea fluido). Lógica en `src/scripts/scrub.ts`. En celular y con movimiento reducido se ven imágenes fijas (`gran-ola.jpg`, `mar-fondo*.jpg`) |
 | Olas del frente de la portada (PNG transparente) | `src/assets/img/olas-frente.png` |
@@ -34,6 +36,7 @@ npm run preview    # sirve el build
 | Animaciones ligadas al scroll (nada se mueve solo) | `src/scripts/fx.ts` |
 | Uniones suaves entre secciones | `src/components/Wave.astro` |
 | Decisiones de diseño de la home | `docs/paquete-diseno-home.md` |
+| Seguir el trabajo en otra sesión (estado, pasos para cambiar videos, pruebas y prompt listo para pegar) | `docs/continuar-en-otra-sesion.md` |
 | Imagen para compartir (OG) y favicon | `public/og.jpg` (captura de la portada a 1200×630), `public/favicon.svg` → el apple-touch-icon se regenera con `node scripts/make-images.mjs` |
 
 ## Páginas
