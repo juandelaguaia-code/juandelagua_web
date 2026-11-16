@@ -11,7 +11,7 @@ Hola. Vas a continuar el rediseño de juandelagua.com (este repositorio, Astro).
 
 Contexto corto:
 - Soy Juan del Agua, consultor de IA y marketing para pymes en Chile. El sitio usa un mar generado con Higgsfield en los colores de mi marca (Marino, Corriente y Perla), viene en modo oscuro por defecto y el mar se mueve solo al hacer scroll (video en computador, imagen fija en celular).
-- La última ronda está en la rama claude/wonderful-newton-ld2d70. Si main todavía no la tiene, parte desde esa rama.
+- La última ronda está en la rama claude/wonderful-newton-ld2d70 y todavía no está en main: la vamos a publicar junto con la gran ola nueva. Parte desde esa rama.
 - No gastes créditos de Higgsfield: mis generaciones ilimitadas no funcionan desde Claude Code. Yo genero los archivos en el chat de Claude y te los subo.
 - No publiques en main sin preguntarme antes (EasyPanel publica main automáticamente).
 
@@ -19,10 +19,12 @@ Lo que quiero ahora:
 1. Te adjunto la gran ola nueva (un video mp4 y una imagen). Procésalos con la sección "Cómo reemplazar la gran ola" del documento y reemplaza public/videos/gran-ola.mp4 y src/assets/img/gran-ola.jpg.
 2. Revisa el encuadre en computador y en celular (que las tres líneas de la frase no queden sobre la espuma) y mide el contraste en el peor cuadro del video.
 3. Prueba el sitio como dice la sección "Pruebas" (home y páginas interiores, modo oscuro y claro, celular y notebook) y corrige lo que encuentres.
-4. Haz commit en tu rama de trabajo y pregúntame antes de publicar en main.
+4. Haz commit en tu rama de trabajo y pregúntame antes de publicar en main. Cuando te diga que sí, se publica todo junto: la ronda de la rama claude/wonderful-newton-ld2d70 y la gran ola nueva.
 ```
 
 ## 2. Estado actual (16 de noviembre de 2026)
+
+Todo lo de abajo está en la rama `claude/wonderful-newton-ld2d70`. Juan decidió publicarlo en main junto con la gran ola versión 2.
 
 - **Home "Emerges del mar":** al abrir, "Juan del Agua" en grande sobre el mar. Al bajar, Juan sube desde detrás de las olas del frente hasta el centro (se ven los brazos cruzados) y aparece la propuesta con el botón del diagnóstico. El mar de fondo es un video que avanza y retrocede con el scroll.
 - **Frase central:** la gran ola (video) se curva, rompe y se calma mientras aparecen "Menos trabajo manual", "Marketing con resultados" y "Recupera tiempo para vivir mejor".
